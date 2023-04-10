@@ -14,13 +14,17 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::truncate();
-        User::create([
-            'name' => 'Administrator',
-            'email' => "admin@bkk.com",
-            'email_verified_at' => now(),
-            'password' => Hash::make("123"),
-        ]);
+        // User::truncate();
+        $exist = User::where('role', 'admin')->count();
+        if (!$exist) {
+            User::create([
+                'name' => 'Administrator',
+                'email' => "admin@bkk.com",
+                'email_verified_at' => now(),
+                'password' => Hash::make("123"),
+                'role' => 'admin',
+            ]);
+        }
         // User::factory(2)->create();
     }
 }

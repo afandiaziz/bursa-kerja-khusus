@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Traits\Uuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -19,9 +20,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_detail_id',
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -42,4 +45,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the user_detail that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user_details(): HasMany
+    {
+        return $this->hasMany(UserDetail::class, 'user_id', 'id');
+    }
+    public function list_vacancies(): HasMany
+    {
+        return $this->hasMany(Applicant::class, 'user_id', 'id');
+    }
 }
