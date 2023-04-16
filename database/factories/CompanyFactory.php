@@ -17,12 +17,12 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->company(),
-            'logo' => fake()->imageUrl(),
-            'website' => fake()->word() . fake()->word() . '.site',
-            'email' => fake()->unique()->companyEmail(),
-            'phone' => fake()->phoneNumber(),
-            'address' => fake()->address(),
+            'name' => fake('id_ID')->company(),
+            'logo' => fake('id_ID')->imageUrl(),
+            'website' => fake('id_ID')->word() . fake('id_ID')->word() . '.site',
+            'email' => fake('id_ID')->unique()->companyEmail(),
+            'phone' => fake('id_ID')->phoneNumber(),
+            'address' => fake('id_ID')->address(),
         ];
     }
 }
