@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuids;
 
-class CriteriaTypeAnswer extends Model
+class CriteriaAnswer extends Model
 {
     use HasFactory, Uuids;
+    protected $table = 'criteria_answers';
     protected $fillable = [
         'criteria_id',
+        'index',
         'answer',
         'extra_answer_type',
     ];

@@ -20,6 +20,8 @@ class Criteria extends Model
         'min_length',
         'max_number',
         'min_number',
+        'type_upload',
+        'max_files',
         'max_size',
         'format_file',
         'custom_label',
@@ -43,18 +45,19 @@ class Criteria extends Model
         return $this->hasMany(Criteria::class, 'parent_id');
     }
 
-    public function criteriaTypeAnswer()
+    public function criteriaAnswer()
     {
-        return $this->hasMany(CriteriaTypeAnswer::class, 'criteria_id');
+        return $this->hasMany(CriteriaAnswer::class, 'criteria_id')->orderBy('index', 'asc');
     }
 
     public static function criteriaCreate($criteriaValues, $criteriaAnswerValues = [])
     {
         $criteriaId = Criteria::create($criteriaValues);
         if (count($criteriaAnswerValues)) {
-            foreach ($criteriaAnswerValues as $item) {
-                CriteriaTypeAnswer::create([
+            foreach ($criteriaAnswerValues as $index => $item) {
+                CriteriaAnswer::create([
                     'criteria_id' => $criteriaId->id,
+                    'index' => $index,
                     'answer' => $item,
                 ]);
             }

@@ -22,7 +22,9 @@ return new class extends Migration
             $table->integer('min_length')->nullable();
             $table->integer('max_number')->nullable();
             $table->integer('min_number')->nullable();
+            $table->boolean('type_upload')->default(false)->comment('true = multiple, false = single');
             $table->integer('max_size')->nullable()->comment('in MB');
+            $table->integer('max_files')->nullable()->comment('items');
             $table->text('format_file')->nullable();
             $table->json('custom_label')->nullable();
             $table->string('mask')->nullable();

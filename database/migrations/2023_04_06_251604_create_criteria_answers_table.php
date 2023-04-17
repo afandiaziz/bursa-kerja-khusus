@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('criteria_type_answers', function (Blueprint $table) {
+        Schema::create('criteria_answers', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('criteria_id');
             $table->string('answer');
+            $table->tinyInteger('index');
             $table->boolean('extra_answer_type')->nullable();
             $table->foreign('criteria_id')->references('id')->on('criteria');
             $table->index('criteria_id');
