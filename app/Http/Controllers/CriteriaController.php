@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCriteriaRequest;
+use App\Http\Requests\CriteriaRequest;
 use App\Models\Criteria;
 use App\Models\CriteriaAnswer;
 use App\Models\CriteriaType;
@@ -12,6 +12,7 @@ use Auth;
 
 class CriteriaController extends Controller
 {
+    private $prefix = 'criteria';
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -57,20 +58,20 @@ class CriteriaController extends Controller
                 ->toJson();
             return $json;
         }
-        $prefix = 'criteria';
+        $prefix = $this->prefix;
         return view('dashboard.criteria.index', compact('prefix'));
     }
 
     public function show($id)
     {
         $data = Criteria::findOrFail($id);
-        $prefix = 'criteria';
+        $prefix = $this->prefix;
         return view('dashboard.criteria.detail', compact('data', 'prefix'));
     }
 
     public function create(Request $request)
     {
-        $prefix = 'criteria';
+        $prefix = $this->prefix;
         $parent_order = Criteria::max('parent_order') + 1;
         $criteriaTypes = CriteriaType::orderBy('type', 'asc')->get();
         return view('dashboard.criteria.create', compact('prefix', 'criteriaTypes', 'parent_order'));
@@ -93,8 +94,10 @@ class CriteriaController extends Controller
     public function formAdditional(Request $request)
     {
         $decode = null;
-        if ($request->has('old')) {
+        if ($request->has('old') && json_decode(str_replace('&quot;', '"', $request->old))) {
             $decode = json_decode(str_replace('&quot;', '"', $request->old));
+        } else if ($request->has('data')) {
+            $decode = Criteria::where('id', $request->data)->get()->first();
         }
         $criteriaType = CriteriaType::findOrFail($request->type);
         switch ($criteriaType->type) {
@@ -108,6 +111,7 @@ class CriteriaController extends Controller
                 break;
             case 'Angka':
                 return [
+                    view('components.forms.length', ['old' => $decode])->render(),
                     view('components.forms.number', ['old' => $decode])->render(),
                 ];
                 break;
@@ -129,7 +133,7 @@ class CriteriaController extends Controller
         return '';
     }
 
-    public function store(StoreCriteriaRequest $request)
+    public function store(CriteriaRequest $request)
     {
         $request->validated();
         if ($request->has('format_file')) {
@@ -151,5 +155,87 @@ class CriteriaController extends Controller
         } else {
             return redirect()->back()->with('alert-danger', 'Gagal menambahkan kriteria baru');
         }
+    }
+
+    public function edit($id)
+    {
+        $data = Criteria::findOrFail($id);
+        $prefix = $this->prefix;
+        $criteriaTypes = CriteriaType::orderBy('type', 'asc')->get();
+        return view('dashboard.criteria.edit', compact('data', 'prefix', 'criteriaTypes'));
+    }
+
+    public function update(CriteriaRequest $request, $id)
+    {
+        $request->validated();
+        if ($request->has('format')) {
+            if ($request->format == 0 && $request->has('format_file')) {
+                $request->merge(['format_file' => implode(',', $request->all()['format_file'])]);
+            } else {
+                $request->merge(['format_file' => null]);
+            }
+        } else {
+            $request->merge(['format_file' => null]);
+        }
+
+        if ($request->has('max_length') && $request->has('min_number') && $request->max_length < strlen(str_replace('-', '', $request->min_number))) {
+            return redirect()->back()->with('alert-danger', 'Minimum Angka yang Diinput tidak boleh kurang dari Minimum Panjang/Banyaknya Teks')->withInput($request->input());
+        } elseif ($request->has('max_length') && $request->has('max_number') && $request->max_length < strlen(str_replace('-', '', $request->max_number))) {
+            return redirect()->back()->with('alert-danger', 'Maksimum Angka yang Diinput tidak boleh kurang dari Minimum Panjang/Banyaknya Teks')->withInput($request->input());
+        }
+
+        $request->merge(['min_length' => $request->min_length]);
+        $request->merge(['max_length' => $request->max_length]);
+        $request->merge(['min_number' => $request->min_number]);
+        $request->merge(['max_number' => $request->max_number]);
+        $request->merge(['type_upload' => $request->type_upload]);
+        $request->merge(['max_files' => $request->max_files]);
+        $request->merge(['max_size' => $request->max_size]);
+        $request->merge(['custom_label' => $request->custom_label]);
+        $request->merge(['mask' => $request->mask]);
+        $data = Criteria::findOrFail($id);
+        $data->update($request->all());
+
+        if ($request->has('answer')) {
+            if (count($request->answer) >= count($data->criteriaAnswer)) {
+                foreach ($request->answer as $index => $answer) {
+                    $dataAnswer = CriteriaAnswer::where('index', $index)->where('criteria_id', $id)->get()->first();
+                    if ($dataAnswer) {
+                        $dataAnswer->update([
+                            'answer' => $answer,
+                        ]);
+                    } else {
+                        CriteriaAnswer::create([
+                            'criteria_id' => $id,
+                            'index' => $index,
+                            'answer' => $answer,
+                        ]);
+                        // dd($dataAnswer, $answer);
+                    }
+                }
+            } else {
+                foreach ($request->answer as $index => $answer) {
+                    $dataAnswer = CriteriaAnswer::where('index', $index)->where('criteria_id', $id)->get()->first();
+                    if ($dataAnswer) {
+                        $dataAnswer->update([
+                            'answer' => $answer,
+                        ]);
+                    }
+                }
+                $dataAnswer = CriteriaAnswer::where('criteria_id', $id)->get();
+                foreach ($dataAnswer as $index => $answer) {
+                    if (!in_array($answer->index, array_keys($request->answer))) {
+                        $answer->delete();
+                    }
+                }
+            }
+        } else {
+            if (count($data->criteriaAnswer)) {
+                foreach ($data->criteriaAnswer as $item) {
+                    $item->delete();
+                }
+            }
+        }
+        return redirect()->route('criteria.index')->with('alert-success', 'Berhasil mengupdate kriteria ' . $data->name);
     }
 }

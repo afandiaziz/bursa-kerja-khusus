@@ -1,10 +1,9 @@
 @extends('dashboard.layouts.app')
-
-@section('title', 'Tambah Kriteria Pelamar')
+@section('title', 'Edit Kriteria Pelamar' . ' - ' . $data->name)
 
 @section('content')
     <div class="col-lg-8">
-        <form action="{{ route($prefix . '.create') }}" method="post" class="w-100" target="_blank">
+        <form action="{{ route($prefix . '.update', ['id' => $data->id]) }}" method="post" class="w-100" target="_blank">
             @csrf
             @include('dashboard.criteria.form')
         </form>
@@ -26,6 +25,7 @@
                     _token: "{{ csrf_token() }}",
                     type: val,
                     old: '{{ json_encode(old()) }}',
+                    data: '{{ $data->id }}',
                 },
                 success: function(response) {
                     $('#additional-content').addClass('d-block').removeClass('d-none')

@@ -34,8 +34,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             Route::post('/form/additional', [App\Http\Controllers\CriteriaController::class, 'formAdditional'])->name('form.additional');
             // Route::get('/delete/{id}', [App\Http\Controllers\CriteriaController::class, 'deleteUser'])->name('delete');
-            // Route::get('/update/{id}', [App\Http\Controllers\CriteriaController::class, 'edit'])->name('edit');
-            // Route::post('/update/{id}', [App\Http\Controllers\CriteriaController::class, 'updateUser'])->name('update');
+            Route::get('/update/{id}', [App\Http\Controllers\CriteriaController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [App\Http\Controllers\CriteriaController::class, 'update'])->name('update');
         });
     });
 });

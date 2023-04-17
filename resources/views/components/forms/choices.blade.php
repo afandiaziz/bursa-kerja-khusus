@@ -4,8 +4,10 @@
 <div id="answer-content">
     @php
         $count = 2;
-        if ($old && $old->answer && count($old->answer)) {
+        if ($old && isset($old->answer) && $old->answer && count($old->answer)) {
             $count = count($old->answer);
+        } elseif ($old && isset($old->criteriaAnswer) && $old->criteriaAnswer && count($old->criteriaAnswer)) {
+            $count = count($old->criteriaAnswer);
         }
     @endphp
     @for ($i = 0; $i < $count; $i++)
@@ -15,7 +17,7 @@
             </label>
             <div class="input-group">
                 <input type="text" class="form-control" name="answer[]"
-                    value="{{ $old && $old->answer && count($old->answer) ? $old->answer[$i] : '' }}">
+                    value="{{ ($old && isset($old->answer) && $old->answer && count($old->answer) ? $old->answer[$i] : $old && isset($old->criteriaAnswer) && $old->criteriaAnswer && count($old->criteriaAnswer)) ? $old->criteriaAnswer[$i]->answer : '' }}">
                 <button type="button" class="btn btn-danger" id="remove-answer">Hapus</button>
             </div>
         </div>
