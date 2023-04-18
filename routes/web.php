@@ -33,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/detail/{id}', [App\Http\Controllers\CriteriaController::class, 'show'])->name('detail');
 
             Route::post('/form/additional', [App\Http\Controllers\CriteriaController::class, 'formAdditional'])->name('form.additional');
+            Route::post('/form/preview', [App\Http\Controllers\CriteriaController::class, 'formPreview'])->name('form.preview');
             // Route::get('/delete/{id}', [App\Http\Controllers\CriteriaController::class, 'deleteUser'])->name('delete');
             Route::get('/update/{id}', [App\Http\Controllers\CriteriaController::class, 'edit'])->name('edit');
             Route::post('/update/{id}', [App\Http\Controllers\CriteriaController::class, 'update'])->name('update');

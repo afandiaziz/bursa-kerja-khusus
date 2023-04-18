@@ -133,11 +133,50 @@ class CriteriaController extends Controller
         return '';
     }
 
+    public function formPreview(Request $request)
+    {
+        if ($request->has('data')) {
+            $request->merge(['data' => array_slice($request->data, 1)]);
+            if ($request->has('id')) {
+                $data = Criteria::findOrFail($request->id);
+            } else {
+                $data = new Criteria();
+            }
+            $collection = collect($data->criteriaAnswer);
+            $indexAnswer = 0;
+            foreach ($request->data as $item) {
+                $name = $item['name'];
+                if ($name == 'answer[]') {
+                    if ($indexAnswer < count($data->criteriaAnswer)) {
+                        $collection[$indexAnswer]->answer = $item['value'];
+                    } else {
+                        if ($item['value']) {
+                            $new = new CriteriaAnswer();
+                            $new->fill(['answer' => $item['value'], 'criteria_id' => $data->id]);
+                            $collection->push($new);
+                        }
+                    }
+                    $indexAnswer++;
+                } else {
+                    $data->$name = $item['value'];
+                }
+            }
+            $data->criteriaAnswer = $collection;
+            return view('components.forms.form', ['data' => $data])->render();
+        }
+    }
+
     public function store(CriteriaRequest $request)
     {
         $request->validated();
         if ($request->has('format_file')) {
             $request->merge(['format_file' => implode(',', $request->all()['format_file'])]);
+        }
+
+        if ($request->has('max_length') && $request->has('min_number') && $request->max_length < strlen(str_replace('-', '', $request->min_number))) {
+            return redirect()->back()->with('alert-danger', 'Minimum Angka yang Diinput tidak boleh kurang dari Minimum Panjang/Banyaknya Teks')->withInput($request->input());
+        } elseif ($request->has('max_length') && $request->has('max_number') && $request->max_length < strlen(str_replace('-', '', $request->max_number))) {
+            return redirect()->back()->with('alert-danger', 'Maksimum Angka yang Diinput tidak boleh kurang dari Minimum Panjang/Banyaknya Teks')->withInput($request->input());
         }
 
         $created = Criteria::create($request->all());
@@ -193,6 +232,7 @@ class CriteriaController extends Controller
         $request->merge(['max_size' => $request->max_size]);
         $request->merge(['custom_label' => $request->custom_label]);
         $request->merge(['mask' => $request->mask]);
+
         $data = Criteria::findOrFail($id);
         $data->update($request->all());
 

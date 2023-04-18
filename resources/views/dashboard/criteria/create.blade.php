@@ -3,11 +3,19 @@
 @section('title', 'Tambah Kriteria Pelamar')
 
 @section('content')
-    <div class="col-lg-8">
-        <form action="{{ route($prefix . '.create') }}" method="post" class="w-100" target="_blank">
+    <div class="col-lg-8" id="form-content">
+        <form action="{{ route($prefix . '.create') }}" method="post" class="w-100" target="_blank" id="form-create">
             @csrf
             @include('dashboard.criteria.form')
         </form>
+    </div>
+    <div class="col-lg-4" id="preview-form">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Tampilan Input</div>
+            </div>
+            <div class="card-body"></div>
+        </div>
     </div>
 @endsection
 
@@ -38,6 +46,27 @@
             });
         }
 
+        function previewForm() {
+            setTimeout(() => {
+                const data = $('#form-create').serializeArray();
+                $.ajax({
+                    url: "{{ route($prefix . '.form.preview') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        data
+                    },
+                    success: function(response) {
+                        $('#preview-form .card-body').html(response);
+                        $('.select2').select2();
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr, status, error);
+                    }
+                });
+            }, 500);
+        }
+
         $(document).ready(function() {
             $('.select2').select2();
             if ($('#criteria_type_id').val().trim()) {
@@ -62,6 +91,7 @@
                         $(this).text(`Jawaban ${index + 1}`);
                     });
                 });
+                previewForm();
             });
             $('body').on('click', 'button#add-answer', function() {
                 const answerContent = $('#additional-content #answer-content .form-group').last();
@@ -90,6 +120,9 @@
                 } else {
                     $('input[name="max_files"]').attr('disabled', 'disabled');
                 }
+            });
+            $('body #form-content').on('change', 'input, select', function() {
+                previewForm();
             });
         });
     </script>

@@ -20,7 +20,7 @@
 </div>
 <div class="form-group my-2">
     <label for="max_files" class="form-label text-capitalize">
-        Maximal Files <span class="text-danger">*</span>
+        Maximal Files yang Diupload <span class="text-danger">*</span>
     </label>
     <div class="input-group">
         <input type="number" class="form-control"
