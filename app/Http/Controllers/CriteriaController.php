@@ -6,7 +6,9 @@ use App\Http\Requests\CriteriaRequest;
 use App\Models\Criteria;
 use App\Models\CriteriaAnswer;
 use App\Models\CriteriaType;
+use App\Models\UserDocuments;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use DataTables;
 use Auth;
 
@@ -152,12 +154,23 @@ class CriteriaController extends Controller
                     } else {
                         if ($item['value']) {
                             $new = new CriteriaAnswer();
-                            $new->fill(['answer' => $item['value'], 'criteria_id' => $data->id]);
+                            $new->fill([
+                                'id' => Str::uuid()->toString(),
+                                'answer' => $item['value'],
+                                'criteria_id' => $data->id
+                            ]);
                             $collection->push($new);
                         }
                     }
                     $indexAnswer++;
+                } else if ($name == 'format_file[]') {
+                    if ($data->format_file) {
+                        $data->format_file .= ',' . $item['value'];
+                    } else {
+                        $data->format_file = $item['value'];
+                    }
                 } else {
+                    $data->id = Str::uuid()->toString();
                     $data->$name = $item['value'];
                 }
             }

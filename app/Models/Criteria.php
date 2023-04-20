@@ -50,6 +50,11 @@ class Criteria extends Model
         return $this->hasMany(CriteriaAnswer::class, 'criteria_id')->orderBy('index', 'asc');
     }
 
+    public function criteriaDocuments()
+    {
+        return $this->hasMany(CriteriaDocuments::class, 'criteria_id');
+    }
+
     public static function criteriaCreate($criteriaValues, $criteriaAnswerValues = [])
     {
         $criteriaId = Criteria::create($criteriaValues);
