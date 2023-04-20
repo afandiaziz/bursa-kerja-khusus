@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('vacancy_id')->references('id')->on('vacancies');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

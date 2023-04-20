@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('min_length')->nullable();
             $table->integer('max_number')->nullable();
             $table->integer('min_number')->nullable();
-            $table->boolean('type_upload')->default(false)->comment('true = multiple, false = single');
+            $table->boolean('type_upload')->nullable()->default(null)->comment('true = multiple, false = single');
             $table->integer('max_size')->nullable()->comment('in MB');
             $table->integer('max_files')->nullable()->comment('items');
             $table->text('format_file')->nullable();
@@ -34,6 +34,7 @@ return new class extends Migration
             $table->index('name');
             $table->foreign('criteria_type_id')->references('id')->on('criteria_types');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

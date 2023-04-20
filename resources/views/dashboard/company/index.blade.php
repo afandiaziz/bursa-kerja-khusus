@@ -26,7 +26,7 @@
                         <thead>
                             <tr>
                                 <th width="3%">No</th>
-                                <th>Nama</th>
+                                <th>Perusahaan</th>
                                 <th>Tipe</th>
                                 <th>Urut</th>
                                 <th>Kriteria Wajib Diisi</th>

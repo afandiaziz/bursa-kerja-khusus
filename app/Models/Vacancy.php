@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Vacancy extends Model
 {
-    use HasFactory, Uuids;
+    use HasFactory, Uuids, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.

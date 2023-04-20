@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CriteriaRequest;
-use App\Models\Criteria;
-use App\Models\CriteriaAnswer;
-use App\Models\CriteriaType;
-use App\Models\UserDocuments;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use DataTables;
 use Auth;
+use DataTables;
+use App\Models\Criteria;
+use Illuminate\Support\Str;
+use App\Models\CriteriaType;
+use Illuminate\Http\Request;
+use App\Models\CriteriaAnswer;
+use App\Http\Requests\CriteriaRequest;
 
 class CriteriaController extends Controller
 {

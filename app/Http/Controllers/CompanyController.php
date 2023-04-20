@@ -3,17 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 
 class CompanyController extends Controller
 {
+    private $prefix = 'company';
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $prefix = $this->prefix;
+        return view('dashboard.company.index', compact('prefix'));
     }
 
     /**

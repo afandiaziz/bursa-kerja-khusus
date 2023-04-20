@@ -24,6 +24,7 @@ return new class extends Migration
             $table->index('company_id');
             $table->index('id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

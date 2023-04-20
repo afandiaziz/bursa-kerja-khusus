@@ -22,6 +22,7 @@ return new class extends Migration
             $table->index('answer');
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

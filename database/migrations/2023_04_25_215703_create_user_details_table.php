@@ -19,6 +19,7 @@ return new class extends Migration
             $table->longText('extra_value')->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('id');
             $table->foreign('user_id')->references('id')->on('users');
