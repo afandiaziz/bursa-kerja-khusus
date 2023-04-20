@@ -163,18 +163,21 @@ class CriteriaController extends Controller
                     }
                     $indexAnswer++;
                 } else if ($name == 'format_file[]') {
-                    if ($data->format_file) {
-                        $data->format_file .= ',' . $item['value'];
-                    } else {
-                        $data->format_file = $item['value'];
+                    if (!str_contains($data->format_file, $item['value'])) {
+                        if ($data->format_file) {
+                            $data->format_file .= ',' . $item['value'];
+                        } else {
+                            $data->format_file = $item['value'];
+                        }
                     }
                 } else {
                     $data->id = Str::uuid()->toString();
                     $data->$name = $item['value'];
+                    $data->format_file = null;
                 }
             }
             $data->criteriaAnswer = $collection;
-            return view('components.forms.form', ['data' => $data])->render();
+            return view('components.forms.form', ['data' => $data]);
         }
     }
 

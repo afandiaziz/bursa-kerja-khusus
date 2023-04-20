@@ -14,9 +14,7 @@
             <div class="card-header">
                 <div class="card-title">Tampilan Input dari Kriteria {{ $data->name }}</div>
             </div>
-            <div class="card-body">
-                @include('components.forms.form', ['data' => $data])
-            </div>
+            <div class="card-body"></div>
         </div>
     </div>
 @endsection
@@ -34,6 +32,7 @@
 @section('script')
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ asset('assets/js/dropzone/config.dropzone.js') }}"></script>
     <script>
         function getAdditional(val) {
             $.ajax({
@@ -79,6 +78,7 @@
         }
 
         $(document).ready(function() {
+            previewForm();
             $('.select2').select2();
             if ($('#criteria_type_id').val().trim()) {
                 getAdditional($('#criteria_type_id').val());
