@@ -11,11 +11,8 @@ class CriteriaAnswer extends Model
 {
     use HasFactory, Uuids, SoftDeletes;
     protected $table = 'criteria_answers';
-    protected $fillable = [
-        'criteria_id',
-        'index',
-        'answer',
-        'extra_answer_type',
+    protected $guarded = [
+        'id',
     ];
 
     public function criteria()

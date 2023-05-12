@@ -20,12 +20,8 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'user_detail_id',
-        'name',
-        'email',
-        'password',
-        'role',
+    protected $guarded = [
+        'id',
     ];
 
     /**
@@ -54,10 +50,10 @@ class User extends Authenticatable
      */
     public function user_details(): HasMany
     {
-        return $this->hasMany(UserDetail::class, 'user_id', 'id');
+        return $this->hasMany(UserDetail::class);
     }
     public function list_vacancies(): HasMany
     {
-        return $this->hasMany(Applicant::class, 'user_id', 'id');
+        return $this->hasMany(Applicant::class);
     }
 }

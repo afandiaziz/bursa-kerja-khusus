@@ -40,7 +40,7 @@ class CriteriaController extends Controller
                 ->addColumn('action', function ($row) {
                     $html = ' <div class="btn-group"> ';
                     $html .= '
-                        <a class="btn btn-primary btn-sm" href="' . route('criteria.detail', ['id' => $row->id]) . '">
+                        <a class="btn btn-primary btn-sm" href="' . route($this->prefix . '.detail', ['id' => $row->id]) . '">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message-2-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                 <path d="M8 9h8"></path>
@@ -60,14 +60,14 @@ class CriteriaController extends Controller
             return $json;
         }
         $prefix = $this->prefix;
-        return view('dashboard.criteria.index', compact('prefix'));
+        return view('dashboard.' . $this->prefix . '.index', compact('prefix'));
     }
 
     public function show($id)
     {
         $data = Criteria::findOrFail($id);
         $prefix = $this->prefix;
-        return view('dashboard.criteria.detail', compact('data', 'prefix'));
+        return view('dashboard.' . $this->prefix . '.detail', compact('data', 'prefix'));
     }
 
     public function create(Request $request)
@@ -75,7 +75,7 @@ class CriteriaController extends Controller
         $prefix = $this->prefix;
         $parent_order = Criteria::max('parent_order') + 1;
         $criteriaTypes = CriteriaType::orderBy('type', 'asc')->get();
-        return view('dashboard.criteria.create', compact('prefix', 'criteriaTypes', 'parent_order'));
+        return view('dashboard.' . $this->prefix . '.create', compact('prefix', 'criteriaTypes', 'parent_order'));
     }
 
     public function activate($id)
@@ -216,7 +216,7 @@ class CriteriaController extends Controller
         $data = Criteria::findOrFail($id);
         $prefix = $this->prefix;
         $criteriaTypes = CriteriaType::orderBy('type', 'asc')->get();
-        return view('dashboard.criteria.edit', compact('data', 'prefix', 'criteriaTypes'));
+        return view('dashboard.' . $this->prefix . '.edit', compact('data', 'prefix', 'criteriaTypes'));
     }
 
     public function update(CriteriaRequest $request, $id)

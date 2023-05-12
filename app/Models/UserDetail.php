@@ -17,10 +17,8 @@ class UserDetail extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable   =   [
-        'user_id',
-        'criteria_id',
-        'value',
+    protected $guarded = [
+        'id',
     ];
 
     /**

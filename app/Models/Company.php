@@ -11,14 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Company extends Model
 {
     use HasFactory, Uuids, SoftDeletes;
-    protected $fillable = [
-        'name',
-        'logo',
-        'website',
-        'phone',
-        'email',
-        'address',
-        'status',
+    protected $guarded = [
+        'id',
+    ];
+    protected $casts = [
+        'status' => 'boolean',
     ];
 
     public function vacancies(): HasMany

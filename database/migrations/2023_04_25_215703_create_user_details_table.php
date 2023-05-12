@@ -18,6 +18,10 @@ return new class extends Migration
             $table->longText('value')->nullable();
             $table->longText('extra_value')->nullable();
 
+            $table->string('filename')->nullable();
+            $table->string('path')->nullable();
+            $table->string('mime_type')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
 

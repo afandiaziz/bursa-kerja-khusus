@@ -1,28 +1,26 @@
 function configDropzone(
     clickableElement,
-    criteria,
     type_upload,
     max_files,
     max_size,
     format_file
 ) {
-    console.log(format_file);
     return {
         url: "{{ route('criteria.form.preview.upload') }}",
         method: "post",
-        paramName: criteria,
+        paramName: clickableElement,
         headers: {
             "X-CSRF-TOKEN": "{{ csrf_token() }}",
         },
         params: {
-            criteria: criteria,
+            criteria: clickableElement,
             preview: true,
         },
         resizeQuality: 0.8,
         parallelUploads: 100,
         addRemoveLinks: true,
         autoProcessQueue: false,
-        clickable: clickableElement,
+        clickable: "#input-file-" + clickableElement,
         maxFilesize: max_size,
         // uploadMultiple: false,
         // maxFiles: 1,

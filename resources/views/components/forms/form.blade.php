@@ -119,7 +119,6 @@
 @if ($data->criteriaType->type == 'Upload File')
     <script>
         new Dropzone('#input-file-{{ $data->id }}', configDropzone(
-            "#input-file-{{ $data->id }}",
             "{{ $data->id }}",
             {{ $data->type_upload ? 'true' : 'false' }},
             {{ $data->type_upload ? $data->max_files : 1 }},

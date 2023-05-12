@@ -15,7 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('vacancy_id');
             $table->uuid('user_id');
-            $table->boolean('payment_status')->default(false);
+            $table->boolean('verified')->default(false);
+
             $table->foreign('vacancy_id')->references('id')->on('vacancies');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

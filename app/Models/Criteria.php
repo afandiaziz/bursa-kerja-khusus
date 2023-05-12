@@ -11,24 +11,15 @@ class Criteria extends Model
 {
     use HasFactory, Uuids, SoftDeletes;
     protected $table = 'criteria';
-    protected $fillable = [
-        'name',
-        'criteria_type_id',
-        'parent_id',
-        'parent_order',
-        'child_order',
-        'max_length',
-        'min_length',
-        'max_number',
-        'min_number',
-        'type_upload',
-        'max_files',
-        'max_size',
-        'format_file',
-        'custom_label',
-        'mask',
-        'required',
-        'active',
+    protected $orderBy = 'parent_order';
+    protected $orderDirection = 'asc';
+    protected $guarded = [
+        'id',
+    ];
+    protected $casts = [
+        'required' => 'boolean',
+        'active' => 'boolean',
+        'type_upload' => 'boolean',
     ];
 
     public function criteriaType()
@@ -70,9 +61,6 @@ class Criteria extends Model
         }
         return true;
     }
-
-    protected $orderBy = 'parent_order';
-    protected $orderDirection = 'asc';
 
     public function newQuery($ordered = true)
     {

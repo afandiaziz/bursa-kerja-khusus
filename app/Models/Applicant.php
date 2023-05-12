@@ -17,10 +17,11 @@ class Applicant extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'vacancy_id',
-        'user_id',
-        'payment_status',
+    protected $guarded = [
+        'id',
+    ];
+    protected $casts = [
+        'verified' => 'boolean',
     ];
 
     public function vacancy(): BelongsTo

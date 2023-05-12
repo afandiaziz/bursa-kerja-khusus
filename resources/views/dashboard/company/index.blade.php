@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', 'Kriteria Pelamar')
+@section('title', 'Manajemen Perusahaan')
 
 @section('content')
     <div class="col-12">
@@ -16,7 +16,7 @@
                             <path d="M9 12l6 0"></path>
                             <path d="M12 9l0 6"></path>
                         </svg>
-                        Tambah {{ $prefix }}
+                        Tambah Perusahaan
                     </a>
                 </div>
             </div>
@@ -27,10 +27,10 @@
                             <tr>
                                 <th width="3%">No</th>
                                 <th>Perusahaan</th>
-                                <th>Tipe</th>
-                                <th>Urut</th>
-                                <th>Kriteria Wajib Diisi</th>
-                                <th>Kriteria Aktif</th>
+                                <th>Alamat</th>
+                                <th>Telepon</th>
+                                <th>Email</th>
+                                <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -57,17 +57,16 @@
                     data: 'name'
                 },
                 {
-                    data: 'type',
-                    name: 'type',
+                    data: 'address'
                 },
                 {
-                    data: 'parent_order'
+                    data: 'phone'
                 },
                 {
-                    data: 'required'
+                    data: 'email'
                 },
                 {
-                    data: 'active'
+                    data: 'status'
                 },
                 {
                     data: 'action',

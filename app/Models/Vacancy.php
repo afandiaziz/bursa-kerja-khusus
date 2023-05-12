@@ -18,14 +18,8 @@ class Vacancy extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'company_id',
-        'position',
-        'description',
-        'information',
-        'requirements',
-        'deadline',
-        'max_applicants',
+    protected $guarded = [
+        'id',
     ];
 
     public function company(): BelongsTo

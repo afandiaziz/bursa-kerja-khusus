@@ -40,5 +40,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/update/{id}', [App\Http\Controllers\CriteriaController::class, 'edit'])->name('edit');
             Route::post('/update/{id}', [App\Http\Controllers\CriteriaController::class, 'update'])->name('update');
         });
+        Route::prefix('/company')->name('company.')->group(function () {
+            Route::get('', [App\Http\Controllers\CompanyController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\CompanyController::class, 'create'])->name('create');
+            Route::get('/detail/{id}', [App\Http\Controllers\CompanyController::class, 'show'])->name('detail');
+        });
     });
 });

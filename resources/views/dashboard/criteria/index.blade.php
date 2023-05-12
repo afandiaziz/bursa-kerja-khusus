@@ -16,7 +16,7 @@
                             <path d="M9 12l6 0"></path>
                             <path d="M12 9l0 6"></path>
                         </svg>
-                        Tambah {{ $prefix }}
+                        Tambah Kriteria Pelamar
                     </a>
                 </div>
             </div>

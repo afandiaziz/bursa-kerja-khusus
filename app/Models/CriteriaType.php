@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CriteriaType extends Model
 {
     use HasFactory, Uuids, SoftDeletes;
-    protected $fillable = [
-        'type',
+    protected $guarded = [
+        'id',
     ];
 }
