@@ -4,9 +4,9 @@
 
 @section('content')
     <div class="col-lg-8" id="form-content">
-        <form action="{{ route($prefix . '.create') }}" method="post" class="w-100" target="_blank" id="form-create">
+        <form action="{{ route($prefix . '.store') }}" method="post" class="w-100" target="_blank" id="form-create">
             @csrf
-            @include('dashboard.criteria.form')
+            @include("dashboard.$prefix.form")
         </form>
     </div>
     <div class="col-lg-4" id="preview-form">

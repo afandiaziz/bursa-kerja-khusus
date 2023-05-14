@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use DataTables;
 use App\Models\Company;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreCompanyRequest;
-use App\Http\Requests\UpdateCompanyRequest;
+use App\Http\Requests\CompanyRequest;
 
 class CompanyController extends Controller
 {
@@ -18,7 +17,7 @@ class CompanyController extends Controller
     {
         $prefix = $this->prefix;
         if ($request->ajax()) {
-            $data = Company::all();
+            $data = Company::orderBy('created_at', 'DESC')->get();
             $json = DataTables::collection($data)
                 ->addIndexColumn()
                 ->addColumn('status', function ($row) {
@@ -58,15 +57,31 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        //
+        $prefix = $this->prefix;
+        return view('dashboard.' . $this->prefix . '.create', compact('prefix'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCompanyRequest $request)
+    public function store(CompanyRequest $request)
     {
-        //
+        $request->validated();
+        $logo_name = null;
+        if ($request->hasFile('logo')) {
+            $logo = $request->file('logo');
+            $logo_name = time() . '.' . $logo->getClientOriginalExtension();
+            $logo->move(public_path('assets/upload/companies/'), $logo_name);
+        }
+        $data = $request->except('logo');
+        $data['logo'] = $logo_name;
+
+        $created = Company::create($data);
+        if ($created) {
+            return redirect()->route($this->prefix . '.index')->with('alert-success', 'Berhasil menambahkan perusahaan baru');
+        } else {
+            return redirect()->back()->with('alert-danger', 'Gagal menambahkan perusahaan baru');
+        }
     }
 
     /**
@@ -76,30 +91,80 @@ class CompanyController extends Controller
     {
         $data = Company::findOrFail($id);
         $prefix = $this->prefix;
-        return view('dashboard.' . $this->prefix . '.index', compact('data', 'prefix'));
+        return view('dashboard.' . $this->prefix . '.detail', compact('data', 'prefix'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Company $company)
+    public function edit($id)
     {
-        //
+        $data = Company::findOrFail($id);
+        $prefix = $this->prefix;
+        return view('dashboard.' . $this->prefix . '.edit', compact('data', 'prefix'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCompanyRequest $request, Company $company)
+    public function update(CompanyRequest $request, $id)
     {
-        //
+        $request->validated();
+        $data = Company::findOrFail($id);
+        $logo_name = null;
+        if ($request->hasFile('logo')) {
+            if (file_exists(public_path('assets/upload/companies/' . $data->logo))) {
+                unlink(public_path('assets/upload/companies/' . $data->logo));
+            }
+            $logo = $request->file('logo');
+            $logo_name = time() . '.' . $logo->getClientOriginalExtension();
+            $logo->move(public_path('assets/upload/companies/'), $logo_name);
+        }
+        $dataUpdated = $request->except('logo');
+        if ($logo_name) {
+            $data['logo'] = $logo_name;
+        }
+        if ($data && $data->update($dataUpdated)) {
+            return redirect()->route($this->prefix . '.detail', ['id' => $data->id])->with('alert-success', 'Berhasil mengupdate perusahaan ' . $data->name);
+        } else {
+            return redirect()->back()->with('alert-danger', 'Gagal mengupdate perusahaan ' . $data->name);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Company $company)
+    public function destroy($id)
     {
-        //
+        $data = Company::findOrFail($id);
+        if ($data && $data->delete()) {
+            return redirect()->route($this->prefix . '.index')->with('alert-success', 'Berhasil menghapus perusahaan ' . $data->name);
+        } else {
+            return redirect()->back()->with('alert-danger', 'Gagal menghapus perusahaan ' . $data->name);
+        }
+    }
+
+    public function deleteLogo($id)
+    {
+        $data = Company::findOrFail($id);
+        $data->update(['logo' => null]);
+        if (file_exists(public_path('assets/upload/companies/' . $data->logo))) {
+            unlink(public_path('assets/upload/companies/' . $data->logo));
+        }
+        return response(null, 204);
+    }
+
+    public function activate($id)
+    {
+        $company = Company::findOrFail($id);
+        if ($company->status) {
+            $update = 0;
+            $message = 'Berhasil menonaktifkan perusahaan';
+        } else {
+            $update = 1;
+            $message = 'Berhasil mengaktifkan perusahaan';
+        }
+        $company->update(['status' => $update]);
+        return redirect()->back()->with('alert-success', $message);
     }
 }

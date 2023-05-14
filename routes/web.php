@@ -43,7 +43,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('/company')->name('company.')->group(function () {
             Route::get('', [App\Http\Controllers\CompanyController::class, 'index'])->name('index');
             Route::get('/create', [App\Http\Controllers\CompanyController::class, 'create'])->name('create');
+            Route::post('/create', [App\Http\Controllers\CompanyController::class, 'store'])->name('store');
             Route::get('/detail/{id}', [App\Http\Controllers\CompanyController::class, 'show'])->name('detail');
+            Route::get('/activate/{id}', [App\Http\Controllers\CompanyController::class, 'activate'])->name('activate');
+            Route::get('/update/{id}', [App\Http\Controllers\CompanyController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [App\Http\Controllers\CompanyController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [App\Http\Controllers\CompanyController::class, 'destroy'])->name('delete');
+            Route::delete('/delete/logo/{id}', [App\Http\Controllers\CompanyController::class, 'deleteLogo'])->name('delete-logo');
         });
     });
 });

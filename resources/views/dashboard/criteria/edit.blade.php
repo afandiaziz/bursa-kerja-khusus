@@ -3,10 +3,10 @@
 
 @section('content')
     <div class="col-lg-8" id="form-content">
-        <form method="post" class="w-100" target="_blank" id="form-edit"
+        <form method="post" class="w-100" id="form-edit"
             action="{{ route($prefix . '.update', ['id' => $data->id]) }}">
             @csrf
-            @include('dashboard.criteria.form')
+            @include("dashboard.$prefix.form")
         </form>
     </div>
     <div class="col-lg-4" id="preview-form">
