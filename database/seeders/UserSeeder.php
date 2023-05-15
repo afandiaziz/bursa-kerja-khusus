@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::truncate();
+        User::truncate();
         $exist = User::where('role', 'admin')->count();
         if (!$exist) {
             User::create([

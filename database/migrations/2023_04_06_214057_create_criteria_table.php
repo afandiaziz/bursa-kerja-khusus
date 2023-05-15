@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('criteria', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->uuid('criteria_type_id');
+            $table->foreignIdFor(\App\Models\CriteriaType::class);
             $table->uuid('parent_id')->nullable();
             $table->integer('parent_order')->nullable();
             $table->integer('child_order')->nullable();
@@ -32,7 +32,8 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->index('id');
             $table->index('name');
-            $table->foreign('criteria_type_id')->references('id')->on('criteria_types');
+
+            $table->foreign('criteria_type_id')->references('id')->on('criteria_types')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

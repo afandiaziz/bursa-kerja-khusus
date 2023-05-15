@@ -13,14 +13,16 @@ return new class extends Migration
     {
         Schema::create('vacancies', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('company_id');
+            $table->foreignIdFor(\App\Models\Company::class, 'company_id');
             $table->string('position');
             $table->text('description');
             $table->text('information');
             $table->date('deadline');
-            $table->integer('max_applicants');
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->integer('max_applicants')->nullable();
+
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->index('company_id');
+
             $table->index('id');
             $table->timestamps();
             $table->softDeletes();

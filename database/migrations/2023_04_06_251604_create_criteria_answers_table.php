@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('criteria_answers', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('criteria_id');
+            $table->foreignIdFor(\App\Models\Criteria::class);
             $table->string('answer');
             $table->tinyInteger('index');
             $table->boolean('extra_answer_type')->nullable();
-            $table->foreign('criteria_id')->references('id')->on('criteria');
+
+            $table->foreign('criteria_id')->references('id')->on('criteria')->onDelete('cascade');
             $table->index('criteria_id');
+
             $table->index('answer');
 
             $table->timestamps();

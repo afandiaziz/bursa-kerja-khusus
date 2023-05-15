@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Company;
+use App\Models\Vacancy;
 use Illuminate\Database\Seeder;
 
-class CompanySeeder extends Seeder
+class VacancySeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Company::truncate();
-        Company::factory(70)->create();
+        Vacancy::truncate();
+        Vacancy::factory(10)->create();
     }
 }

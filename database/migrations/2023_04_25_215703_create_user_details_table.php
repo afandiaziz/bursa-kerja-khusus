@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('user_details', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->uuid('criteria_id');
+            $table->foreignIdFor(\App\Models\User::class);
+            $table->foreignIdFor(\App\Models\Criteria::class);
             $table->longText('value')->nullable();
             $table->longText('extra_value')->nullable();
 
@@ -26,9 +26,10 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->index('id');
-            $table->foreign('user_id')->references('id')->on('users');
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->index('user_id');
-            $table->foreign('criteria_id')->references('id')->on('criteria');
+            $table->foreign('criteria_id')->references('id')->on('criteria')->onDelete('cascade');
             $table->index('criteria_id');
         });
     }

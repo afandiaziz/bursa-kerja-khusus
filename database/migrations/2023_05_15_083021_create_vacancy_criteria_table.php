@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('vacancy_criteria', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('vacancy_id');
-            $table->uuid('criteria_id');
+            $table->foreignIdFor(\App\Models\Vacancy::class);
+            $table->foreignIdFor(\App\Models\Criteria::class);
 
             $table->foreign('vacancy_id')->references('id')->on('vacancies');
             $table->index('vacancy_id');
             $table->foreign('criteria_id')->references('id')->on('criteria');
             $table->index('criteria_id');
+
             $table->timestamps();
             $table->softDeletes();
         });

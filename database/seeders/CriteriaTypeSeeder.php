@@ -9,7 +9,7 @@ class CriteriaTypeSeeder extends Seeder
 {
     public function run(): void
     {
-        // CriteriaType::truncate();
+        CriteriaType::truncate();
         CriteriaType::create([
             'type' => 'Teks',
         ]);

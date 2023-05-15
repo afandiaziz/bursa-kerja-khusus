@@ -19,6 +19,7 @@ class CriteriaSeeder extends Seeder
 
     public function run(): void
     {
+        Criteria::truncate();
         Criteria::criteriaCreate([
             'name' => 'Nomor Handphone',
             'criteria_type_id' => $this->criteriaTypeId('Teks'),

@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('applicants', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('vacancy_id');
-            $table->uuid('user_id');
+            $table->foreignIdFor(\App\Models\Vacancy::class);
+            $table->foreignIdFor(\App\Models\User::class);
             $table->boolean('verified')->default(false);
 
-            $table->foreign('vacancy_id')->references('id')->on('vacancies');
+            $table->foreign('vacancy_id')->references('id')->on('vacancies')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users');
+
             $table->timestamps();
             $table->softDeletes();
         });
