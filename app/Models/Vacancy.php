@@ -32,19 +32,8 @@ class Vacancy extends Model
         return $this->hasMany(Applicant::class, 'vacancy_id', 'id');
     }
 
-    public function requirementsx()
+    public function criteria()
     {
-        return $this->belongsToMany(Criteria::class, 'user_details', 'vacancy_id', 'criteria_id')
-            ->withPivot('value')
-            ->withTimestamps();
-    }
-    public function requirements()
-    {
-        $requirements = explode(',', $this->requirements);
-        $criteria = [];
-        foreach ($requirements as $requirement) {
-            $criteria[] = Criteria::find($requirement);
-        }
-        return $criteria;
+        return $this->hasMany(VacancyCriteria::class, 'vacancy_id', 'id');
     }
 }

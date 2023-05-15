@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('position');
             $table->text('description');
             $table->text('information');
-            $table->text('requirements');
             $table->date('deadline');
             $table->integer('max_applicants');
             $table->foreign('company_id')->references('id')->on('companies');
