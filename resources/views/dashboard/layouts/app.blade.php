@@ -105,7 +105,7 @@
                         </li>
                         <hr class="py-0 my-2" />
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">
+                            <a class="nav-link" href="{{ route('vacancy.index') }}">
                                 <span class="nav-link-icon d-md-none d-lg-inline-block">
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                         class="icon icon-tabler icon-tabler-briefcase" width="24" height="24"
@@ -221,6 +221,9 @@
                 <div class="container-fluid">
                     <div class="row g-2 align-items-center">
                         <div class="col">
+                            <div class="page-pretitle">
+                                @yield('pre-title')
+                            </div>
                             <h2 class="page-title">
                                 @yield('title')
                             </h2>

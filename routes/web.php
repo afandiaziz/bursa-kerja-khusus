@@ -51,5 +51,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/delete/{id}', [App\Http\Controllers\CompanyController::class, 'destroy'])->name('delete');
             Route::delete('/delete/logo/{id}', [App\Http\Controllers\CompanyController::class, 'deleteLogo'])->name('delete-logo');
         });
+        Route::prefix('/vacancy')->name('vacancy.')->group(function () {
+            Route::get('', [App\Http\Controllers\VacancyController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\VacancyController::class, 'create'])->name('create');
+            Route::post('/create', [App\Http\Controllers\VacancyController::class, 'store'])->name('store');
+            Route::get('/detail/{id}', [App\Http\Controllers\VacancyController::class, 'show'])->name('detail');
+            // Route::get('/activate/{id}', [App\Http\Controllers\VacancyController::class, 'activate'])->name('activate');
+            Route::get('/update/{id}', [App\Http\Controllers\VacancyController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [App\Http\Controllers\VacancyController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [App\Http\Controllers\VacancyController::class, 'destroy'])->name('delete');
+        });
+        Route::prefix('/applicant')->name('applicant.')->group(function () {
+            Route::get('/verify/{id}', [App\Http\Controllers\ApplicantController::class, 'verify'])->name('verify');
+            // Route::get('', [App\Http\Controllers\VacancyController::class, 'index'])->name('index');
+            Route::get('/detail/{id}', [App\Http\Controllers\ApplicantController::class, 'show'])->name('detail');
+            Route::get('/delete/{id}', [App\Http\Controllers\VacancyController::class, 'destroy'])->name('delete');
+        });
     });
 });

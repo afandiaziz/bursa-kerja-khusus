@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Company::class, 'company_id');
             $table->string('position');
             $table->text('description');
-            $table->text('information');
+            $table->text('information')->nullable();
             $table->date('deadline');
             $table->integer('max_applicants')->nullable();
 

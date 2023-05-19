@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Vacancy::class);
             $table->foreignIdFor(\App\Models\User::class);
             $table->boolean('verified')->default(false);
+            $table->string('registration_number');
 
             $table->foreign('vacancy_id')->references('id')->on('vacancies')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users');

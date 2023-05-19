@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Vacancy::class);
             $table->foreignIdFor(\App\Models\Criteria::class);
 
-            $table->foreign('vacancy_id')->references('id')->on('vacancies');
+            $table->foreign('vacancy_id')->references('id')->on('vacancies')->onDelete('cascade');
             $table->index('vacancy_id');
-            $table->foreign('criteria_id')->references('id')->on('criteria');
+            $table->foreign('criteria_id')->references('id')->on('criteria')->onDelete('cascade');
             $table->index('criteria_id');
 
             $table->timestamps();

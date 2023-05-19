@@ -137,7 +137,16 @@ class CompanyController extends Controller
     public function destroy($id)
     {
         $data = Company::findOrFail($id);
-        if ($data && $data->delete()) {
+        if ($data) {
+            if (file_exists(public_path('assets/upload/companies/' . $data->logo))) {
+                unlink(public_path('assets/upload/companies/' . $data->logo));
+            }
+            $data->vacancies()->each(function ($vacancy) {
+                $vacancy->applicants()->delete();
+                $vacancy->vacancyCriteria()->delete();
+            });
+            $data->vacancies()->delete();
+            $data->delete();
             return redirect()->route($this->prefix . '.index')->with('alert-success', 'Berhasil menghapus perusahaan ' . $data->name);
         } else {
             return redirect()->back()->with('alert-danger', 'Gagal menghapus perusahaan ' . $data->name);
