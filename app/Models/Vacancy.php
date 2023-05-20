@@ -36,4 +36,15 @@ class Vacancy extends Model
     {
         return $this->hasMany(VacancyCriteria::class, 'vacancy_id', 'id');
     }
+
+    public function vacancyCriteriaOrdered()
+    {
+        $data = $this->vacancyCriteria()->get();
+        $selectedCriteria = [];
+        $data->each(function ($item) use (&$selectedCriteria) {
+            $selectedCriteria[] = $item->criteria_id;
+        });
+        $criteria = Criteria::whereIn('id', $selectedCriteria)->orderBy('parent_order', 'ASC')->get();
+        return $criteria;
+    }
 }

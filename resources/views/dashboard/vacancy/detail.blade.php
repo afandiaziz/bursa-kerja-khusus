@@ -58,8 +58,8 @@
                 <p class="mt-4">
                     <b>Kriteria yang dibutuhkan:</b>
                     <ul>
-                        @foreach ($data->vacancyCriteria as $item)
-                            <li>{{ $item->criteria->name }}</li>
+                        @foreach ($data->vacancyCriteriaOrdered() as $item)
+                            <li>{{ $item->name }}</li>
                         @endforeach
                     </ul>
                 </p>

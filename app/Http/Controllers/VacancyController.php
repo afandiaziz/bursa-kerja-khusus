@@ -185,12 +185,6 @@ class VacancyController extends Controller
         return view('dashboard.' . $this->prefix . '.detail', compact('data', 'prefix'));
     }
 
-    public function applicants($id)
-    {
-        $prefix = $this->prefix;
-        $data = Vacancy::findOrFail($id)->applicants;
-    }
-
     public function edit($id)
     {
         $data = Vacancy::findOrFail($id);
