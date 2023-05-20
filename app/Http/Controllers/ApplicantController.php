@@ -73,8 +73,16 @@ class ApplicantController extends Controller
     public function show(Request $request, $id)
     {
         $data = Applicant::findOrFail($id);
+        $buttonBack = true;
         $prefix = $this->prefix;
-        return view('dashboard.' . $this->prefix . '.detail', compact('data', 'prefix'));
+        return view('dashboard.' . $this->prefix . '.detail', compact('data', 'prefix', 'buttonBack'));
+    }
+
+    public function info(Request $request)
+    {
+        $data = Applicant::findOrFail($request->applicant);
+        $prefix = $this->prefix;
+        return view('dashboard.' . $this->prefix . '.detail-info', compact('data', 'prefix'));
     }
 
     public function verify($id)

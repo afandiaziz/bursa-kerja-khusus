@@ -65,7 +65,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/verify/{id}', [App\Http\Controllers\ApplicantController::class, 'verify'])->name('verify');
             // Route::get('', [App\Http\Controllers\VacancyController::class, 'index'])->name('index');
             Route::get('/detail/{id}', [App\Http\Controllers\ApplicantController::class, 'show'])->name('detail');
+            Route::post('/detail/info', [App\Http\Controllers\ApplicantController::class, 'info'])->name('detail.info');
             Route::get('/delete/{id}', [App\Http\Controllers\VacancyController::class, 'destroy'])->name('delete');
+        });
+        Route::prefix('/verify')->name('verify.')->group(function () {
+            Route::get('', [App\Http\Controllers\VerifyController::class, 'index'])->name('index');
+            Route::post('/check', [App\Http\Controllers\VerifyController::class, 'check'])->name('check');
         });
     });
 });
