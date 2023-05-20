@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', 'Detail Perusahaan: ' . $data->name)
+@section('title', 'Detail Informasi: ' . $data->title)
 
 @section('content')
     <div class="col-12">
@@ -20,7 +20,7 @@
                     </a>
                 </div>
                 <div class="ms-auto">
-                    @if ($data->status)
+                    @if ($data->is_active)
                         <a class="mx-1 btn btn-danger" href="{{ route($prefix . '.activate', ['id' => $data->id]) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24"
                                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -72,52 +72,13 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3 text-center">
-                        <img src="{{ filter_var($data->logo, FILTER_VALIDATE_URL) ? $data->logo : asset('assets/upload/companies/' . $data->logo) }}" alt="{{ $data->name }}" width="">
+                        <img src="{{ filter_var($data->image, FILTER_VALIDATE_URL) ? $data->image : asset('assets/upload/companies/' . $data->image) }}" alt="{{ $data->title }}" width="">
                     </div>
                     <div class="col-md-9 mt-3">
-                        <h1>{{ $data->name }}</h1>
-                        <p>
-                            @if ($data->phone)
-                                <div class="text-primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-phone" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"></path>
-                                    </svg>
-                                    {{ $data->phone }}
-                                </div>
-                            @endif
-                            @if ($data->email)
-                                <div class="text-primary mt-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-mail" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path>
-                                        <path d="M3 7l9 6l9 -6"></path>
-                                    </svg>
-                                    {{ $data->email }}
-                                </div>
-                            @endif
-                            @if ($data->website)
-                                <div class="text-primary mt-1">
-                                    <a href="{{ $data->website }}" target="_blank">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-external-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6"></path>
-                                            <path d="M11 13l9 -9"></path>
-                                            <path d="M15 4h5v5"></path>
-                                        </svg>
-                                        {{ $data->website }}
-                                    </a>
-                                </div>
-                            @endif
-                            <div class="mt-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-map-pin" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
-                                    <path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path>
-                                </svg>
-                                {{ $data->address }}
-                            </div>
-                        </p>
+                        <h1>{{ $data->title }}</h1>
+                        <div class="mt-3">
+                            {!! $data->content !!}
+                        </div>
                     </div>
                 </div>
             </div>

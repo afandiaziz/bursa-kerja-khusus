@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Applicant;
+use App\Models\User;
 use App\Models\Vacancy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -19,26 +20,9 @@ class ApplicantController extends Controller
     {
         $prefix = $this->prefix;
         if ($request->ajax()) {
-            $data = Vacancy::orderBy('deadline', 'DESC')->orderBy('updated_at', 'DESC')->get();
+            $data = User::where('role', 'applicant')->orderBy('created_at', 'DESC')->get();
             $json = DataTables::collection($data)
                 ->addIndexColumn()
-                ->addColumn('company', function ($row) {
-                    return '<a href="' . route('company.detail', ['id' => $row->company_id]) . '">' . $row->company->name . '</a>';
-                })
-                ->addColumn('applicant', function ($row) {
-                    $html = $row->applicants->count() . '/' . ($row->max_applicants ? $row->max_applicants : '∞');
-                    return $html;
-                })
-                ->addColumn('deadline', function ($row) {
-                    return Carbon::parse($row->deadline)->translatedFormat('d F Y');
-                })
-                ->addColumn('status', function ($row) {
-                    if (date('Y-m-d') <= $row->deadline) {
-                        return '<span class="badge bg-teal">Aktif</span>';
-                    } else {
-                        return '<span class="badge bg-red">Tidak Aktif</span>';
-                    }
-                })
                 ->addColumn('action', function ($row) {
                     $html = ' <div class="btn-group"> ';
                     $html .= '
@@ -57,7 +41,7 @@ class ApplicantController extends Controller
                     $html .= ' </div> ';
                     return $html;
                 })
-                ->rawColumns(['deadline', 'applicant', 'company', 'status', 'action'])
+                ->rawColumns(['action'])
                 ->toJson();
             return $json;
         }

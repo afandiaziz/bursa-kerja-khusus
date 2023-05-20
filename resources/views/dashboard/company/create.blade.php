@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="col-lg-8" id="form-content">
-        <form method="post" class="w-100" action="{{ route($prefix . '.store') }}" target="_blank" enctype="multipart/form-data">
+        <form method="post" class="w-100" action="{{ route($prefix . '.store') }}" enctype="multipart/form-data">
             @csrf
             @include("dashboard.$prefix.form")
         </form>

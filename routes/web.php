@@ -62,8 +62,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/delete/{id}', [App\Http\Controllers\VacancyController::class, 'destroy'])->name('delete');
         });
         Route::prefix('/applicant')->name('applicant.')->group(function () {
+            Route::get('', [App\Http\Controllers\ApplicantController::class, 'index'])->name('index');
             Route::get('/verify/{id}', [App\Http\Controllers\ApplicantController::class, 'verify'])->name('verify');
-            // Route::get('', [App\Http\Controllers\VacancyController::class, 'index'])->name('index');
             Route::get('/detail/{id}', [App\Http\Controllers\ApplicantController::class, 'show'])->name('detail');
             Route::post('/detail/info', [App\Http\Controllers\ApplicantController::class, 'info'])->name('detail.info');
             Route::get('/delete/{id}', [App\Http\Controllers\VacancyController::class, 'destroy'])->name('delete');
@@ -71,6 +71,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('/verify')->name('verify.')->group(function () {
             Route::get('', [App\Http\Controllers\VerifyController::class, 'index'])->name('index');
             Route::post('/check', [App\Http\Controllers\VerifyController::class, 'check'])->name('check');
+        });
+        Route::prefix('/information')->name('information.')->group(function () {
+            Route::get('', [App\Http\Controllers\InformationController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\InformationController::class, 'create'])->name('create');
+            Route::post('/create', [App\Http\Controllers\InformationController::class, 'store'])->name('store');
+            Route::get('/detail/{id}', [App\Http\Controllers\InformationController::class, 'show'])->name('detail');
+            Route::get('/activate/{id}', [App\Http\Controllers\InformationController::class, 'activate'])->name('activate');
+            Route::get('/update/{id}', [App\Http\Controllers\InformationController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [App\Http\Controllers\InformationController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [App\Http\Controllers\InformationController::class, 'destroy'])->name('delete');
         });
     });
 });
