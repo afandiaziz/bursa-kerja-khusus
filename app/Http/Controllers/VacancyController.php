@@ -23,7 +23,13 @@ class VacancyController extends Controller
     {
         $prefix = $this->prefix;
         if ($request->ajax()) {
-            $data = Vacancy::orderBy('deadline', 'DESC')->orderBy('updated_at', 'DESC')->get();
+            $data = Vacancy::orderBy('deadline', 'DESC')->orderBy('updated_at', 'DESC');
+            if ($request->has('active') && $request->active == 'true') {
+                $data = $data->where('deadline', '>=', date('Y-m-d'));
+            } elseif ($request->has('active') && $request->active == 'false') {
+                $data = $data->where('deadline', '<', date('Y-m-d'));
+            }
+            $data = $data->get();
             $json = DataTables::collection($data)
                 ->addIndexColumn()
                 ->addColumn('company', function ($row) {
@@ -65,7 +71,11 @@ class VacancyController extends Controller
                 ->toJson();
             return $json;
         }
-        return view('dashboard.' . $this->prefix . '.index', compact('prefix'));
+        $totalVacancy = Vacancy::all();
+        $vacancyActive = $totalVacancy->where('deadline', '>=', date('Y-m-d'))->count();
+        $vacancyNotActive = $totalVacancy->where('deadline', '<', date('Y-m-d'))->count();
+        $totalVacancy = $totalVacancy->count();
+        return view('dashboard.' . $this->prefix . '.index', compact('prefix', 'totalVacancy', 'vacancyActive', 'vacancyNotActive'));
     }
 
     public function create()
