@@ -72,7 +72,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3 text-center">
-                        <img src="{{ filter_var($data->image, FILTER_VALIDATE_URL) ? $data->image : asset('assets/upload/companies/' . $data->image) }}" alt="{{ $data->title }}" width="">
+                        <img src="{{ filter_var($data->image, FILTER_VALIDATE_URL) ? $data->image : asset('assets/upload/information/' . $data->image) }}" alt="{{ $data->title }}" width="">
                     </div>
                     <div class="col-md-9 mt-3">
                         <h1>{{ $data->title }}</h1>

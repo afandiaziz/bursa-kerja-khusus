@@ -1,31 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mt-3 mb-5 py-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="hr-text hr-text-center">
-                    <h1 class="fw-bolder tracking-wide">TENTANG BKK</h1>
-                </div>
-            </div>
-        </div>
+    <div class="container mt-3 mb-4 py-4">
         <div class="row align-middle justify-content-center">
-            <div class="col-lg-4 col-md-12 align-middle text-center">
+            <div class="col-lg-4 col-md-12 align-middle row align-items-center text-center">
                 <img class="img-fluid text-center w-75 pt-2" src="{{ asset('bkk-tentang.webp') }}" alt="tentang bkk, bursa kerja khusus, bkk, tentang kami, info loker">
             </div>
             <div class="col-lg-6 col-md-12 fs-4">
-                <p class="pt-3 lh-md">Bursa Kerja Khusus (BKK) adalah sebuah lembaga yang dibentuk di Sekolah Menengah Kejuruan Negeri dan Swasta, sebagai unit pelaksana yang memberikan pelayanan dan informasi lowongan kerja, pelaksana pemasaran, penyaluran dan penempatan tenaga kerja, merupakan mitra Dinas Tenaga Kerja dan Transmigrasi.</p>
-                <div>
-                    <a href="{{ route('about') }}" class="btn btn-outline-blue text-uppercase shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-narrow-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                            <path d="M5 12l14 0"></path>
-                            <path d="M15 16l4 -4"></path>
-                            <path d="M15 8l4 4"></path>
-                        </svg>
-                        Selengkapnya
-                    </a>
-                </div>
+                <p class="pt-3 lh-md">
+                    Bursa Kerja Khusus (BKK) adalah sebuah lembaga yang dibentuk di Sekolah Menengah Kejuruan Negeri dan Swasta, sebagai unit pelaksana yang memberikan pelayanan dan informasi lowongan kerja, pelaksana pemasaran, penyaluran dan penempatan tenaga kerja, merupakan mitra Dinas Tenaga Kerja dan Transmigrasi.
+                </p>
+                <h2>Tujuan</h2>
+                <ol>
+                    <li>Sebagai wadah dalam mempertemukan tamatan dengan pencari kerja.</li>
+                    <li>Memberikan layanan kepada tamatan sesuai dengan tugas dan fungsi masing-masing seksi yang ada dalam BKK.</li>
+                    <li>Sebagai wadah dalam pelatihan tamatan yang sesuai dengan permintaan pencari kerja</li>
+                    <li>Sebagai wadah untuk menanamkan jiwa wirausaha bagi tamatan melalui pelatihan.</li>
+                </ol>
             </div>
         </div>
     </div>
@@ -132,75 +123,9 @@
             </div>
         </div>
     </div>
-
-    <div class="container mb-5 py-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="swiper">
-                    <div class="swiper-wrapper">
-                        @foreach ($companies as $company)
-                            <div class="swiper-slide">
-                                <img src="{{ filter_var($company->logo, FILTER_VALIDATE_URL) ? $company->logo : asset('assets/upload/companies/' . $company->logo) }}" alt="{{ $company->name }}" width="">
-                            </div>
-                        @endforeach
-                    </div>
-                    <div class="swiper-pagination"></div>
-                    <div class="swiper-button-prev text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="" width="64" height="64" viewBox="0 0 18 18" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="rgb(20 20 20 / 67%)"></path>
-                            <path d="M12 6l-6 6l6 6"></path>
-                        </svg>
-                    </div>
-                    <div class="swiper-button-next text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="" width="64" height="64" viewBox="0 0 18 18" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="rgb(20 20 20 / 67%)"></path>
-                            <path d="M7.5 6l6 6l-6 6"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-12">
-                <div class="hr-text hr-text-center">
-                    <h1 class="fw-bolder tracking-wide">INFORMASI TERKINI</h1>
-                </div>
-            </div>
-            <div class="col-12 mt-4">
-                <div class="row">
-                    @foreach ($information as $item)
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <a href="{{ route('informasi.detail', ['slug' => $item->slug]) }}" class="text-decoration-none">
-                                <div class="card shadow-sm border">
-                                    <div class="img-responsive img-responsive-21x9 card-img-top" style="background-image: url('{{ filter_var($item->image, FILTER_VALIDATE_URL) ? $item->image : asset('assets/upload/information/' . $item->image) }}')"></div>
-                                    <div class="card-body">
-                                        <h3 class="card-title">{{ $item->title }}</h3>
-                                        <p class="text-muted">
-                                            {{ strip_tags(Str::limit($item->content, 100)) }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    @endforeach
-                    <div class="col-12 text-center mt-3">
-                        <a href="{{ route('informasi.index') }}" class="btn btn-outline-blue text-uppercase">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevrons-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M7 7l5 5l-5 5"></path>
-                                <path d="M13 7l5 5l-5 5"></path>
-                            </svg>
-                            Lihat Lebih Banyak
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @section('css')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <style>
         .timeline {
             list-style: none;
@@ -317,7 +242,6 @@
 @endsection
 
 @section('script')
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script>
         function setRegistrationStep(slide) {
             $('div.carousel-item').removeClass('active');
@@ -325,39 +249,5 @@
             $('.carousel-indicators button').removeClass('active');
             $(`.carousel-indicatorsbutton[data-bs-slide-to="${slide - 1}"]`).addClass('active');
         }
-    </script>
-    <script>
-        const swiper = new Swiper('.swiper', {
-            loop: true,
-            spaceBetween: 6,
-            centeredSlides: true,
-            // responsive
-            breakpoints: {
-                0: {
-                    slidesPerView: 1,
-                },
-                640: {
-                    slidesPerView: 2,
-                },
-                768: {
-                    slidesPerView: 3,
-                },
-                1024: {
-                    slidesPerView: 4,
-                },
-            },
-
-            // If we need pagination
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-
-            // Navigation arrows
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-        });
     </script>
 @endsection

@@ -73,7 +73,7 @@ class InformationController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $image_name = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('assets/upload/companies/'), $image_name);
+            $image->move(public_path('assets/upload/information/'), $image_name);
         }
         $data = $request->except('image');
         $data['image'] = $image_name;
@@ -116,12 +116,12 @@ class InformationController extends Controller
         $data = Information::findOrFail($id);
         $image_name = null;
         if ($request->hasFile('image')) {
-            if (file_exists(public_path('assets/upload/companies/' . $data->image))) {
-                unlink(public_path('assets/upload/companies/' . $data->image));
+            if (file_exists(public_path('assets/upload/information/' . $data->image))) {
+                unlink(public_path('assets/upload/information/' . $data->image));
             }
             $image = $request->file('image');
             $image_name = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('assets/upload/companies/'), $image_name);
+            $image->move(public_path('assets/upload/information/'), $image_name);
         }
         $dataUpdated = $request->except('image');
         if ($image_name) {

@@ -13,8 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [App\Http\Controllers\LandingController::class, 'index'])->name('landing');
+Route::get('/tentang', function () {
+    return view('about');
+})->name('about');
+Route::prefix('/informasi')->name('informasi.')->group(function () {
+    Route::get('/', [App\Http\Controllers\LandingController::class, 'information'])->name('index');
+    Route::get('/{slug}', [App\Http\Controllers\LandingController::class, 'detailInfo'])->name('detail');
 });
 
 Auth::routes();
