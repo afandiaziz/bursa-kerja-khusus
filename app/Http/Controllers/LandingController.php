@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\Information;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
@@ -15,10 +16,11 @@ class LandingController extends Controller
      *
      * @return void
      */
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
+    public function __construct()
+    {
+        Carbon::setLocale('id');
+        // $this->middleware('auth');
+    }
 
     /**
      * Show the application dashboard.
@@ -65,6 +67,6 @@ class LandingController extends Controller
     public function detailInfo($slug)
     {
         $data = Information::where('slug', $slug)->firstOrFail();
-        return view('home', compact('data'));
+        return view('detail-information', compact('data'));
     }
 }
