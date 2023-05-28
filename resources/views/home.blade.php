@@ -133,7 +133,7 @@
         </div>
     </div>
 
-    <div class="container mb-5 py-4">
+    <div class="container mb-3 py-4">
         <div class="row">
             <div class="col-12">
                 <div class="swiper">

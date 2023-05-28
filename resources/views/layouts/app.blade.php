@@ -179,7 +179,7 @@
                     </div>
                 </div>
             </div> --}}
-            <div class="page-body">
+            <div class="page-body mb-0">
                 <div class="container">
                     <div class="row">
                         @include('components.alert')
@@ -187,6 +187,47 @@
                 </div>
                 @yield('content')
             </div>
+            <footer class="footer d-print-none bg-dark text-white">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-auto">
+                            <h1 class="fw-bolder">BKK SMKN 2 Kota Bekasi</h1>
+                            <img src="{{ asset('logo-smk.png') }}" alt="BKK SMKN 2 Kota Bekasi" width="150">
+                            <p>
+                                Jalan Lap. Bola Rawa Butun, Ciketing Udik, Bantargebang, Kota Bekasi, Jawa Barat 17153
+                            </p>
+                        </div>
+                        <div class="col-lg-auto">
+                            Keterangan Lebih Lanjut Hubungi
+                            <table class="mt-3">
+                                <tr>
+                                    <td>Email</td>
+                                    <td>: smknduakotabekasi@gmail.com</td>
+                                </tr>
+                                <tr>
+                                    <td>Nomor Telepon</td>
+                                    <td>: (021) 82581216</td>
+                                </tr>
+                                <tr>
+                                    <td>Website</td>
+                                    <td>: <a class="text-warning" target="_BLANK" href="http://www.smkn2kotabekasi.sch.id/">http://www.smkn2kotabekasi.sch.id/</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Facebook</td>
+                                    <td>: https://web.facebook.com/bkksmkn2kotabekasi/</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-xl mt-3 pt-3 border-top">
+                    <div class="row text-center">
+                        <div class="col-12 small">
+                            Afandi Aziz © 2023. All rights reserved.
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>

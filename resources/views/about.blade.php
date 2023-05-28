@@ -20,7 +20,7 @@
             </div>
         </div>
     </div>
-    <div class="bg-gray-400 my-5 py-4">
+    <div class="bg-gray-400 mt-5 py-4">
         <div class="container">
             <div class="row">
             <div class="col-12">
