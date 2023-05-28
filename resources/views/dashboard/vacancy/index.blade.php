@@ -112,7 +112,8 @@
                                 <th width="3%">No</th>
                                 <th>Nama Perusahaan</th>
                                 <th>Posisi</th>
-                                <th>Total Pelamar/Batas Total Pelamar</th>
+                                <th>Total Pelamar</th>
+                                <th>Total Pelamar Terverifikasi/Batas Total Pelamar</th>
                                 <th>Batas Pendaftaran</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
@@ -144,7 +145,10 @@
                     data: 'position'
                 },
                 {
-                    data: 'applicant'
+                    data: 'applicants'
+                },
+                {
+                    data: 'applicants_verified'
                 },
                 {
                     data: 'deadline'

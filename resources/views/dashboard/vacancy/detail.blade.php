@@ -79,9 +79,15 @@
                     </span>
                 </h3>
                 <h3>
-                    <b>Total Pelamar/Batas Total Pelamar:</b>
+                    <b>Total Pelamar:</b>
+                    <span class="text-success">
+                        {{ $data->applicants->count() }}
+                    </span>
+                </h3>
+                <h3>
+                    <b>Total Pelamar Terverifikasi/Batas Total Pelamar:</b>
                     <span class="text-danger">
-                        {{ $data->applicants->count() . '/' . ($data->max_applicants ? $data->max_applicants : '∞') }}
+                        {{ $data->applicants->where('verified', 1)->count() . '/' . ($data->max_applicants ? $data->max_applicants : '∞') }}
                     </span>
                 </h3>
             </div>

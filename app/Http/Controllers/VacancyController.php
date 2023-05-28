@@ -23,20 +23,38 @@ class VacancyController extends Controller
     {
         $prefix = $this->prefix;
         if ($request->ajax()) {
-            $data = Vacancy::orderBy('deadline', 'DESC')->orderBy('updated_at', 'DESC');
+            $data = Vacancy::withCount(['applicants' => function ($applicant) {
+                $applicant->where('verified', 1);
+            }])
+                ->orderBy('deadline', 'DESC')
+                ->orderBy('updated_at', 'DESC');
+
             if ($request->has('active') && $request->active == 'true') {
-                $data = $data->where('deadline', '>=', date('Y-m-d'));
+                $data = $data
+                    ->whereNull('max_applicants')
+                    ->where('deadline', '>=', date('Y-m-d'))
+                    ->orWhereNotNull('max_applicants')
+                    ->where('deadline', '>=', date('Y-m-d'))
+                    ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) < max_applicants')
+                    ->get();
             } elseif ($request->has('active') && $request->active == 'false') {
-                $data = $data->where('deadline', '<', date('Y-m-d'));
+                $data = $data->where('deadline', '<', date('Y-m-d'))
+                    ->orWhere('deadline', '>=', date('Y-m-d'))
+                    ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) >= max_applicants')
+                    ->get();
+            } else {
+                $data = $data->get();
             }
-            $data = $data->get();
             $json = DataTables::collection($data)
                 ->addIndexColumn()
                 ->addColumn('company', function ($row) {
                     return '<a href="' . route('company.detail', ['id' => $row->company_id]) . '">' . $row->company->name . '</a>';
                 })
-                ->addColumn('applicant', function ($row) {
-                    $html = $row->applicants->count() . '/' . ($row->max_applicants ? $row->max_applicants : '∞');
+                ->addColumn('applicants', function ($row) {
+                    return $row->applicants->count();
+                })
+                ->addColumn('applicants_verified', function ($row) {
+                    $html = $row->applicants->where('verified', 1)->count() . '/' . ($row->max_applicants ? $row->max_applicants : '∞');
                     return $html;
                 })
                 ->addColumn('deadline', function ($row) {
@@ -71,10 +89,17 @@ class VacancyController extends Controller
                 ->toJson();
             return $json;
         }
-        $totalVacancy = Vacancy::all();
-        $vacancyActive = $totalVacancy->where('deadline', '>=', date('Y-m-d'))->count();
-        $vacancyNotActive = $totalVacancy->where('deadline', '<', date('Y-m-d'))->count();
-        $totalVacancy = $totalVacancy->count();
+        $vacancyActive = Vacancy::where('deadline', '>=', date('Y-m-d'))
+            ->whereNull('max_applicants')
+            ->orWhereNotNull('max_applicants')
+            ->where('deadline', '>=', date('Y-m-d'))
+            ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) < max_applicants')
+            ->count();
+        $vacancyNotActive = Vacancy::where('deadline', '<', date('Y-m-d'))
+            ->orWhere('deadline', '>=', date('Y-m-d'))
+            ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) >= max_applicants')
+            ->count();
+        $totalVacancy = Vacancy::all()->count();
         return view('dashboard.' . $this->prefix . '.index', compact('prefix', 'totalVacancy', 'vacancyActive', 'vacancyNotActive'));
     }
 
