@@ -121,6 +121,7 @@ class VacancyController extends Controller
         $data = Vacancy::create([
             'company_id' => $request->company_id,
             'position' => $request->position,
+            'job_type' => $request->job_type,
             'description' => $request->description,
             'information' => $request->information,
             'max_applicants' => $request->max_applicants,
@@ -239,6 +240,7 @@ class VacancyController extends Controller
         $updated = $data->update([
             'company_id' => $request->company_id,
             'position' => $request->position,
+            'job_type' => $request->job_type,
             'description' => $request->description,
             'information' => $request->information,
             'max_applicants' => $request->max_applicants,

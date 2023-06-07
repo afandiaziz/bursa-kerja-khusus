@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignIdFor(\App\Models\Company::class, 'company_id');
             $table->string('position');
+            $table->enum('job_type', ['Full-time', 'Part-time', 'Internship', 'Contract', 'Temporary', 'Volunteer']);
             $table->text('description');
             $table->text('information')->nullable();
             $table->date('deadline');

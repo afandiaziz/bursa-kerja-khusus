@@ -54,6 +54,7 @@
                 <h3>
                     <b>Posisi:</b> {{ $data->position }}
                     <br>
+                    <b>Tipe Pekerjaan:</b> {{ $data->job_type }}
                 </h3>
                 <p class="mt-4">
                     <b>Kriteria yang dibutuhkan:</b>

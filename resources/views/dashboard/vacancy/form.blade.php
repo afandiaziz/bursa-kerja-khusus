@@ -4,11 +4,25 @@
             <label for="name" class="form-label text-capitalize">
                 Perusahaan <span class="text-danger">*</span>
             </label>
-            <select name="company_id" id="company_id" required class="form-control">
+            <select name="company_id" id="company_id" required class="form-control form-select">
                 <option value=""></option>
                 @foreach ($companies as $item)
                     <option value="{{ $item->id }}" {{ (isset($data) && $item->id == $data->company_id) ? 'selected' : '' }}>{{ $item->name }}</option>
                 @endforeach
+            </select>
+        </div>
+        <div class="form-group my-2">
+            <label for="name" class="form-label text-capitalize">
+                Tipe Pekerjaan <span class="text-danger">*</span>
+            </label>
+            <select name="job_type" id="job_type" required class="form-control form-select">
+                <option value=""></option>
+                <option value="Full-time" {{ (isset($data) && 'Full-time' == $data->job_type) ? 'selected' : '' }}>Full-time</option>
+                <option value="Part-time" {{ (isset($data) && 'Part-time' == $data->job_type) ? 'selected' : '' }}>Part-time</option>
+                <option value="Contract" {{ (isset($data) && 'Contract' == $data->job_type) ? 'selected' : '' }}>Contract</option>
+                <option value="Internship" {{ (isset($data) && 'Internship' == $data->job_type) ? 'selected' : '' }}>Internship</option>
+                <option value="Temporary" {{ (isset($data) && 'Temporary' == $data->job_type) ? 'selected' : '' }}>Temporary</option>
+                <option value="Volunteer" {{ (isset($data) && 'Volunteer' == $data->job_type) ? 'selected' : '' }}>Volunteer</option>
             </select>
         </div>
         <div class="form-group my-2">

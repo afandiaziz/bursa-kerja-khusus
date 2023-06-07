@@ -112,6 +112,7 @@
                                 <th width="3%">No</th>
                                 <th>Nama Perusahaan</th>
                                 <th>Posisi</th>
+                                <th>Tipe Pekerjaan</th>
                                 <th>Total Pelamar</th>
                                 <th>Total Pelamar Terverifikasi/Batas Total Pelamar</th>
                                 <th>Batas Pendaftaran</th>
@@ -143,6 +144,9 @@
                 },
                 {
                     data: 'position'
+                },
+                {
+                    data: 'job_type'
                 },
                 {
                     data: 'applicants'

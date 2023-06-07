@@ -18,11 +18,13 @@ class VacancyFactory extends Factory
     public function definition(): array
     {
         $companyId = Company::select('id')->inRandomOrder()->firstOrFail();
+        $jobType = ['Full-time', 'Part-time', 'Internship', 'Contract', 'Temporary', 'Volunteer'];
         return [
             'company_id' => $companyId,
             'position' => fake('id_ID')->jobTitle(),
             'description' => fake('id_ID')->paragraph(),
             'information' => fake('id_ID')->sentence(),
+            'job_type' => fake('id_ID')->randomElement($jobType),
             'deadline' => fake('id_ID')->dateTimeBetween('now', '+3 months', 'Asia/Jakarta'),
         ];
     }

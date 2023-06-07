@@ -15,13 +15,13 @@ class DatabaseSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
         $this->call([
-            // UserSeeder::class,
+            UserSeeder::class,
             CompanySeeder::class,
             CriteriaTypeSeeder::class,
             CriteriaSeeder::class,
             VacancySeeder::class,
             VacancyCriteriaSeeder::class,
-            ApplicantSeeder::class,
+            // ApplicantSeeder::class,
         ]);
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
         // \App\Models\User::factory(10)->create();
