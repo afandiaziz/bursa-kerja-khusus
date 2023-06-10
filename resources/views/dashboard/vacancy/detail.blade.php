@@ -95,7 +95,7 @@
             <div class="card-footer">
                 <b>Dibuat pada tanggal:</b>
                 <span class="text-success">
-                    {{ \Carbon\Carbon::parse($data->deadline)->translatedFormat('d F Y H:i') }}
+                    {{ \Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y H:i') }}
                 </span>
             </div>
         </div>

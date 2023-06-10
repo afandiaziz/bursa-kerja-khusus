@@ -22,9 +22,107 @@ class Vacancy extends Model
         'id',
     ];
 
+    public static function activeById($id)
+    {
+        $vacany = Vacancy::select(
+            'vacancies.id',
+            'vacancies.company_id',
+            'vacancies.position',
+            'vacancies.job_type',
+            'vacancies.description',
+            'vacancies.information',
+            'vacancies.created_at',
+            'vacancies.updated_at',
+            'vacancies.deadline',
+            'vacancies.max_applicants',
+        )
+            ->with('company:id,name,logo,phone,email,address,website')
+            ->with(['vacancyCriteria' => function ($vacancyCriteria) {
+                $vacancyCriteria->select('id', 'vacancy_id', 'criteria_id');
+                $vacancyCriteria->with(['criteria' => function ($criteria) {
+                    $criteria->where('active', 1);
+                }]);
+            }])
+            ->where('id', $id)
+            ->whereNull('max_applicants')
+            ->where('deadline', '>=', date('Y-m-d'))
+            ->whereHas('company', function ($company) {
+                $company->where('status', 1);
+            })
+            ->orWhere('id', $id)
+            ->whereNotNull('max_applicants')
+            ->where('deadline', '>=', date('Y-m-d'))
+            ->whereHas('company', function ($company) {
+                $company->where('status', 1);
+            })
+            ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) < max_applicants')
+            ->orderBy('deadline', 'DESC')
+            ->orderBy('updated_at', 'DESC')
+            ->first();
+        return $vacany;
+    }
+
+    public static function active($id = null)
+    {
+        $vacany = Vacancy::withCount(['applicants' => function ($applicant) {
+            $applicant->where('verified', 1);
+        }])
+            ->orderBy('deadline', 'DESC')
+            ->orderBy('updated_at', 'DESC');
+        if ($id) {
+            $vacany = $vacany
+                ->whereNull('max_applicants')
+                ->where('deadline', '>=', date('Y-m-d'))
+                ->where('id', $id)
+                ->whereHas('company', function ($company) {
+                    $company->where('status', 1);
+                })
+                ->orWhereNotNull('max_applicants')
+                ->where('deadline', '>=', date('Y-m-d'))
+                ->where('id', $id)
+                ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) < max_applicants');
+        } else {
+            $vacany = $vacany
+                ->whereNull('max_applicants')
+                ->where('deadline', '>=', date('Y-m-d'))
+                ->whereHas('company', function ($company) {
+                    $company->where('status', 1);
+                })
+                ->orWhereNotNull('max_applicants')
+                ->where('deadline', '>=', date('Y-m-d'))
+                ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) < max_applicants');
+        }
+        return $vacany;
+    }
+
+    public static function notActive($id = null)
+    {
+        $vacany = Vacancy::withCount(['applicants' => function ($applicant) {
+            $applicant->where('verified', 1);
+        }])
+            ->orderBy('deadline', 'DESC')
+            ->orderBy('updated_at', 'DESC');
+        if ($id) {
+            $vacany = $vacany
+                ->where('id', $id)
+                ->where('deadline', '<', date('Y-m-d'))
+                ->orWhere('deadline', '>=', date('Y-m-d'))
+                ->where('id', $id)
+                ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) >= max_applicants');
+        } else {
+            $vacany = $vacany
+                ->where('id', $id)
+                ->where('deadline', '<', date('Y-m-d'))
+                ->orWhere('deadline', '>=', date('Y-m-d'))
+                ->where('id', $id)
+                ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) >= max_applicants');
+        }
+        return $vacany;
+    }
+
     public function company(): BelongsTo
     {
-        return $this->belongsTo(Company::class, 'company_id', 'id');
+        return $this->belongsTo(Company::class, 'company_id', 'id')->select('name', 'logo', 'phone', 'email', 'address', 'website');
     }
 
     public function applicants(): HasMany
@@ -44,7 +142,7 @@ class Vacancy extends Model
         $data->each(function ($item) use (&$selectedCriteria) {
             $selectedCriteria[] = $item->criteria_id;
         });
-        $criteria = Criteria::whereIn('id', $selectedCriteria)->orderBy('parent_order', 'ASC')->get();
+        $criteria = Criteria::whereIn('id', $selectedCriteria)->where('active', 1)->orderBy('parent_order', 'ASC')->get();
         return $criteria;
     }
 }

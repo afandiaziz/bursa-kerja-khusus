@@ -16,6 +16,7 @@ class Criteria extends Model
     protected $guarded = [
         'id',
     ];
+    protected $hidden = [];
     protected $casts = [
         'required' => 'boolean',
         'active' => 'boolean',

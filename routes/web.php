@@ -1,6 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LokerController;
+use App\Http\Controllers\VerifyController;
+use App\Http\Controllers\LandingController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\VacancyController;
+use App\Http\Controllers\CriteriaController;
+use App\Http\Controllers\ApplicantController;
+use App\Http\Controllers\InformationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,13 +21,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\LandingController::class, 'index'])->name('landing');
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/tentang', function () {
     return view('about');
 })->name('about');
 Route::prefix('/informasi')->name('informasi.')->group(function () {
-    Route::get('/', [App\Http\Controllers\LandingController::class, 'information'])->name('index');
-    Route::get('/{slug}', [App\Http\Controllers\LandingController::class, 'detailInfo'])->name('detail');
+    Route::get('/', [LandingController::class, 'information'])->name('index');
+    Route::get('/{slug}', [LandingController::class, 'detailInfo'])->name('detail');
+});
+Route::prefix('/loker')->name('loker.')->group(function () {
+    Route::get('/', [LokerController::class, 'index'])->name('index');
+    Route::get('/detail', [LokerController::class, 'detail'])->name('detail');
 });
 
 Auth::routes();
@@ -31,61 +43,61 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name('dashboard');
 
         Route::prefix('/criteria')->name('criteria.')->group(function () {
-            Route::get('', [App\Http\Controllers\CriteriaController::class, 'index'])->name('index');
-            Route::get('/activate/{id}', [App\Http\Controllers\CriteriaController::class, 'activate'])->name('activate');
-            Route::get('/create', [App\Http\Controllers\CriteriaController::class, 'create'])->name('create');
-            Route::post('/create', [App\Http\Controllers\CriteriaController::class, 'store'])->name('store');
-            Route::post('/test', [App\Http\Controllers\CriteriaController::class, 'test'])->name('test');
-            Route::get('/detail/{id}', [App\Http\Controllers\CriteriaController::class, 'show'])->name('detail');
+            Route::get('', [CriteriaController::class, 'index'])->name('index');
+            Route::get('/activate/{id}', [CriteriaController::class, 'activate'])->name('activate');
+            Route::get('/create', [CriteriaController::class, 'create'])->name('create');
+            Route::post('/create', [CriteriaController::class, 'store'])->name('store');
+            Route::post('/test', [CriteriaController::class, 'test'])->name('test');
+            Route::get('/detail/{id}', [CriteriaController::class, 'show'])->name('detail');
 
-            Route::post('/form/additional', [App\Http\Controllers\CriteriaController::class, 'formAdditional'])->name('form.additional');
-            Route::post('/form/preview', [App\Http\Controllers\CriteriaController::class, 'formPreview'])->name('form.preview');
+            Route::post('/form/additional', [CriteriaController::class, 'formAdditional'])->name('form.additional');
+            Route::post('/form/preview', [CriteriaController::class, 'formPreview'])->name('form.preview');
             Route::post('/form/preview/upload', [App\Http\Controllers\UserDocumentController::class, 'upload'])->name('form.preview.upload');
-            // Route::get('/delete/{id}', [App\Http\Controllers\CriteriaController::class, 'deleteUser'])->name('delete');
-            Route::get('/update/{id}', [App\Http\Controllers\CriteriaController::class, 'edit'])->name('edit');
-            Route::post('/update/{id}', [App\Http\Controllers\CriteriaController::class, 'update'])->name('update');
+            // Route::get('/delete/{id}', [CriteriaController::class, 'deleteUser'])->name('delete');
+            Route::get('/update/{id}', [CriteriaController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [CriteriaController::class, 'update'])->name('update');
         });
         Route::prefix('/company')->name('company.')->group(function () {
-            Route::get('', [App\Http\Controllers\CompanyController::class, 'index'])->name('index');
-            Route::get('/create', [App\Http\Controllers\CompanyController::class, 'create'])->name('create');
-            Route::post('/create', [App\Http\Controllers\CompanyController::class, 'store'])->name('store');
-            Route::get('/detail/{id}', [App\Http\Controllers\CompanyController::class, 'show'])->name('detail');
-            Route::get('/activate/{id}', [App\Http\Controllers\CompanyController::class, 'activate'])->name('activate');
-            Route::get('/update/{id}', [App\Http\Controllers\CompanyController::class, 'edit'])->name('edit');
-            Route::post('/update/{id}', [App\Http\Controllers\CompanyController::class, 'update'])->name('update');
-            Route::get('/delete/{id}', [App\Http\Controllers\CompanyController::class, 'destroy'])->name('delete');
-            Route::delete('/delete/logo/{id}', [App\Http\Controllers\CompanyController::class, 'deleteLogo'])->name('delete-logo');
+            Route::get('', [CompanyController::class, 'index'])->name('index');
+            Route::get('/create', [CompanyController::class, 'create'])->name('create');
+            Route::post('/create', [CompanyController::class, 'store'])->name('store');
+            Route::get('/detail/{id}', [CompanyController::class, 'show'])->name('detail');
+            Route::get('/activate/{id}', [CompanyController::class, 'activate'])->name('activate');
+            Route::get('/update/{id}', [CompanyController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [CompanyController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [CompanyController::class, 'destroy'])->name('delete');
+            Route::delete('/delete/logo/{id}', [CompanyController::class, 'deleteLogo'])->name('delete-logo');
         });
         Route::prefix('/vacancy')->name('vacancy.')->group(function () {
-            Route::get('', [App\Http\Controllers\VacancyController::class, 'index'])->name('index');
-            Route::get('/create', [App\Http\Controllers\VacancyController::class, 'create'])->name('create');
-            Route::post('/create', [App\Http\Controllers\VacancyController::class, 'store'])->name('store');
-            Route::get('/detail/{id}', [App\Http\Controllers\VacancyController::class, 'show'])->name('detail');
-            // Route::get('/activate/{id}', [App\Http\Controllers\VacancyController::class, 'activate'])->name('activate');
-            Route::get('/update/{id}', [App\Http\Controllers\VacancyController::class, 'edit'])->name('edit');
-            Route::post('/update/{id}', [App\Http\Controllers\VacancyController::class, 'update'])->name('update');
-            Route::get('/delete/{id}', [App\Http\Controllers\VacancyController::class, 'destroy'])->name('delete');
+            Route::get('', [VacancyController::class, 'index'])->name('index');
+            Route::get('/create', [VacancyController::class, 'create'])->name('create');
+            Route::post('/create', [VacancyController::class, 'store'])->name('store');
+            Route::get('/detail/{id}', [VacancyController::class, 'show'])->name('detail');
+            // Route::get('/activate/{id}', [VacancyController::class, 'activate'])->name('activate');
+            Route::get('/update/{id}', [VacancyController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [VacancyController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [VacancyController::class, 'destroy'])->name('delete');
         });
         Route::prefix('/applicant')->name('applicant.')->group(function () {
-            Route::get('', [App\Http\Controllers\ApplicantController::class, 'index'])->name('index');
-            Route::get('/verify/{id}', [App\Http\Controllers\ApplicantController::class, 'verify'])->name('verify');
-            Route::get('/detail/{id}', [App\Http\Controllers\ApplicantController::class, 'show'])->name('detail');
-            Route::post('/detail/info', [App\Http\Controllers\ApplicantController::class, 'info'])->name('detail.info');
-            Route::get('/delete/{id}', [App\Http\Controllers\VacancyController::class, 'destroy'])->name('delete');
+            Route::get('', [ApplicantController::class, 'index'])->name('index');
+            Route::get('/verify/{id}', [ApplicantController::class, 'verify'])->name('verify');
+            Route::get('/detail/{id}', [ApplicantController::class, 'show'])->name('detail');
+            Route::post('/detail/info', [ApplicantController::class, 'info'])->name('detail.info');
+            Route::get('/delete/{id}', [VacancyController::class, 'destroy'])->name('delete');
         });
         Route::prefix('/verify')->name('verify.')->group(function () {
-            Route::get('', [App\Http\Controllers\VerifyController::class, 'index'])->name('index');
-            Route::post('/check', [App\Http\Controllers\VerifyController::class, 'check'])->name('check');
+            Route::get('', [VerifyController::class, 'index'])->name('index');
+            Route::post('/check', [VerifyController::class, 'check'])->name('check');
         });
         Route::prefix('/information')->name('information.')->group(function () {
-            Route::get('', [App\Http\Controllers\InformationController::class, 'index'])->name('index');
-            Route::get('/create', [App\Http\Controllers\InformationController::class, 'create'])->name('create');
-            Route::post('/create', [App\Http\Controllers\InformationController::class, 'store'])->name('store');
-            Route::get('/detail/{id}', [App\Http\Controllers\InformationController::class, 'show'])->name('detail');
-            Route::get('/activate/{id}', [App\Http\Controllers\InformationController::class, 'activate'])->name('activate');
-            Route::get('/update/{id}', [App\Http\Controllers\InformationController::class, 'edit'])->name('edit');
-            Route::post('/update/{id}', [App\Http\Controllers\InformationController::class, 'update'])->name('update');
-            Route::get('/delete/{id}', [App\Http\Controllers\InformationController::class, 'destroy'])->name('delete');
+            Route::get('', [InformationController::class, 'index'])->name('index');
+            Route::get('/create', [InformationController::class, 'create'])->name('create');
+            Route::post('/create', [InformationController::class, 'store'])->name('store');
+            Route::get('/detail/{id}', [InformationController::class, 'show'])->name('detail');
+            Route::get('/activate/{id}', [InformationController::class, 'activate'])->name('activate');
+            Route::get('/update/{id}', [InformationController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [InformationController::class, 'update'])->name('update');
+            Route::get('/delete/{id}', [InformationController::class, 'destroy'])->name('delete');
         });
     });
 });

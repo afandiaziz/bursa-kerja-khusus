@@ -46,11 +46,11 @@
                                     <div class="mb-2">
                                         <label class="form-label">
                                             Password
-                                            @if (Route::has('password.request'))
+                                            {{-- @if (Route::has('password.request'))
                                                 <span class="form-label-description">
                                                     <a href="./forgot-password.html">Saya lupa password</a>
                                                 </span>
-                                            @endif
+                                            @endif --}}
                                         </label>
                                         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" required autocomplete="current-password">
                                         @error('password')

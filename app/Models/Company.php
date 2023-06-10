@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Company extends Model
 {
     use HasFactory, Uuids, SoftDeletes;
+    protected $table = 'companies';
     protected $guarded = [
         'id',
     ];
