@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-lg-4 col-12">
                 @foreach ($loker as $item)
-                    <div class="card card-loker cursor-pointer {{ $detailLoker && $detailLoker->id == $item->id ? 'border-blue' : '' }}" data-detail-loker="{{ $item->id }}">
+                    <div class="card card-loker cursor-pointer {{ $detailLoker && $detailLoker->id == $item->id ? 'border-blue bg-blue-lt' : '' }}" data-detail-loker="{{ $item->id }}">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-auto">
@@ -62,7 +62,7 @@
         $('.card-loker').click(function() {
             const detail = $(this).data('detail-loker');
             if (detail != latestLoker) {
-                $('.card-loker').removeClass('border-blue');
+                $('.card-loker').removeClass('border-blue bg-blue-lt');
                 $.ajax({
                     url: "{{ route('loker.detail') }}",
                     type: "GET",
@@ -71,11 +71,11 @@
                         latestLoker = detail;
                         window.history.pushState(null, null, "{{ route('loker.index') }}?detail=" + detail);
                         $('#detail-loker-content').removeClass('d-none');
-                        $(`.card-loker[data-detail-loker="${detail}"]`).addClass('border-blue');
+                        $(`.card-loker[data-detail-loker="${detail}"]`).addClass('border-blue bg-blue-lt');
                         $('#detail-loker-content').html(data);
                     }, error: function(err) {
                         $('#detail-loker-content').addClass('d-none');
-                        $('.card-loker').removeClass('border-blue');
+                        $('.card-loker').removeClass('border-blue bg-blue-lt');
                         console.log(err);
                     }
                 });

@@ -26,7 +26,7 @@ class CriteriaTypeSeeder extends Seeder
             'type' => 'Hari',
         ]);
         CriteriaType::create([
-            'type' => 'Bulan dalam Nama Bulan',
+            'type' => 'Hanya Bulan dalam Nama Bulan',
         ]);
         CriteriaType::create([
             'type' => 'Tanggal',

@@ -33,6 +33,7 @@
                             <div class="card-body">
                                 <h2 class="h2 text-center mb-4">Masuk ke akun Anda</h2>
                                 <form method="POST" action="{{ route('login') }}">
+                                    <input type="hidden" name="redirect" value="{{ isset($_GET['redirect']) ? $_GET['redirect'] : '' }}">
                                     @csrf
                                     <div class="mb-3">
                                         <label class="form-label">Email</label>
@@ -73,7 +74,7 @@
                         </div>
                         @if (Route::has('register'))
                             <div class="text-center text-muted mt-3">
-                                Belum punya akun? <a href="{{ route('register') }}" tabindex="-1">Daftar</a>
+                                Belum punya akun? <a href="{{ route('register'). (isset($_GET['redirect']) ? '?redirect='.$_GET['redirect'] : '') }}" tabindex="-1">Daftar</a>
                             </div>
                         @endif
                     </div>

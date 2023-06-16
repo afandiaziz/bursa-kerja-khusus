@@ -33,6 +33,7 @@
                             <div class="card-body">
                                 <h2 class="h2 text-center mb-4">Daftar Akun</h2>
                                 <form method="POST" action="{{ route('register') }}">
+                                    <input type="hidden" name="redirect" value="{{ isset($_GET['redirect']) ? $_GET['redirect'] : '' }}">
                                     @csrf
                                     <div class="mb-3">
                                         <label class="form-label">Nama</label>

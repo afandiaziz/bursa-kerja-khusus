@@ -20,18 +20,31 @@
 @endsection
 
 @section('css')
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    {{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
     <style>
         .dropzone {
             border: var(--tblr-border-width) dashed var(--tblr-border-color);
+        }
+        .form-floating .ts-wrapper.form-control, .form-floating .ts-wrapper.form-select {
+            padding-top: 22px !important;
+            padding-left: 4px !important;
+        }
+        .litepicker .container__months .month-item-header .button-previous-month>svg,
+        .litepicker .container__months .month-item-header .button-previous-month>img,
+        .litepicker .container__months .month-item-header .button-next-month>svg,
+        .litepicker .container__months .month-item-header .button-next-month>img {
+            fill: var(--litepicker-button-prev-month-color) !important;
         }
     </style>
 @endsection
 
 @section('script')
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
     <script src="{{ asset('assets/js/dropzone/config.dropzone.js') }}"></script>
     <script>
         function getAdditional(val) {
@@ -44,9 +57,7 @@
                     old: '{{ json_encode(old()) }}',
                 },
                 success: function(response) {
-                    $('#additional-content').addClass('d-block').removeClass('d-none')
-                        .html(response);
-                    $('.select2').select2();
+                    $('#additional-content').addClass('d-block').removeClass('d-none').html(response);
                 },
                 error: function(xhr, status, error) {
                     console.log(xhr, status, error);
@@ -64,9 +75,8 @@
                         _token: "{{ csrf_token() }}",
                         data
                     },
-                    success: function(response) {
-                        $('#preview-form .card-body').html(response);
-                        $('.select2').select2();
+                    success: function({html, selector}) {
+                        $('#preview-form .card-body').html(html);
                     },
                     error: function(xhr, status, error) {
                         console.log(xhr, status, error);
@@ -76,7 +86,7 @@
         }
 
         $(document).ready(function() {
-            $('.select2').select2();
+            new TomSelect('.tomselect--');
             if ($('#criteria_type_id').val().trim()) {
                 getAdditional($('#criteria_type_id').val());
             }
@@ -118,6 +128,7 @@
             $('body').on('change', 'input[type="radio"][name="format"]', function() {
                 if ($('input[type="radio"][name="format"]:checked').val() == 0) {
                     $('#format_file').removeAttr('disabled');
+                    new TomSelect('#format_file');
                 } else {
                     $('#format_file').attr('disabled', 'disabled').val(null).trigger('change');
                 }

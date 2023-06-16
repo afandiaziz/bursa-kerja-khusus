@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LokerController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\VerifyController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\CompanyController;
@@ -21,6 +22,9 @@ use App\Http\Controllers\InformationController;
 |
 */
 
+Auth::routes();
+
+Route::get('/raw-cv', [LandingController::class, 'raw'])->name('raw-cv');
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/tentang', function () {
     return view('about');
@@ -32,9 +36,20 @@ Route::prefix('/informasi')->name('informasi.')->group(function () {
 Route::prefix('/loker')->name('loker.')->group(function () {
     Route::get('/', [LokerController::class, 'index'])->name('index');
     Route::get('/detail', [LokerController::class, 'detail'])->name('detail');
+    Route::get('/detail/{id}', [LokerController::class, 'show'])->name('show');
+
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/daftar/{id}', [LokerController::class, 'apply'])->name('daftar');
+    });
 });
 
-Auth::routes();
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('/profil')->name('profil.')->group(function () {
+        Route::get('/', [ProfilController::class, 'index'])->name('index');
+        Route::post('/', [ProfilController::class, 'update'])->name('update');
+    });
+});
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['IsAdmin'])->group(function () {

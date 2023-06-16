@@ -90,5 +90,8 @@
                 File Archive (.zip, .rar, .7zip, .7z)
             </option>
         </select>
+        <script>
+            new TomSelect('#format_file');
+        </script>
     </div>
 </div>

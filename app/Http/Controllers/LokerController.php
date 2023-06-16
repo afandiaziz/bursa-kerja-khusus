@@ -21,32 +21,52 @@ class LokerController extends Controller
 
     public function index(Request $request)
     {
-        $detailLoker = null;
-        $loker = Vacancy::active()->paginate(15);
-        if ($request->has('detail')) {
-            $detailLoker = Vacancy::activeById($request->detail);
-        } else {
-            return redirect('/loker?page=' . ($request->has('page') ? $request->page : 1) . '&detail=' . $loker->first()->id);
-        }
+        $loker = Vacancy::active()->paginate(7);
+        return view('loker/index', compact('loker'));
+    }
+    // public function index(Request $request)
+    // {
+    //     $detailLoker = null;
+    //     $loker = Vacancy::active()->paginate(7);
+    //     if ($request->has('detail')) {
+    //         $detailLoker = Vacancy::activeById($request->detail);
+    //     } else {
+    //         return redirect('/loker?page=' . ($request->has('page') ? $request->page : 1) . '&detail=' . $loker->first()->id);
+    //     }
 
-        if ($loker->lastPage() < $request->page) {
+    //     if ($loker->lastPage() < $request->page) {
+    //         return redirect()->route('loker.index');
+    //     }
+    //     return view('loker', compact('loker', 'detailLoker'));
+    // }
+
+    public function show($id)
+    {
+        $data = Vacancy::activeById($id);
+        if ($data) {
+            return view('loker/show', ['detailLoker' => $data]);
+        } else {
             return redirect()->route('loker.index');
         }
-
-        return view('loker', compact('loker', 'detailLoker'));
     }
+
     public function detail(Request $request)
     {
         $data = Vacancy::activeById($request->detail);
         if ($data) {
             return response()->json([
                 'status' => 'success',
-                'data' => view('loker-detail', ['detailLoker' => $data])->render()
+                'data' => view('loker/detail', ['detailLoker' => $data])->render()
             ], 200);
         } else {
             return response()->json([
                 'status' => 'failed',
             ], 404);
         }
+    }
+
+    public function apply($id)
+    {
+        $vacany = Vacancy::findOrFail($id);
     }
 }

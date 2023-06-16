@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
+use Smalot\PdfParser\Parser;
 
 class LandingController extends Controller
 {
@@ -27,6 +28,18 @@ class LandingController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+    public function raw()
+    {
+        $file = public_path('assets/upload/cv/resume-2.pdf');
+        if (file_exists($file)) {
+            // Initialize and load PDF Parser library
+            $pdfParser = new Parser();
+            $pdf = $pdfParser->parseFile($file);
+            $textContent = $pdf->getText();
+            dd($textContent);
+        }
+    }
+
     public function index()
     {
         $companies = Company::orderBy('created_at', 'desc')->limit(20)->get();

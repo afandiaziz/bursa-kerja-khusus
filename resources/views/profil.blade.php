@@ -1,0 +1,314 @@
+@extends('layouts.app')
+
+@section('content')
+    <div class="container mb-4 py-4">
+        <div class="row justify-content-center">
+            <div class="col-9">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div>
+                                <h1 class="mb-0">{{ Auth::user()->name }}</h1>
+                                <h3>({{ Auth::user()->email }})</h3>
+                            </div>
+                            <div class="ms-auto">
+                                <div class="btn btn-link cursor-pointer" role="button" data-bs-toggle="modal" data-bs-target="#modal-basic-info">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
+                                        <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path>
+                                        <path d="M16 5l3 3"></path>
+                                    </svg>
+                                    Edit
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row gap-4 mt-4 mb-3">
+                            @foreach ($criteria as $item)
+                                <div class="col-auto">
+                                    <div class="text-secondary text-uppercase fs-4 fw-bold">{{ $item->name }}</div>
+                                    <div class="fs-3">
+                                        @if (Auth::user()->user_details->where('criteria_id', $item->id)->first() && Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value != null)
+                                            @switch($item->criteriaType->type)
+                                                @case('Teks')
+                                                @case('Angka')
+                                                @case('Teks Panjang')
+                                                    {!! Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value !!}
+                                                @break
+                                                @case('Pilihan (Ya/Tidak)')
+                                                    {{ Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value == '1' ? 'Ya' : 'Tidak' }}
+                                                @break
+                                                @case('Pilihan (Multiple Checkbox)')
+                                                @case('Pilihan (Multiple Dropdown)')
+                                                    @foreach ($item->criteriaAnswer->whereIn('id', explode(',', Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value)) as $criteriaAnswer)
+                                                        <span class="badge bg-orange-lt text-dark border mt-1">{{ $criteriaAnswer->answer }}</span>
+                                                    @endforeach
+                                                @break
+                                                @case('Pilihan Ganda (Radio)')
+                                                @case('Pilihan Ganda (Dropdown)')
+                                                    {{
+                                                        Auth::user()->user_details->where('criteria_id', $item->id)->first()
+                                                            ->criteria->criteriaAnswer->where('id', Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value)->first()->answer
+                                                    }}
+                                                @break
+                                                @case('Tanggal')
+                                                    {{ \Carbon\Carbon::parse(str_replace('/', '-', Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value))->translatedFormat('d F Y') }}
+                                                @break
+                                                @case('Tanggal dan Waktu')
+                                                    {{ \Carbon\Carbon::parse(str_replace('/', '-', Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value))->translatedFormat('d F Y H:i:s') }}
+                                                @break
+                                                @case('Waktu')
+                                                    Pukul {{ Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value }}
+                                                @break
+                                                @case('Menit/Detik')
+                                                    Menit {{ explode(':', Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value)[0] }}
+                                                    &nbsp;
+                                                    Detik {{ explode(':', Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value)[1] }}
+                                                @break
+                                                @case('Jam')
+                                                    Jam {{ Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value }}
+                                                @break
+                                                @case('Hari')
+                                                    Hari {{ Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value }}
+                                                @break
+                                                @case('Hanya Tanggal')
+                                                    Tanggal {{ Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value }}
+                                                @break
+                                                @case('Hanya Tahun')
+                                                    Tahun {{ Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value }}
+                                                @break
+                                                @case('Hanya Bulan dalam Nama Bulan')
+                                                    Bulan {{ Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value }}
+                                                @break
+                                                @case('Hanya Bulan dalam Angka')
+                                                    Bulan {{ \Carbon\Carbon::parse('2001-'.Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value.'-19')->translatedFormat('F') }}
+                                                @break
+                                            @endswitch
+                                        @else
+                                            <span class="text-danger">BELUM DIISI</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-body color-blue">
+                        <div class="my-0 py-0 text-secondary text-uppercase fs-4 fw-bold">CV</div>
+                        <div class="text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="4em" viewBox="0 0 512 512"><path d="M64 464H96v48H64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0H229.5c17 0 33.3 6.7 45.3 18.7l90.5 90.5c12 12 18.7 28.3 18.7 45.3V288H336V160H256c-17.7 0-32-14.3-32-32V48H64c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16zM176 352h32c30.9 0 56 25.1 56 56s-25.1 56-56 56H192v32c0 8.8-7.2 16-16 16s-16-7.2-16-16V448 368c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24H192v48h16zm96-80h32c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H304c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H320v96h16zm80-112c0-8.8 7.2-16 16-16h48c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v32h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v48c0 8.8-7.2 16-16 16s-16-7.2-16-16V432 368z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modal-basic-info" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action="{{ route('profil.update') }}" method="post" enctype="multipart/form-data" target="_blank">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Data Diri</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="floating-input-name" name="name" value="{{ Auth::user()->name }}" autocomplete="off" required>
+                                    <label for="floating-input-name">Nama Lengkap</label>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control" id="floating-input-email" readonly disabled value="{{ Auth::user()->email }}" autocomplete="off" required>
+                                    <label for="floating-input-email">Email</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            @foreach ($criteria as $data)
+                                <div class="col-md-6">
+                                    @include('components.forms.form')
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn me-auto" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('css')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/css/tempus-dominus.css" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        .dropzone {
+            border: var(--tblr-border-width) dashed var(--tblr-border-color);
+        }
+        span.select2-container {
+            padding-top: 20px
+        }
+        .form-floating .ts-wrapper.form-control, .form-floating .ts-wrapper.form-select {
+            padding-top: 22px !important;
+            padding-left: 4px !important;
+        }
+    </style>
+@endsection
+
+@section('script')
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/solid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/fontawesome.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/tempus-dominus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/jQuery-provider.js"></script>
+    <script>
+        function initPicker() {
+            $('.datetimepicker-dateonly').tempusDominus({
+                localization: {
+                    locale: 'id',
+                    format: 'dd/MM/yyyy',
+                    dayViewHeaderFormat: 'MMMM yyyy',
+                },
+                display: {
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        clock: false,
+                        hours: false,
+                        minutes: false,
+                        seconds: false,
+                    },
+                    theme: 'light'
+                }
+            });
+            $('.datetimepicker-dateonly').on('show.td', function(e) {
+                $('.tempus-dominus-widget .calendar-header').addClass('d-flex justify-content-between')
+            });
+            $('.datetimepicker-houronly').tempusDominus({
+                localization: {
+                    locale: 'id',
+                    format: 'HH',
+                },
+                display: {
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        calendar: false,
+                        date: false,
+                        month: false,
+                        year: false,
+                        decades: false,
+                        clock: true,
+                        hours: true,
+                        minutes: false,
+                        seconds: false,
+                    },
+                    theme: 'light'
+                }
+            });
+            $('.datetimepicker-timeonly').tempusDominus({
+                localization: {
+                    locale: 'id',
+                    format: 'HH:mm',
+                },
+                display: {
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        calendar: false,
+                        date: false,
+                        month: false,
+                        year: false,
+                        decades: false,
+                        clock: true,
+                        hours: true,
+                        minutes: true,
+                        seconds: false,
+                    },
+                    theme: 'light'
+                }
+            });
+            $('.datetimepicker-datetime').tempusDominus({
+                localization: {
+                    locale: 'id',
+                    format: 'dd/MM/yyyy HH:mm:00',
+                    dayViewHeaderFormat: 'MMMM yyyy',
+                },
+                display: {
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        calendar: true,
+                        date: true,
+                        month: true,
+                        year: true,
+                        decades: true,
+                        clock: true,
+                        hours: true,
+                        minutes: true,
+                        seconds: false,
+                    },
+                    theme: 'light'
+                }
+            });
+            $('.datetimepicker-datetime').on('show.td', function(e) {
+                $('.tempus-dominus-widget .calendar-header').addClass('d-flex justify-content-between')
+            });
+            $('.datetimepicker-minutesecondonly').tempusDominus({
+                localization: {
+                    locale: 'id',
+                    format: 'mm:ss',
+                },
+                display: {
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        calendar: false,
+                        date: false,
+                        month: false,
+                        year: false,
+                        decades: false,
+                        clock: true,
+                        hours: false,
+                        minutes: true,
+                        seconds: true,
+                    },
+                    theme: 'light'
+                }
+            });
+        }
+    </script>
+    <script>
+        initPicker();
+        // document.querySelectorAll('.tomselect--').forEach((el)=>{
+        //     let settings = {};
+        //     new TomSelect(el, settings);
+        // });
+    </script>
+@endsection

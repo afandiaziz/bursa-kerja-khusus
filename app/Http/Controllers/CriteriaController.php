@@ -177,7 +177,11 @@ class CriteriaController extends Controller
                 }
             }
             $data->criteriaAnswer = $collection;
-            return view('components.forms.form', ['data' => $data]);
+            // dd($data);
+            return response()->json([
+                'selector' => $data->id,
+                'html' => view('components.forms.form-container', ['data' => $data])->render(),
+            ], 200);
         }
     }
 
@@ -188,7 +192,7 @@ class CriteriaController extends Controller
             $request->merge(['format_file' => implode(',', $request->all()['format_file'])]);
         }
 
-        if ($request->has('max_length') && $request->has('min_number') && $request->max_length < strlen(str_replace('-', '', $request->min_number))) {
+        if ($request->has('min_length') && $request->has('min_number') && $request->min_length < strlen(str_replace('-', '', $request->min_number))) {
             return redirect()->back()->with('alert-danger', 'Minimum Angka yang Diinput tidak boleh kurang dari Minimum Panjang/Banyaknya Teks')->withInput($request->input());
         } elseif ($request->has('max_length') && $request->has('max_number') && $request->max_length < strlen(str_replace('-', '', $request->max_number))) {
             return redirect()->back()->with('alert-danger', 'Maksimum Angka yang Diinput tidak boleh kurang dari Minimum Panjang/Banyaknya Teks')->withInput($request->input());
@@ -232,7 +236,7 @@ class CriteriaController extends Controller
             $request->merge(['format_file' => null]);
         }
 
-        if ($request->has('max_length') && $request->has('min_number') && $request->max_length < strlen(str_replace('-', '', $request->min_number))) {
+        if ($request->has('min_length') && $request->has('min_number') && $request->min_length < strlen(str_replace('-', '', $request->min_number))) {
             return redirect()->back()->with('alert-danger', 'Minimum Angka yang Diinput tidak boleh kurang dari Minimum Panjang/Banyaknya Teks')->withInput($request->input());
         } elseif ($request->has('max_length') && $request->has('max_number') && $request->max_length < strlen(str_replace('-', '', $request->max_number))) {
             return redirect()->back()->with('alert-danger', 'Maksimum Angka yang Diinput tidak boleh kurang dari Minimum Panjang/Banyaknya Teks')->withInput($request->input());
