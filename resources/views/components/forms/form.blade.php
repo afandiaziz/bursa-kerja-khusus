@@ -382,7 +382,8 @@
                     @endif
                 @break
                 @case('Upload File')
-                    <input type="file" class="filepond" id="{{ $data->id }}"
+                    <input type="file" class="filepond"
+                        id="{{ $data->id }}"
                         name="{{ $data->is_multiple ? $data->id.'[]' : $data->id }}"
                         {{ $data->required ? 'required' : '' }}
                         {!! ($data->is_multiple && $data->max_files && $data->max_files > 1 ? 'data-max-files="'.$data->max_files.'"' : '') !!}
@@ -403,12 +404,11 @@
                                 defaultFiles.push({
                                     source: '{{ url("assets/upload/$data->id") }}' + '/' + file,
                                     options: {
-                                        type: 'local',
+                                        type: 'input',
                                     },
                                 });
                             }
                         });
-                        console.log(defaultFiles)
                         $('input[type="file"]#{{ $data->id }}.filepond').filepond({
                             storeAsFile: true,
                             files: defaultFiles,

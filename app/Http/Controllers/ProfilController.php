@@ -36,8 +36,8 @@ class ProfilController extends Controller
 
     private function processUpload($criteria, $file, $index, $fileName = null)
     {
-        $path = 'assets/upload/' . Str::slug($criteria->name);
-        $fileName = $fileName ? $fileName : $index . '-' . Auth::user()->id . '.' . $file->getClientOriginalExtension();
+        $path = 'assets/upload/' . Str::slug($criteria->id);
+        $fileName = $fileName ? $fileName : $index . '-' . time() . '-' . Auth::user()->id . '.' . $file->getClientOriginalExtension();
         if ($file->move(public_path($path), $fileName)) {
             return json_encode([
                 'path' => $path,
@@ -51,9 +51,9 @@ class ProfilController extends Controller
     public function update(Request $request)
     {
         // dd($request->all());
-        // User::where('id', Auth::user()->id)->update([
-        //     'name' => $request->name,
-        // ]);
+        User::where('id', Auth::user()->id)->update([
+            'name' => $request->name,
+        ]);
         $userDetail = $request->except('_token', 'name', 'cv');
         // dd($userDetail);
         $fileName = null;
@@ -61,7 +61,11 @@ class ProfilController extends Controller
 
         foreach ($userDetail as $key => $value) {
             $criteria = Criteria::findOrFail($key);
+            $user_detail = Auth::user()->user_details->where('criteria_id', $criteria->id)->first();
+            $fileNameFromDB = $user_detail && $user_detail->filename ? explode(',', $user_detail->filename) : null;
+            $explodedPath = $user_detail && $user_detail->path ? explode(',', $user_detail->path) : null;
             if ($request->hasFile($key)) {
+
                 if (is_array($value)) {
                     $fileName = [];
                     $path = [];
@@ -79,7 +83,7 @@ class ProfilController extends Controller
                     $path = implode(',', $path);
                     $value = null;
 
-                    UserDetail::updateOrCreate([
+                    $execute = UserDetail::updateOrCreate([
                         'user_id' => Auth::user()->id,
                         'criteria_id' => $key,
                     ], [
@@ -87,8 +91,17 @@ class ProfilController extends Controller
                         'filename' => $fileName,
                         'path' => $path,
                     ]);
+                    if ($execute) {
+                        foreach ($fileNameFromDB as $index => $currentFile) {
+                            if (file_exists(public_path($explodedPath[$index] . '/' . $currentFile))) {
+                                unlink(public_path($explodedPath[$index] . '/' . $currentFile));
+                            }
+                        }
+                    }
+                    continue;
                 } else {
                     $file = $request->file($key);
+
                     $uploaded = $this->processUpload($criteria, $file, 0);
                     if ($uploaded) {
                         $decoded = json_decode($uploaded);
@@ -96,7 +109,8 @@ class ProfilController extends Controller
                         $path = $decoded->path;
 
                         $value = null;
-                        UserDetail::updateOrCreate([
+
+                        $execute = UserDetail::updateOrCreate([
                             'user_id' => Auth::user()->id,
                             'criteria_id' => $key,
                         ], [
@@ -104,6 +118,15 @@ class ProfilController extends Controller
                             'filename' => $fileName,
                             'path' => $path,
                         ]);
+                        if ($execute) {
+                            foreach ($fileNameFromDB as $index => $currentFile) {
+                                if (file_exists(public_path($explodedPath[$index] . '/' . $currentFile))) {
+                                    unlink(public_path($explodedPath[$index] . '/' . $currentFile));
+                                }
+                            }
+                        }
+
+                        continue;
                     }
                 }
             } else if (is_array($value)) {
