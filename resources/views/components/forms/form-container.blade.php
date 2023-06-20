@@ -1,17 +1,16 @@
-@if ($data->criteriaType->type != 'Upload File')
+@include('components.forms.form', ['custom' => false])
+{{-- @if ($data->criteriaType->type != 'Upload File')
     <form action="#" id="example-form">
-        {{-- @dd($data->criteriaType->type, $data->criteriaAnswer->count()) --}}
-        @include('components.forms.form')
+        @include('components.forms.form', ['custom' => false])
     </form>
-@else
-    @include('components.forms.form')
-@endif
-@if ($data->criteriaType->type == 'Upload File')
+@else --}}
+{{-- @endif --}}
+{{-- @if ($data->criteriaType->type == 'Upload File')
     <script>
         new Dropzone('#input-file-{{ $data->id }}', configDropzone(
             "{{ $data->id }}",
-            {{ $data->type_upload ? 'true' : 'false' }},
-            {{ $data->type_upload ? $data->max_files : 1 }},
+            {{ $data->is_multiple ? 'true' : 'false' }},
+            {{ $data->is_multiple ? $data->max_files : 1 }},
             {{ $data->max_size }},
             '{{ $data->format_file }}',
         ));
@@ -32,5 +31,5 @@
             });
         });
     </script>
-@endif
+@endif --}}
 <hr>

@@ -41,7 +41,7 @@
             <label for="name" class="form-label text-capitalize">
                 Tipe Data Kriteria <span class="text-danger">*</span>
             </label>
-            <select name="criteria_type_id" id="criteria_type_id" class="form-control w-100 tomselect--">
+            <select name="criteria_type_id" id="criteria_type_id" class="form-control w-100 form-select tomselect--">
                 <option value="">Pilih Tipe Data Kriteria</option>
                 @foreach ($criteriaTypes as $criteriaType)
                     <option value="{{ $criteriaType->id }}"

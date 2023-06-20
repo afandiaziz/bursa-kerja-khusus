@@ -3,13 +3,13 @@
 
 @section('content')
     <div class="col-lg-8" id="form-content">
-        <form method="post" class="w-100" id="form-edit"
+        <form method="post" class="w-100" id="form-edit" target="_blank"
             action="{{ route($prefix . '.update', ['id' => $data->id]) }}">
             @csrf
             @include("dashboard.$prefix.form")
         </form>
     </div>
-    <div class="col-lg-4" id="preview-form">
+    <div class="col-lg-8" id="preview-form">
         <div class="card">
             <div class="card-header">
                 <div class="card-title">Tampilan Input dari Kriteria {{ $data->name }}</div>
@@ -20,17 +20,13 @@
 @endsection
 
 @section('css')
-    {{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/css/tempus-dominus.css" />
     <style>
-        .dropzone {
+        /* .dropzone {
             border: var(--tblr-border-width) dashed var(--tblr-border-color);
-        }
-        span.select2-container {
+        } */
+        /* span.select2-container {
             padding-top: 20px
-        }
+        } */
         .form-floating .ts-wrapper.form-control, .form-floating .ts-wrapper.form-select {
             padding-top: 22px !important;
             padding-left: 4px !important;
@@ -45,148 +41,6 @@
 @endsection
 
 @section('script')
-    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script> --}}
-    <script src="{{ asset('assets/js/dropzone/config.dropzone.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/solid.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/fontawesome.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/tempus-dominus.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/jQuery-provider.js"></script>
-    <script>
-        function initPicker() {
-            $('.datetimepicker-dateonly').tempusDominus({
-                localization: {
-                    locale: 'id',
-                    format: 'dd/MM/yyyy',
-                    dayViewHeaderFormat: 'MMMM yyyy',
-                },
-                display: {
-                    buttons: {
-                        today: false,
-                        clear: false,
-                        close: false
-                    },
-                    components: {
-                        clock: false,
-                        hours: false,
-                        minutes: false,
-                        seconds: false,
-                    },
-                    theme: 'light'
-                }
-            });
-            $('.datetimepicker-dateonly').on('show.td', function(e) {
-                $('.tempus-dominus-widget .calendar-header').addClass('d-flex justify-content-between')
-            });
-            $('.datetimepicker-houronly').tempusDominus({
-                localization: {
-                    locale: 'id',
-                    format: 'HH',
-                },
-                display: {
-                    buttons: {
-                        today: false,
-                        clear: false,
-                        close: false
-                    },
-                    components: {
-                        calendar: false,
-                        date: false,
-                        month: false,
-                        year: false,
-                        decades: false,
-                        clock: true,
-                        hours: true,
-                        minutes: false,
-                        seconds: false,
-                    },
-                    theme: 'light'
-                }
-            });
-            $('.datetimepicker-timeonly').tempusDominus({
-                localization: {
-                    locale: 'id',
-                    format: 'HH:mm',
-                },
-                display: {
-                    buttons: {
-                        today: false,
-                        clear: false,
-                        close: false
-                    },
-                    components: {
-                        calendar: false,
-                        date: false,
-                        month: false,
-                        year: false,
-                        decades: false,
-                        clock: true,
-                        hours: true,
-                        minutes: true,
-                        seconds: false,
-                    },
-                    theme: 'light'
-                }
-            });
-            $('.datetimepicker-datetime').tempusDominus({
-                localization: {
-                    locale: 'id',
-                    format: 'dd/MM/yyyy HH:mm:00',
-                    dayViewHeaderFormat: 'MMMM yyyy',
-                },
-                display: {
-                    buttons: {
-                        today: false,
-                        clear: false,
-                        close: false
-                    },
-                    components: {
-                        calendar: true,
-                        date: true,
-                        month: true,
-                        year: true,
-                        decades: true,
-                        clock: true,
-                        hours: true,
-                        minutes: true,
-                        seconds: false,
-                    },
-                    theme: 'light'
-                }
-            });
-            $('.datetimepicker-datetime').on('show.td', function(e) {
-                $('.tempus-dominus-widget .calendar-header').addClass('d-flex justify-content-between')
-            });
-            $('.datetimepicker-minutesecondonly').tempusDominus({
-                localization: {
-                    locale: 'id',
-                    format: 'mm:ss',
-                },
-                display: {
-                    buttons: {
-                        today: false,
-                        clear: false,
-                        close: false
-                    },
-                    components: {
-                        calendar: false,
-                        date: false,
-                        month: false,
-                        year: false,
-                        decades: false,
-                        clock: true,
-                        hours: false,
-                        minutes: true,
-                        seconds: true,
-                    },
-                    theme: 'light'
-                }
-            });
-        }
-    </script>
     <script>
         function getAdditional(val) {
             $.ajax({
@@ -200,7 +54,30 @@
                 },
                 success: function(response) {
                     $('#additional-content').addClass('d-block').removeClass('d-none').html(response);
-                    initPicker();
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr, status, error);
+                }
+            });
+        }
+
+        function getAdditionalCustom(element) {
+            $.ajax({
+                url: "{{ route($prefix . '.form.additional') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    type: element.val(),
+                    old: '{{ json_encode(old()) }}',
+                    data: '{{ $data->id }}',
+                    sub: $(element.parent().parent().find('.custom-additional-form-container')[0]).parent().data('index'),
+                },
+                success: function(response) {
+                    if (response) {
+                        $(element.parent().parent().find('.custom-additional-form-container')[0]).addClass('d-block').removeClass('d-none').html(response);
+                    } else {
+                        $(element.parent().parent().find('.custom-additional-form-container')[0]).removeClass('d-block').addClass('d-none').html('');
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.log(xhr, status, error);
@@ -217,10 +94,24 @@
                     data: {
                         _token: "{{ csrf_token() }}",
                         id: "{{ $data->id }}",
-                        data
+                        data,
                     },
                     success: function({html, selector}) {
                         $('#preview-form .card-body').html(html);
+
+                        $('.filepond').filepond();
+                        document.querySelectorAll('#example-form #form-custom-view-container .tomselect--').forEach((item) => {
+                            new TomSelect(item);
+                            item.tomselect.sync();
+                        });
+                        document.querySelectorAll('#example-form #form-custom-view-container .tomselect-tags--').forEach((item) => {
+                            new TomSelect(item, {
+                                persist: false,
+                                createOnBlur: true,
+                                create: true
+                            });
+                            item.tomselect.sync();
+                        });
                         initPicker();
                     },
                     error: function(xhr, status, error) {
@@ -232,7 +123,7 @@
 
         $(document).ready(function() {
             previewForm();
-            new TomSelect('.tomselect--');
+            new TomSelect('select#criteria_type_id.tomselect--');
             if ($('#criteria_type_id').val().trim()) {
                 getAdditional($('#criteria_type_id').val());
             }
@@ -241,12 +132,11 @@
                     getAdditional($(this).val());
                     previewForm();
                 } else {
-                    $('#additional-content').addClass('d-none').removeClass('d-block')
-                        .html('');
+                    $('#additional-content').addClass('d-none').removeClass('d-block').html('');
                 }
             });
             $('body').on('click', 'button#remove-answer', function() {
-                if ($('#additional-content #answer-content .form-group').length === 2) {
+                if ($('#additional-content #answer-content .form-group').length <= 2) {
                     $('#additional-content #answer-content button#remove-answer').addClass('disabled')
                     return;
                 }
@@ -272,27 +162,62 @@
                     $('#additional-content #answer-content button#remove-answer').removeClass('disabled')
                 }
             });
-            $('body').on('change', 'input[type="radio"][name="format"]', function() {
-                const selector = document.getElementById('format_file');
-                if ($('input[type="radio"][name="format"]:checked').val() == 0) {
-                    $('#format_file').removeAttr('disabled');
-                    selector.tomselect.enable();
+            $('body').on('change', 'input[type="radio"][name="format"], input[type="radio"].form-check-input.input-format', function() {
+                const selector = $(this).parent().parent().find('select');
+                if ($(this).val() == 0) {
+                    $(selector).removeAttr('disabled');
+                    selector[0].tomselect.enable();
                 } else {
-                    $('#format_file').attr('disabled', 'disabled').val(null).trigger('change');
-                    selector.tomselect.disable();
+                    $(selector).attr('disabled', 'disabled');
+                    selector[0].tomselect.disable();
                 }
             });
-            $('body').on('change', 'input[type="radio"][name="type_upload"]', function() {
-                if ($('input[type="radio"][name="type_upload"]:checked').val() == 1) {
-                    $('input[name="max_files"]').removeAttr('disabled');
+            $('body').on('change', 'input[type="radio"][name="is_multiple"], input[type="radio"].form-check-input.input-is_multiple', function() {
+                if ($(this).val() == 1) {
+                    $(this).parent().parent().next().find('input').removeAttr('disabled');
                 } else {
-                    $('input[name="max_files"]').attr('disabled', 'disabled');
+                    $(this).parent().parent().next().find('input').attr('disabled', 'disabled');
                 }
             });
-
             $('body #form-content').on('change', 'input, select', function() {
                 previewForm();
             });
+
+            $('body').on('click', 'button#remove-sub', function() {
+                if ($('#additional-content #form-custom-container .form-group').length <= 2) {
+                    $('#additional-content #form-custom-container button#remove-sub').addClass('disabled')
+                    return;
+                }
+                $(this).parent().parent().find('select')[0].tomselect.destroy()
+                $(this).parent().parent().parent().remove();
+                previewForm();
+            });
+            $('body').on('click', 'button#add-sub', function() {
+                const template = $('#custom-template .form-group').last();
+                const subContainer = $('#additional-content #form-custom-container > .form-group').last();
+                const subContainerCloned = template.clone();
+                const index = $('#additional-content #form-custom-container > .form-group').length;
+                subContainerCloned.find('input[type="text"]').val('');
+                subContainerCloned.find('select').val('');
+                $(subContainerCloned.find('input')[0]).attr('name', 'sub[name][' + (index) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('input')[1]).attr('name', 'sub[required][' + (index) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('input')[2]).attr('name', 'sub[required][' + (index) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('select')[0]).attr('name', 'sub[criteria_type_id][' + (index) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('select')[0]).parent().data('index', (index));
+                new TomSelect(subContainerCloned.find('select')[0]);
+                subContainer.after(subContainerCloned);
+                if (index > 2) {
+                    $('#additional-content #form-custom-container button#remove-sub').removeClass('disabled');
+                }
+            });
+            $('#additional-content').on('change', '#additional-custom-container select', function() {
+                getAdditionalCustom($(this));
+            });
+            setTimeout(() => {
+                $('#additional-content #additional-custom-container #form-custom-container select').each(function() {
+                    getAdditionalCustom($(this));
+                });
+            }, 450);
         });
     </script>
 @endsection

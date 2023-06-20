@@ -12,7 +12,7 @@
                                 <h3>({{ Auth::user()->email }})</h3>
                             </div>
                             <div class="ms-auto">
-                                <div class="btn btn-link cursor-pointer" role="button" data-bs-toggle="modal" data-bs-target="#modal-basic-info">
+                                <a class="btn btn-link cursor-pointer" role="button" href="{{ route('profil.edit') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                         <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
@@ -20,7 +20,7 @@
                                         <path d="M16 5l3 3"></path>
                                     </svg>
                                     Edit
-                                </div>
+                                </a>
                             </div>
                         </div>
                         <div class="row gap-4 mt-4 mb-3">
@@ -30,6 +30,9 @@
                                     <div class="fs-3">
                                         @if (Auth::user()->user_details->where('criteria_id', $item->id)->first() && Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value != null)
                                             @switch($item->criteriaType->type)
+                                                @case('Tags')
+                                                    {{ str_replace(',', ', ', Auth::user()->user_details->where('criteria_id', $item->id)->first()?->value) }}
+                                                @break
                                                 @case('Teks')
                                                 @case('Angka')
                                                 @case('Teks Panjang')
@@ -106,209 +109,4 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modal-basic-info" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form action="{{ route('profil.update') }}" method="post" enctype="multipart/form-data" target="_blank">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit Data Diri</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-7">
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="floating-input-name" name="name" value="{{ Auth::user()->name }}" autocomplete="off" required>
-                                    <label for="floating-input-name">Nama Lengkap</label>
-                                </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" id="floating-input-email" readonly disabled value="{{ Auth::user()->email }}" autocomplete="off" required>
-                                    <label for="floating-input-email">Email</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            @foreach ($criteria as $data)
-                                <div class="col-md-6">
-                                    @include('components.forms.form')
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn me-auto" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-success">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-@endsection
-
-@section('css')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/css/tempus-dominus.css" />
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-    <style>
-        .dropzone {
-            border: var(--tblr-border-width) dashed var(--tblr-border-color);
-        }
-        span.select2-container {
-            padding-top: 20px
-        }
-        .form-floating .ts-wrapper.form-control, .form-floating .ts-wrapper.form-select {
-            padding-top: 22px !important;
-            padding-left: 4px !important;
-        }
-    </style>
-@endsection
-
-@section('script')
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/solid.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/fontawesome.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/tempus-dominus.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/jQuery-provider.js"></script>
-    <script>
-        function initPicker() {
-            $('.datetimepicker-dateonly').tempusDominus({
-                localization: {
-                    locale: 'id',
-                    format: 'dd/MM/yyyy',
-                    dayViewHeaderFormat: 'MMMM yyyy',
-                },
-                display: {
-                    buttons: {
-                        today: false,
-                        clear: false,
-                        close: false
-                    },
-                    components: {
-                        clock: false,
-                        hours: false,
-                        minutes: false,
-                        seconds: false,
-                    },
-                    theme: 'light'
-                }
-            });
-            $('.datetimepicker-dateonly').on('show.td', function(e) {
-                $('.tempus-dominus-widget .calendar-header').addClass('d-flex justify-content-between')
-            });
-            $('.datetimepicker-houronly').tempusDominus({
-                localization: {
-                    locale: 'id',
-                    format: 'HH',
-                },
-                display: {
-                    buttons: {
-                        today: false,
-                        clear: false,
-                        close: false
-                    },
-                    components: {
-                        calendar: false,
-                        date: false,
-                        month: false,
-                        year: false,
-                        decades: false,
-                        clock: true,
-                        hours: true,
-                        minutes: false,
-                        seconds: false,
-                    },
-                    theme: 'light'
-                }
-            });
-            $('.datetimepicker-timeonly').tempusDominus({
-                localization: {
-                    locale: 'id',
-                    format: 'HH:mm',
-                },
-                display: {
-                    buttons: {
-                        today: false,
-                        clear: false,
-                        close: false
-                    },
-                    components: {
-                        calendar: false,
-                        date: false,
-                        month: false,
-                        year: false,
-                        decades: false,
-                        clock: true,
-                        hours: true,
-                        minutes: true,
-                        seconds: false,
-                    },
-                    theme: 'light'
-                }
-            });
-            $('.datetimepicker-datetime').tempusDominus({
-                localization: {
-                    locale: 'id',
-                    format: 'dd/MM/yyyy HH:mm:00',
-                    dayViewHeaderFormat: 'MMMM yyyy',
-                },
-                display: {
-                    buttons: {
-                        today: false,
-                        clear: false,
-                        close: false
-                    },
-                    components: {
-                        calendar: true,
-                        date: true,
-                        month: true,
-                        year: true,
-                        decades: true,
-                        clock: true,
-                        hours: true,
-                        minutes: true,
-                        seconds: false,
-                    },
-                    theme: 'light'
-                }
-            });
-            $('.datetimepicker-datetime').on('show.td', function(e) {
-                $('.tempus-dominus-widget .calendar-header').addClass('d-flex justify-content-between')
-            });
-            $('.datetimepicker-minutesecondonly').tempusDominus({
-                localization: {
-                    locale: 'id',
-                    format: 'mm:ss',
-                },
-                display: {
-                    buttons: {
-                        today: false,
-                        clear: false,
-                        close: false
-                    },
-                    components: {
-                        calendar: false,
-                        date: false,
-                        month: false,
-                        year: false,
-                        decades: false,
-                        clock: true,
-                        hours: false,
-                        minutes: true,
-                        seconds: true,
-                    },
-                    theme: 'light'
-                }
-            });
-        }
-    </script>
-    <script>
-        initPicker();
-        // document.querySelectorAll('.tomselect--').forEach((el)=>{
-        //     let settings = {};
-        //     new TomSelect(el, settings);
-        // });
-    </script>
 @endsection

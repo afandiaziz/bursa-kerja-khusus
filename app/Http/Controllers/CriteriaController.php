@@ -17,7 +17,7 @@ class CriteriaController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Criteria::all();
+            $data = Criteria::where('parent_id', null)->orderBy('parent_order', 'asc')->get();
             $json = DataTables::collection($data)
                 ->addIndexColumn()
                 ->addColumn('required', function ($row) {
@@ -95,38 +95,50 @@ class CriteriaController extends Controller
     public function formAdditional(Request $request)
     {
         $decode = null;
+        // dd($request->all(), $criteriaType);
         if ($request->has('old') && json_decode(str_replace('&quot;', '"', $request->old))) {
             $decode = json_decode(str_replace('&quot;', '"', $request->old));
         } else if ($request->has('data')) {
-            $decode = Criteria::where('id', $request->data)->get()->first();
+            if ($request->has('sub')) {
+                $decode = Criteria::where('parent_id', $request->data)->where('child_order', ($request->sub + 1))->first();
+            } else {
+                $decode = Criteria::where('id', $request->data)->firstOrFail();
+            }
         }
+
         $criteriaType = CriteriaType::findOrFail($request->type);
+        // dd(['old' => $decode, 'subIndex' => $request->sub]);
         switch ($criteriaType->type) {
             case 'Pilihan Ganda (Radio)':
             case 'Pilihan Ganda (Dropdown)':
             case 'Pilihan (Multiple Checkbox)':
             case 'Pilihan (Multiple Dropdown)':
                 return [
-                    view('components.forms.choices', ['old' => $decode])->render(),
+                    view('components.forms.additional.choices', ['old' => $decode, 'subIndex' => $request->sub])->render(),
                 ];
                 break;
             case 'Angka':
                 return [
-                    view('components.forms.length', ['old' => $decode])->render(),
-                    view('components.forms.number', ['old' => $decode])->render(),
+                    view('components.forms.additional.length', ['old' => $decode, 'subIndex' => $request->sub])->render(),
+                    view('components.forms.additional.number', ['old' => $decode, 'subIndex' => $request->sub])->render(),
                 ];
                 break;
             case 'Teks':
                 return [
-                    view('components.forms.length', ['old' => $decode])->render(),
+                    view('components.forms.additional.length', ['old' => $decode, 'subIndex' => $request->sub])->render(),
                 ];
                 break;
             case 'Upload File':
                 return [
-                    view('components.forms.file', ['old' => $decode])->render(),
+                    view('components.forms.additional.file', ['old' => $decode, 'subIndex' => $request->sub])->render(),
                 ];
                 break;
-
+            case 'Custom':
+                $criteriaTypes = CriteriaType::whereNotIn('type', ['custom'])->orderBy('type', 'asc')->get();
+                return [
+                    view('components.forms.additional.custom', ['old' => $decode, 'subIndex' => $request->sub, 'criteriaTypes' => $criteriaTypes])->render(),
+                ];
+                break;
             default:
                 return '';
                 break;
@@ -145,9 +157,16 @@ class CriteriaController extends Controller
             }
             $collection = collect($data->criteriaAnswer);
             $indexAnswer = 0;
+            $sub = [];
+            $children = [];
             foreach ($request->data as $item) {
                 $name = $item['name'];
-                if ($name == 'answer[]') {
+                if (str_contains($name, 'sub')) {
+                    $exploded = explode(',', str_replace(['sub', '[', ']'], '', str_replace('][', ',', $name)));
+                    $subName = $exploded[0];
+                    $subIndex = $exploded[1];
+                    $sub[$subIndex][$subName] = $item['value'];
+                } else if ($name == 'answer[]') {
                     if ($indexAnswer < count($data->criteriaAnswer)) {
                         $collection[$indexAnswer]->answer = $item['value'];
                     } else {
@@ -177,6 +196,17 @@ class CriteriaController extends Controller
                 }
             }
             $data->criteriaAnswer = $collection;
+            if (count($sub) > 0) {
+                foreach ($sub as $index => $item) {
+                    $children[$index] = new Criteria();
+                    $children[$index]->id = Str::uuid()->toString();
+                    foreach ($item as $key => $value) {
+                        $children[$index]->$key = $value;
+                    }
+                }
+            }
+            $data->children = count($children) > 0 ? $children : null;
+            // dd($children);
             // dd($data);
             return response()->json([
                 'selector' => $data->id,
@@ -246,7 +276,7 @@ class CriteriaController extends Controller
         $request->merge(['max_length' => $request->max_length]);
         $request->merge(['min_number' => $request->min_number]);
         $request->merge(['max_number' => $request->max_number]);
-        $request->merge(['type_upload' => $request->type_upload]);
+        $request->merge(['is_multiple' => $request->is_multiple]);
         $request->merge(['max_files' => $request->max_files]);
         $request->merge(['max_size' => $request->max_size]);
         $request->merge(['custom_label' => $request->custom_label]);
@@ -288,6 +318,23 @@ class CriteriaController extends Controller
                     }
                 }
             }
+        } else if ($request->has('sub')) {
+            // dd($request->sub);
+            Criteria::where('parent_id', $data->id)->delete();
+            $totalChildren = count($request->sub['name']);
+            for ($indexChildren = 0; $indexChildren < $totalChildren; $indexChildren++) {
+                $child = [];
+                foreach ($request->sub as $key => $value) {
+                    $child[$key] = isset($value[$indexChildren]) ? $value[$indexChildren] : null;
+                }
+                $child['parent_id'] = $data->id;
+                $child['child_order'] = $indexChildren + 1;
+                // if ($indexChildren != 0) {
+                //     dd($child, $request->sub);
+                // }
+                Criteria::create($child);
+            }
+            // dd(Criteria::where('parent_id', $data->id)->get());
         } else {
             if (count($data->criteriaAnswer)) {
                 foreach ($data->criteriaAnswer as $item) {

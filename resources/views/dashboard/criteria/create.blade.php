@@ -20,13 +20,10 @@
 @endsection
 
 @section('css')
-    {{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
     <style>
-        .dropzone {
+        /* .dropzone {
             border: var(--tblr-border-width) dashed var(--tblr-border-color);
-        }
+        } */
         .form-floating .ts-wrapper.form-control, .form-floating .ts-wrapper.form-select {
             padding-top: 22px !important;
             padding-left: 4px !important;
@@ -41,11 +38,6 @@
 @endsection
 
 @section('script')
-    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
-    <script src="{{ asset('assets/js/dropzone/config.dropzone.js') }}"></script>
     <script>
         function getAdditional(val) {
             $.ajax({
@@ -65,6 +57,29 @@
             });
         }
 
+        function getAdditionalCustom(selector) {
+            $.ajax({
+                url: "{{ route($prefix . '.form.additional') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    type: selector.val().trim(),
+                    old: '{{ json_encode(old()) }}',
+                    sub: $(selector.parent().parent().find('.custom-additional-form-container')[0]).parent().data('index'),
+                },
+                success: function(response) {
+                    if (response) {
+                        $(selector.parent().parent().find('.custom-additional-form-container')[0]).addClass('d-block').removeClass('d-none').html(response);
+                    } else {
+                        $(selector.parent().parent().find('.custom-additional-form-container')[0]).removeClass('d-block').addClass('d-none').html('');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr, status, error);
+                }
+            });
+        }
+
         function previewForm() {
             setTimeout(() => {
                 const data = $('#form-create').serializeArray();
@@ -77,6 +92,21 @@
                     },
                     success: function({html, selector}) {
                         $('#preview-form .card-body').html(html);
+
+                        $('.filepond').filepond();
+                        document.querySelectorAll('#example-form #form-custom-view-container .tomselect--').forEach((item) => {
+                            new TomSelect(item);
+                            item.tomselect.sync();
+                        });
+                        document.querySelectorAll('#example-form #form-custom-view-container .tomselect-tags--').forEach((item) => {
+                            new TomSelect(item, {
+                                persist: false,
+                                createOnBlur: true,
+                                create: true
+                            });
+                            item.tomselect.sync();
+                        });
+                        initPicker();
                     },
                     error: function(xhr, status, error) {
                         console.log(xhr, status, error);
@@ -86,7 +116,7 @@
         }
 
         $(document).ready(function() {
-            new TomSelect('.tomselect--');
+            new TomSelect('select#criteria_type_id.tomselect--');
             if ($('#criteria_type_id').val().trim()) {
                 getAdditional($('#criteria_type_id').val());
             }
@@ -125,24 +155,61 @@
                     $('#additional-content #answer-content button#remove-answer').removeClass('disabled')
                 }
             });
-            $('body').on('change', 'input[type="radio"][name="format"]', function() {
-                if ($('input[type="radio"][name="format"]:checked').val() == 0) {
-                    $('#format_file').removeAttr('disabled');
-                    new TomSelect('#format_file');
+            $('body').on('change', 'input[type="radio"][name="format"], input[type="radio"].form-check-input.input-format', function() {
+                const selector = $(this).parent().parent().find('select');
+                if ($(this).val() == 0) {
+                    $(selector).removeAttr('disabled');
+                    selector[0].tomselect.enable();
                 } else {
-                    $('#format_file').attr('disabled', 'disabled').val(null).trigger('change');
+                    $(selector).attr('disabled', 'disabled');
+                    selector[0].tomselect.disable();
                 }
             });
-            $('body').on('change', 'input[type="radio"][name="type_upload"]', function() {
-                if ($('input[type="radio"][name="type_upload"]:checked').val() == 1) {
-                    $('input[name="max_files"]').removeAttr('disabled');
+            $('body').on('change', 'input[type="radio"][name="is_multiple"], input[type="radio"].form-check-input.input-is_multiple', function() {
+                if ($(this).val() == 1) {
+                    $(this).parent().parent().next().find('input').removeAttr('disabled');
                 } else {
-                    $('input[name="max_files"]').attr('disabled', 'disabled');
+                    $(this).parent().parent().next().find('input').attr('disabled', 'disabled');
                 }
             });
             $('body #form-content').on('change', 'input, select', function() {
                 previewForm();
             });
+
+            $('body').on('click', 'button#remove-sub', function() {
+                if ($('#additional-content #form-custom-container .form-group').length <= 2) {
+                    $('#additional-content #form-custom-container button#remove-sub').addClass('disabled')
+                    return;
+                }
+                $(this).parent().parent().find('select')[0].tomselect.destroy()
+                $(this).parent().parent().parent().remove();
+                previewForm();
+            });
+            $('body').on('click', 'button#add-sub', function() {
+                const template = $('#custom-template .form-group').last();
+                const subContainer = $('#additional-content #form-custom-container .form-group').last();
+                const subContainerCloned = template.clone();
+                subContainerCloned.find('input').val('');
+                subContainerCloned.find('select').val('');
+                $(subContainerCloned.find('input')[0]).attr('name', 'sub[name][' + ($('#additional-content #form-custom-container .form-group').length + 1) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('input')[1]).attr('name', 'sub[required][' + ($('#additional-content #form-custom-container .form-group').length + 1) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('input')[2]).attr('name', 'sub[required][' + ($('#additional-content #form-custom-container .form-group').length + 1) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('select')[0]).attr('name', 'sub[criteria_type_id][' + ($('#additional-content #form-custom-container .form-group').length + 1) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('select')[0]).parent().data('index', ($('#additional-content #form-custom-container .form-group').length + 1));
+                new TomSelect(subContainerCloned.find('select')[0]);
+                subContainer.after(subContainerCloned);
+                if ($('#additional-content #form-custom-container .form-group').length > 2) {
+                    $('#additional-content #form-custom-container button#remove-sub').removeClass('disabled')
+                }
+            });
+            $('#additional-content').on('change', '#additional-custom-container select', function() {
+                getAdditionalCustom($(this));
+            });
+            setTimeout(() => {
+                $('#additional-content #additional-custom-container #form-custom-container select').each(function() {
+                    getAdditionalCustom($(this));
+                });
+            }, 450);
         });
     </script>
 @endsection

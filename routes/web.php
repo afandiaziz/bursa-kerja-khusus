@@ -46,7 +46,8 @@ Route::prefix('/loker')->name('loker.')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::prefix('/profil')->name('profil.')->group(function () {
         Route::get('/', [ProfilController::class, 'index'])->name('index');
-        Route::post('/', [ProfilController::class, 'update'])->name('update');
+        Route::get('/edit', [ProfilController::class, 'edit'])->name('edit');
+        Route::post('/edit', [ProfilController::class, 'update'])->name('update');
     });
 });
 

@@ -30,12 +30,12 @@ class CriteriaRequest extends FormRequest
             'min_number' => 'nullable|required_with:max_number|numeric',
             'max_number' => 'nullable|numeric|gte:min_number',
         ];
-        if ($this->has('type_upload')) {
+        if ($this->has('is_multiple') && $this->has('format')) {
             $array['max_size'] = 'required|numeric|min:0|max:5';
             $array['format'] = 'boolean';
             $array['format_file'] = 'required_if:format,==,0';
-            $array['max_files'] = 'numeric|min:2|max:10|required_if:type_upload,==,1';
-            $array['type_upload'] = 'boolean';
+            $array['max_files'] = 'numeric|min:2|max:10|required_if:is_multiple,==,1';
+            $array['is_multiple'] = 'boolean';
         }
         if ($this->has('answer')) {
             $array['answer'] = 'required|array|min:2';
@@ -67,7 +67,7 @@ class CriteriaRequest extends FormRequest
             $array['answer.*.required'] = 'Jawaban tidak boleh kosong';
             $array['answer.size'] = 'Minimal Jawaban berjumlah 2';
         }
-        if ($this->has('type_upload')) {
+        if ($this->has('is_multiple')) {
             $array['max_size.required'] = 'Maksimal Size per File tidak boleh kosong';
             $array['max_size.min'] = 'Maksimal Size per File minimal 0 MB';
             $array['max_size.max'] = 'Maksimal Size per File maksimal 5 MB';

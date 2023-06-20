@@ -1,6 +1,6 @@
 function configDropzone(
     clickableElement,
-    type_upload,
+    is_multiple,
     max_files,
     max_size,
     format_file
@@ -24,7 +24,7 @@ function configDropzone(
         maxFilesize: max_size,
         // uploadMultiple: false,
         // maxFiles: 1,
-        uploadMultiple: type_upload,
+        uploadMultiple: is_multiple,
         maxFiles: max_files,
         acceptedFiles: format_file,
         removedfile: function (file) {

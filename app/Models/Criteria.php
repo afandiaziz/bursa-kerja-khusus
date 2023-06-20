@@ -20,7 +20,7 @@ class Criteria extends Model
     protected $casts = [
         'required' => 'boolean',
         'active' => 'boolean',
-        'type_upload' => 'boolean',
+        'is_multiple' => 'boolean',
     ];
 
     public function criteriaType()
@@ -35,7 +35,7 @@ class Criteria extends Model
 
     public function children()
     {
-        return $this->hasMany(Criteria::class, 'parent_id');
+        return $this->hasMany(Criteria::class, 'parent_id')->orderBy('child_order', 'asc');
     }
 
     public function criteriaAnswer()

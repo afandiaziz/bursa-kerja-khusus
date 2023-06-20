@@ -77,6 +77,9 @@ class CriteriaTypeSeeder extends Seeder
             'type' => 'Date Range',
         ]);
         CriteriaType::create([
+            'type' => 'Tags',
+        ]);
+        CriteriaType::create([
             'type' => 'Custom',
         ]);
     }

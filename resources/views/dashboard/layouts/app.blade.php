@@ -21,9 +21,31 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 
+    {{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
+    {{-- <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" /> --}}
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <link href="https://unpkg.com/filepond/dist/filepond.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/css/tempus-dominus.css" rel="stylesheet">
+
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .form-label {
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            color: #6c727f !important;
+            opacity: 1 !important;
+        }
+        .form-floating>.form-control-plaintext~label, .form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label {
+            font-size: 16px !important;
+        }
+        .filepond--credits {
+            display: none !important;
+        }
+        .filepond--root .filepond--list-scroller {
+            margin-top: 3.4em !important;
         }
     </style>
     @yield('css')
@@ -263,6 +285,169 @@
     <br>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+
+    {{-- <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script> --}}
+    {{-- <script src="{{ asset('assets/js/dropzone/config.dropzone.js') }}"></script> --}}
+    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
+    {{-- <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/solid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/fontawesome.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/tempus-dominus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/jQuery-provider.js"></script>
+    <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+    <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js"></script>
+    <script>
+        FilePond.registerPlugin(
+            // encodes the file as base64 data
+            FilePondPluginFileEncode,
+
+            FilePondPluginFileValidateType,
+            FilePondPluginFileValidateSize,
+            // corrects mobile image orientation
+            FilePondPluginImageExifOrientation,
+            // previews dropped images
+            FilePondPluginImagePreview
+        );
+        // Select the file input and use create() to turn it into a pond
+        function initPicker() {
+            $('.datetimepicker-dateonly').tempusDominus({
+                localization: {
+                    locale: 'id',
+                    format: 'dd/MM/yyyy',
+                    dayViewHeaderFormat: 'MMMM yyyy',
+                },
+                display: {
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        clock: false,
+                        hours: false,
+                        minutes: false,
+                        seconds: false,
+                    },
+                    theme: 'light'
+                }
+            });
+            $('.datetimepicker-dateonly').on('show.td', function(e) {
+                $('.tempus-dominus-widget .calendar-header').addClass('d-flex justify-content-between')
+            });
+            $('.datetimepicker-houronly').tempusDominus({
+                localization: {
+                    locale: 'id',
+                    format: 'HH',
+                },
+                display: {
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        calendar: false,
+                        date: false,
+                        month: false,
+                        year: false,
+                        decades: false,
+                        clock: true,
+                        hours: true,
+                        minutes: false,
+                        seconds: false,
+                    },
+                    theme: 'light'
+                }
+            });
+            $('.datetimepicker-timeonly').tempusDominus({
+                localization: {
+                    locale: 'id',
+                    format: 'HH:mm',
+                },
+                display: {
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        calendar: false,
+                        date: false,
+                        month: false,
+                        year: false,
+                        decades: false,
+                        clock: true,
+                        hours: true,
+                        minutes: true,
+                        seconds: false,
+                    },
+                    theme: 'light'
+                }
+            });
+            $('.datetimepicker-datetime').tempusDominus({
+                localization: {
+                    locale: 'id',
+                    format: 'dd/MM/yyyy HH:mm:00',
+                    dayViewHeaderFormat: 'MMMM yyyy',
+                },
+                display: {
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        calendar: true,
+                        date: true,
+                        month: true,
+                        year: true,
+                        decades: true,
+                        clock: true,
+                        hours: true,
+                        minutes: true,
+                        seconds: false,
+                    },
+                    theme: 'light'
+                }
+            });
+            $('.datetimepicker-datetime').on('show.td', function(e) {
+                $('.tempus-dominus-widget .calendar-header').addClass('d-flex justify-content-between')
+            });
+            $('.datetimepicker-minutesecondonly').tempusDominus({
+                localization: {
+                    locale: 'id',
+                    format: 'mm:ss',
+                },
+                display: {
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        calendar: false,
+                        date: false,
+                        month: false,
+                        year: false,
+                        decades: false,
+                        clock: true,
+                        hours: false,
+                        minutes: true,
+                        seconds: true,
+                    },
+                    theme: 'light'
+                }
+            });
+        }
+    </script>
     @yield('script')
     @stack('form-script')
 </body>

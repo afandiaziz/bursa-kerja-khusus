@@ -25,7 +25,24 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
-
+        .form-label {
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            color: #6c727f !important;
+            opacity: 1 !important;
+        }
+        .form-floating>.form-control-plaintext~label, .form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label {
+            font-size: 16px !important;
+        }
+        .filepond--credits {
+            display: none !important;
+        }
+        .filepond--root .filepond--list-scroller {
+            margin-top: 3.4em !important;
+        }
+        .filepond--root .filepond--drop-label {
+            transform: translate3d(0px, 15px, 0px) !important;
+        }
     </style>
     @yield('css')
 </head>
