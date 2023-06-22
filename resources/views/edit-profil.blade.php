@@ -62,8 +62,9 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     <link href="https://unpkg.com/filepond/dist/filepond.min.css" rel="stylesheet">
     <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
     <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js"></script>
@@ -72,6 +73,13 @@
     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/solid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/fontawesome.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/tempus-dominus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/jQuery-provider.js"></script>
 
     <style>
         .dropzone {
@@ -89,30 +97,24 @@
             color: #ffffff;
         }
     </style>
-    <script>
-        let defaultFiles = [];
-        FilePond.registerPlugin(
-            // encodes the file as base64 data
-            // FilePondPluginFileEncode,
 
-            FilePondPluginFileValidateType,
-            FilePondPluginFileValidateSize,
-            // corrects mobile image orientation
-            FilePondPluginImageExifOrientation,
-            // previews dropped images
-            FilePondPluginImagePreview
-        );
-    </script>
-@endsection
-
-@section('script')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/solid.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/fontawesome.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/tempus-dominus.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/jQuery-provider.js"></script>
     <script>
-        function initPicker() {
+        function initPicker(i = null, type = null) {
+            let currentValue = moment();
+            if (i) {
+                if (type == 'daterangepicker-dateonly' && $(i).val().trim()) {
+                    currentValue = moment(`${$(i).val().split(' - ')[0].split('/')[1]+'/'+$(i).val().split(' - ')[0].split('/')[0]+'/'+$(i).val().split(' - ')[0].split('/')[2]}`)
+                }
+            }
+            $('input.daterangepicker-dateonly').daterangepicker({
+                showDropdowns: true,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                },
+                ranges: {
+                    'Today': [ currentValue, moment() ],
+                }
+            });
             $('.datetimepicker-dateonly').tempusDominus({
                 localization: {
                     locale: 'id',
@@ -243,8 +245,26 @@
             });
         }
     </script>
+
+    <script>
+        let defaultFiles = [];
+        FilePond.registerPlugin(
+            // encodes the file as base64 data
+            // FilePondPluginFileEncode,
+
+            FilePondPluginFileValidateType,
+            FilePondPluginFileValidateSize,
+            // corrects mobile image orientation
+            FilePondPluginImageExifOrientation,
+            // previews dropped images
+            FilePondPluginImagePreview
+        );
+        initPicker();
+    </script>
+@endsection
+
+@section('script')
     <script>
         $('#cv.filepond').filepond();
-        initPicker();
     </script>
 @endsection

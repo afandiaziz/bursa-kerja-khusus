@@ -213,6 +213,17 @@
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
                 @break
+                @case('Date Range')
+                    <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
+                        {{ $data->required ? 'required' : '' }} readonly class="form-control daterangepicker-dateonly cursor-pointer"
+                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value : '' }}">
+                    <label for="{{ $data->id }}" class="form-label">
+                        {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
+                    </label>
+                    <script>
+                        initPicker('input#{{ $data->id }}[name="{{ $data->id }}"].daterangepicker-dateonly', 'daterangepicker-dateonly');
+                    </script>
+                @break
                 @case('Tanggal')
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
                         min="{{ $data->min_number }}" max="{{ $data->max_number }}"

@@ -27,6 +27,7 @@
     <link href="https://unpkg.com/filepond/dist/filepond.min.css" rel="stylesheet">
     <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/css/tempus-dominus.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <style>
         body {
@@ -304,6 +305,10 @@
     <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js"></script>
     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
     <script>
         FilePond.registerPlugin(
             // encodes the file as base64 data
@@ -318,6 +323,12 @@
         );
         // Select the file input and use create() to turn it into a pond
         function initPicker() {
+            $('input.daterangepicker-dateonly').daterangepicker({
+                showDropdowns: true,
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
+            });
             $('.datetimepicker-dateonly').tempusDominus({
                 localization: {
                     locale: 'id',
