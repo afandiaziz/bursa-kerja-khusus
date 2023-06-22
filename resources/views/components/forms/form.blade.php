@@ -35,55 +35,60 @@
                     </div>
                 </div>
             @else
-                <div class="row">
-                    @foreach (Auth::user()->user_details_child($data->id)->where('criteria_id', $data->children->firstOrFail()->id)->select('index')->orderBy('index', 'desc')->get() as $item)
-                        <div class="col-md-12 my-1" data-index="{{ $item->index }}">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <div class="d-flex align-items-baseline">
-                                        <div class="me-2">
-                                            <div style="font-size: 36px" class="text-blue">&bullet;</div>
-                                        </div>
-                                        <div>
-                                            @foreach ($data->children as $index => $child)
-                                                <div class="{{ $index == 0 ? 'fs-3 fw-medium' : 'mt-1' }}">
-                                                    @php
-                                                        $valueChildByIndex = Auth::user()->user_details_child($data->id)->where('criteria_id', $child->id)->where('index', $item->index)->first();
-                                                    @endphp
-                                                    {{ $valueChildByIndex ? $valueChildByIndex?->value : '-' }}
-                                                </div>
-                                            @endforeach
+                @php
+                    $data->children = is_array($data->children) ? collect($data->children) : $data->children
+                @endphp
+                @if (Auth::user()->user_details_child($data->id)->where('criteria_id', $data->children->first()->id)->count() > 0)
+                    <div class="row">
+                        @foreach (Auth::user()->user_details_child($data->id)->where('criteria_id', $data->children->firstOrFail()->id)->select('index')->orderBy('index', 'desc')->get() as $item)
+                            <div class="col-md-12 my-1" data-index="{{ $item->index }}">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="d-flex align-items-baseline">
+                                            <div class="me-2">
+                                                <div style="font-size: 36px" class="text-blue">&bullet;</div>
+                                            </div>
+                                            <div>
+                                                @foreach ($data->children as $index => $child)
+                                                    <div class="{{ $index == 0 ? 'fs-3 fw-medium' : 'mt-1' }}">
+                                                        @php
+                                                            $valueChildByIndex = Auth::user()->user_details_child($data->id)->where('criteria_id', $child->id)->where('index', $item->index)->first();
+                                                        @endphp
+                                                        {{ $valueChildByIndex ? $valueChildByIndex?->value : '-' }}
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="ms-auto">
-                                    <div class="d-flex pt-3">
-                                        <div class="btn btn-link me-1" role="button" id="button-form-custom-edit-{{ $data->id }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
-                                                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path>
-                                                <path d="M16 5l3 3"></path>
-                                            </svg>
-                                            Edit
-                                        </div>
-                                        <div class="btn btn-link text-danger" role="button" id="button-form-custom-delete-{{ $data->id }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                <path d="M4 7l16 0"></path>
-                                                <path d="M10 11l0 6"></path>
-                                                <path d="M14 11l0 6"></path>
-                                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
-                                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
-                                            </svg>
-                                            Hapus
+                                    <div class="ms-auto">
+                                        <div class="d-flex pt-3">
+                                            <div class="btn btn-link me-1" role="button" id="button-form-custom-edit-{{ $data->id }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
+                                                    <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path>
+                                                    <path d="M16 5l3 3"></path>
+                                                </svg>
+                                                Edit
+                                            </div>
+                                            <div class="btn btn-link text-danger" role="button" id="button-form-custom-delete-{{ $data->id }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M4 7l16 0"></path>
+                                                    <path d="M10 11l0 6"></path>
+                                                    <path d="M14 11l0 6"></path>
+                                                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
+                                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
+                                                </svg>
+                                                Hapus
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
-                </div>
+                        @endforeach
+                    </div>
+                @endif
                 <script>
                     $('div#button-form-custom-store-{{ $data->id }}').click(function (){
                         fetch(`{{ route('profil.load.modal.custom') }}`, {
@@ -216,6 +221,9 @@
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
+                    <script>
+                        initPicker();
+                    </script>
                 @break
                 @case('Tanggal dan Waktu')
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
@@ -225,6 +233,9 @@
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
+                    <script>
+                        initPicker();
+                    </script>
                 @break
                 @case('Waktu')
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
@@ -234,6 +245,9 @@
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
+                    <script>
+                        initPicker();
+                    </script>
                 @break
                 @case('Jam')
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
@@ -243,6 +257,9 @@
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
+                    <script>
+                        initPicker();
+                    </script>
                 @break
                 @case('Menit/Detik')
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
@@ -252,6 +269,9 @@
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
+                    <script>
+                        initPicker();
+                    </script>
                 @break
                 @case('Angka')
                     <input type="number" id="{{ $data->id }}" name="{{ $data->id }}"
