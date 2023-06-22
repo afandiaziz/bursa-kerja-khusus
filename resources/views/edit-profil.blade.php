@@ -46,7 +46,7 @@
                             <div class="form-floating form-group mt-3">
                                 <input type="file" class="filepond" id="cv" name="cv" data-max-file-size="2MB" accept="application/pdf">
                                 <label for="cv" class="form-label">
-                                    CV <span class="text-danger">*</span>
+                                    CV
                                 </label>
                             </div>
                         </div>
@@ -264,7 +264,25 @@
 @endsection
 
 @section('script')
+    @if (Auth::user()->cv && file_exists(public_path('assets/upload/cv/' . Auth::user()->cv)))
+        <script>
+            const cv = [{
+                source: '{{ url("assets/upload/cv/".Auth::user()->cv) }}',
+                options: {
+                    type: 'input',
+                },
+            }]
+        </script>
+    @else
+        <script>
+            const cv = []
+        </script>
+    @endif
     <script>
-        $('#cv.filepond').filepond();
+        $('#cv.filepond').filepond({
+            storeAsFile: true,
+            files: cv,
+
+        });
     </script>
 @endsection

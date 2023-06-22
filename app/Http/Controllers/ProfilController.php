@@ -128,10 +128,27 @@ class ProfilController extends Controller
 
     public function update(Request $request)
     {
-        // dd($request->all());
-        User::where('id', Auth::user()->id)->update([
+        $request->validate([
+            'name' => 'required',
+        ]);
+        Auth::user()->update([
             'name' => $request->name,
         ]);
+
+        if ($request->hasFile('cv')) {
+            $file = $request->file('cv');
+            $fileName = time() . '-' . Auth::user()->id . '.' . $file->getClientOriginalExtension();
+            if (file_exists(public_path('assets/upload/cv/' . Auth::user()->cv)) && Auth::user()->cv) {
+                unlink(public_path('assets/upload/cv/' . Auth::user()->cv));
+            }
+
+            if ($file->move(public_path('assets/upload/cv/'), $fileName)) {
+                Auth::user()->update([
+                    'cv' => $fileName,
+                ]);
+            }
+        }
+
         $userDetail = $request->except('_token', 'name', 'cv');
         $fileName = null;
         $path = null;
