@@ -187,19 +187,20 @@
             });
             $('body').on('click', 'button#add-sub', function() {
                 const template = $('#custom-template .form-group').last();
-                const subContainer = $('#additional-content #form-custom-container .form-group').last();
+                const subContainer = $('#additional-content #form-custom-container > .form-group').last();
+                const index = $('#additional-content #form-custom-container > .form-group').length;
                 const subContainerCloned = template.clone();
-                subContainerCloned.find('input').val('');
+                subContainerCloned.find('input[type="text"]').val('');
                 subContainerCloned.find('select').val('');
-                $(subContainerCloned.find('input')[0]).attr('name', 'sub[name][' + ($('#additional-content #form-custom-container .form-group').length + 1) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
-                $(subContainerCloned.find('input')[1]).attr('name', 'sub[required][' + ($('#additional-content #form-custom-container .form-group').length + 1) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
-                $(subContainerCloned.find('input')[2]).attr('name', 'sub[required][' + ($('#additional-content #form-custom-container .form-group').length + 1) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
-                $(subContainerCloned.find('select')[0]).attr('name', 'sub[criteria_type_id][' + ($('#additional-content #form-custom-container .form-group').length + 1) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
-                $(subContainerCloned.find('select')[0]).parent().data('index', ($('#additional-content #form-custom-container .form-group').length + 1));
+                $(subContainerCloned.find('input')[0]).attr('name', 'sub[name][' + (index) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('input')[1]).attr('name', 'sub[required][' + (index) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('input')[2]).attr('name', 'sub[required][' + (index) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('select')[0]).attr('name', 'sub[criteria_type_id][' + (index) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
+                $(subContainerCloned.find('select')[0]).parent().data('index', (index));
                 new TomSelect(subContainerCloned.find('select')[0]);
                 subContainer.after(subContainerCloned);
-                if ($('#additional-content #form-custom-container .form-group').length > 2) {
-                    $('#additional-content #form-custom-container button#remove-sub').removeClass('disabled')
+                if (index > 2) {
+                    $('#additional-content #form-custom-container button#remove-sub').removeClass('disabled');
                 }
             });
             $('#additional-content').on('change', '#additional-custom-container select', function() {

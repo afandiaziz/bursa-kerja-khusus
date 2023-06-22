@@ -237,7 +237,19 @@ class CriteriaController extends Controller
                     'answer' => $answer,
                 ]);
             }
+        } else if ($request->has('sub')) {
+            foreach ($request->sub['name'] as $indexChildren => $name) {
+                $child = [];
+                foreach ($request->sub as $key => $value) {
+                    $child[$key] = isset($value[$indexChildren]) ? $value[$indexChildren] : null;
+                }
+                Criteria::updateOrCreate([
+                    'parent_id' => $created->id,
+                    'child_order' => ($indexChildren + 1),
+                ], $child);
+            }
         }
+
         if ($created) {
             return redirect()->route('criteria.index')->with('alert-success', 'Berhasil menambahkan kriteria baru');
         } else {
