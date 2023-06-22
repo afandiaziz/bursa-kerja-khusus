@@ -321,8 +321,7 @@ class CriteriaController extends Controller
         } else if ($request->has('sub')) {
             // dd($request->sub);
             Criteria::where('parent_id', $data->id)->delete();
-            $totalChildren = count($request->sub['name']);
-            for ($indexChildren = 0; $indexChildren < $totalChildren; $indexChildren++) {
+            for ($indexChildren = 0; $indexChildren < count($request->sub['name']); $indexChildren++) {
                 $child = [];
                 foreach ($request->sub as $key => $value) {
                     $child[$key] = isset($value[$indexChildren]) ? $value[$indexChildren] : null;

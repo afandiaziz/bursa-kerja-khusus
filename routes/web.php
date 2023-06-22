@@ -48,6 +48,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [ProfilController::class, 'index'])->name('index');
         Route::get('/edit', [ProfilController::class, 'edit'])->name('edit');
         Route::post('/edit', [ProfilController::class, 'update'])->name('update');
+        Route::post('/store/custom', [ProfilController::class, 'storeValueCustom'])->name('store.custom');
+        Route::post('/update/custom', [ProfilController::class, 'updateValueCustom'])->name('update.custom');
+        Route::delete('/delete/custom', [ProfilController::class, 'deleteValueCustom'])->name('delete.custom');
+
+        Route::post('/load/modal/custom', [ProfilController::class, 'loadModalCustom'])->name('load.modal.custom');
     });
 });
 

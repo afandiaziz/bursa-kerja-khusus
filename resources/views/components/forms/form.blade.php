@@ -1,13 +1,13 @@
 @switch($data->criteriaType->type)
     @case('Custom')
         <div class="form-group my-2 border-top border-bottom py-3">
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center justify-content-between">
                 <div class="fs-3 fw-bold">
                     {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                 </div>
                 @if ($data->is_multiple)
                     <div class="ms-auto">
-                        <div class="cursor-pointer btn btn-link border" role="button" data-bs-toggle="modal" data-bs-target="#modal-{{ $data->id }}">
+                        <div class="cursor-pointer btn btn-link border" id="button-form-custom-store-{{ $data->id }}" role="button">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                 <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
@@ -19,6 +19,7 @@
                     </div>
                 @endif
             </div>
+            <hr class="mt-3 mb-0">
             @if (!$data->is_multiple)
                 <div class="row">
                     <div class="col-md-6">
@@ -34,36 +35,135 @@
                     </div>
                 </div>
             @else
-                <div class="modal modal-blur fade" id="modal-{{ $data->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <form action="{{ route('profil.update') }}" method="post" enctype="multipart/form-data" target="_blank">
-                                @csrf
-                                <div class="modal-header">
-                                    <h5 class="modal-title">
-                                        Tambah {{ $data->name }}
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body py-2">
-                                    <div class="mt-2" id="form-custom-view-container">
-                                        @foreach ($data->children as $index => $item)
-                                            @if ($item->criteria_type_id)
-                                                <div class="my-3">
-                                                    @include('components.forms.form', ['data' => $item, 'custom' => true])
+                <div class="row">
+                    @foreach (Auth::user()->user_details_child($data->id)->where('criteria_id', $data->children->firstOrFail()->id)->select('index')->orderBy('index', 'desc')->get() as $item)
+                        <div class="col-md-12 my-1" data-index="{{ $item->index }}">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="d-flex align-items-baseline">
+                                        <div class="me-2">
+                                            <div style="font-size: 36px" class="text-blue">&bullet;</div>
+                                        </div>
+                                        <div>
+                                            @foreach ($data->children as $index => $child)
+                                                <div class="{{ $index == 0 ? 'fs-3 fw-medium' : 'mt-1' }}">
+                                                    @php
+                                                        $valueChildByIndex = Auth::user()->user_details_child($data->id)->where('criteria_id', $child->id)->where('index', $item->index)->first();
+                                                    @endphp
+                                                    {{ $valueChildByIndex ? $valueChildByIndex?->value : '-' }}
                                                 </div>
-                                            @endif
-                                        @endforeach
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn me-auto" data-bs-dismiss="modal">Tutup</button>
-                                    <button type="submit" class="btn btn-success">Simpan</button>
+                                <div class="ms-auto">
+                                    <div class="d-flex pt-3">
+                                        <div class="btn btn-link me-1" role="button" id="button-form-custom-edit-{{ $data->id }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
+                                                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path>
+                                                <path d="M16 5l3 3"></path>
+                                            </svg>
+                                            Edit
+                                        </div>
+                                        <div class="btn btn-link text-danger" role="button" id="button-form-custom-delete-{{ $data->id }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M4 7l16 0"></path>
+                                                <path d="M10 11l0 6"></path>
+                                                <path d="M14 11l0 6"></path>
+                                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
+                                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
+                                            </svg>
+                                            Hapus
+                                        </div>
+                                    </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
+                <script>
+                    $('div#button-form-custom-store-{{ $data->id }}').click(function (){
+                        fetch(`{{ route('profil.load.modal.custom') }}`, {
+                            method: 'post',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': `{{ csrf_token() }}`
+                            },
+                            body: JSON.stringify({
+                                criteria: '{{ $data->id }}',
+                            })
+                        }).then(response => response.json()).then(({message, view}) => {
+                            if (message == 'success') {
+                                $('body div#modal-{{ $data->id }}').remove();
+                                $('body').append(view);
+                                $('body div#modal-{{ $data->id }} .modal-title span').text('Tambah');
+                                $('body div#modal-{{ $data->id }}').modal({
+                                    backdrop: 'static',
+                                    keyboard: false
+                                }).modal('show');
+                            }
+                        });
+                    });
+                    $('div#button-form-custom-edit-{{ $data->id }}').click(function (){
+                        const parent = $(this).parent().parent().parent().parent();
+                        fetch(`{{ route('profil.load.modal.custom') }}`, {
+                            method: 'post',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': `{{ csrf_token() }}`
+                            },
+                            body: JSON.stringify({
+                                criteria: '{{ $data->id }}',
+                                index: parent.data('index'),
+                            })
+                        }).then(response => response.json()).then(({message, view}) => {
+                            if (message == 'success') {
+                                $('body div#modal-{{ $data->id }}').remove();
+                                $('body').append(view);
+                                $('body div#modal-{{ $data->id }} .modal-title span').text('Edit');
+                                $('body div#modal-{{ $data->id }}').modal({
+                                    backdrop: 'static',
+                                    keyboard: false
+                                }).modal('show');
+                            }
+                        });
+                    });
+                    $('div#button-form-custom-delete-{{ $data->id }}').click(function (){
+                        Swal.fire({
+                            title: 'Hapus informasi ini?',
+                            html: "Informasi ini akan hilang selamanya.<br> Yakin mau menghapusnya?",
+                            showCancelButton: true,
+                            reverseButtons: true,
+                            confirmButtonText: 'Hapus',
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonText: 'Batal',
+                        }).then(({isConfirmed}) => {
+                            const parent = $(this).parent().parent().parent().parent();
+                            if (isConfirmed) {
+                                fetch(`{{ route('profil.delete.custom') }}`, {
+                                    method: 'delete',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': `{{ csrf_token() }}`
+                                    },
+                                    body: JSON.stringify({
+                                        parent: '{{ $data->id }}',
+                                        index: parent.data('index')
+                                    })
+                                }).then(response => response.json()).then(({message}) => {
+                                    if (message == 'success') {
+                                        parent.fadeOut(300, function () {
+                                            parent.remove();
+                                        });
+                                    }
+                                })
+                            }
+                        })
+                    });
+                </script>
             @endif
         </div>
     @break
@@ -76,7 +176,7 @@
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
                         minlength="{{ $data->min_length }}" maxlength="{{ $data->max_length }}"
                         {{ $data->required ? 'required' : '' }} class="form-control tomselect-tags--"
-                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value : '' }}">
+                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value : '' }}">
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
@@ -94,7 +194,7 @@
                 @break
                 @case('Email')
                     <input type="email" id="{{ $data->id }}" name="{{ $data->id }}" {{ $data->required ? 'required' : '' }} class="form-control"
-                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value : '' }}">
+                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value : '' }}">
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
@@ -103,7 +203,7 @@
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
                         minlength="{{ $data->min_length }}" maxlength="{{ $data->max_length }}"
                         {{ $data->required ? 'required' : '' }} class="form-control"
-                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value : '' }}">
+                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value : '' }}">
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
@@ -112,7 +212,7 @@
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
                         min="{{ $data->min_number }}" max="{{ $data->max_number }}"
                         {{ $data->required ? 'required' : '' }} readonly class="form-control datetimepicker-dateonly cursor-pointer"
-                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value : '' }}">
+                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value : '' }}">
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
@@ -121,7 +221,7 @@
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
                         min="{{ $data->min_number }}" max="{{ $data->max_number }}"
                         {{ $data->required ? 'required' : '' }} readonly class="form-control datetimepicker-datetime cursor-pointer"
-                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value : '' }}">
+                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value : '' }}">
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
@@ -130,7 +230,7 @@
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
                         min="{{ $data->min_number }}" max="{{ $data->max_number }}"
                         {{ $data->required ? 'required' : '' }} readonly class="form-control datetimepicker-timeonly cursor-pointer"
-                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value : '' }}">
+                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value : '' }}">
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
@@ -139,7 +239,7 @@
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
                         min="{{ $data->min_number }}" max="{{ $data->max_number }}"
                         {{ $data->required ? 'required' : '' }} readonly class="form-control datetimepicker-houronly cursor-pointer"
-                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value : '' }}">
+                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value : '' }}">
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
@@ -148,7 +248,7 @@
                     <input type="text" id="{{ $data->id }}" name="{{ $data->id }}"
                         min="{{ $data->min_number }}" max="{{ $data->max_number }}"
                         {{ $data->required ? 'required' : '' }} readonly class="form-control datetimepicker-minutesecondonly cursor-pointer"
-                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value : '' }}">
+                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value : '' }}">
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
@@ -158,14 +258,14 @@
                         minlength="{{ $data->min_length }}" maxlength="{{ $data->max_length }}"
                         min="{{ $data->min_number }}" max="{{ $data->max_number }}"
                         {{ $data->required ? 'required' : '' }} class="form-control"
-                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value : '' }}">
+                        value="{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value : '' }}">
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
                 @break
                 @case('Teks Panjang')
                     <textarea id="{{ $data->id }}" name="{{ $data->id }}" rows="3" class="form-control"
-                        {{ $data->required ? 'required' : '' }}>{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value : ''}}</textarea>
+                        {{ $data->required ? 'required' : '' }}>{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value : ''}}</textarea>
                     <label for="{{ $data->id }}" class="form-label">
                         {{ $data->name }} {!! $data->required ? '<span class="text-danger">*</span>' : '' !!}
                     </label>
@@ -181,7 +281,7 @@
                             <label class="form-check">
                                 <input class="form-check-input" type="radio" name="{{ $data->id }}"
                                     value="{{ $item->id }}" {{ $data->required ? 'required' : '' }}
-                                    {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value == $item->id ? 'checked' : '' }}>
+                                    {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value == $item->id ? 'checked' : '' }}>
                                 <span class="form-check-label">{{ $item->answer }}</span>
                             </label>
                         </div>
@@ -197,13 +297,13 @@
                         <label class="form-check">
                             <input class="form-check-input" type="radio" name="{{ $data->id }}" value="1"
                                 {{ $data->required ? 'required' : '' }}
-                                {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value == '1' ? 'checked' : '' }}>
+                                {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value == '1' ? 'checked' : '' }}>
                             <span class="form-check-label">Ya</span>
                         </label>
                         <label class="form-check">
                             <input class="form-check-input" type="radio" name="{{ $data->id }}" value="0"
                                 {{ $data->required ? 'required' : '' }}
-                                {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value == '0' ? 'checked' : '' }}>
+                                {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value == '0' ? 'checked' : '' }}>
                             <span class="form-check-label">Tidak</span>
                         </label>
                     </div>
@@ -216,7 +316,7 @@
                             </label>
                         </div>
                         @php
-                            $selectedValue = Auth::check() ? explode(',', Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value) : [];
+                            $selectedValue = Auth::check() ? explode(',', Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value) : [];
                         @endphp
                         @foreach ($data->criteriaAnswer as $item)
                             <div class="col-auto">
@@ -237,7 +337,7 @@
                         <option value="">Pilih</option>
                         @foreach ($data->criteriaAnswer as $item)
                             <option value="{{ $item->id ? $item->id : $item->answer }}"
-                                {{ Auth::check() && $item->id && Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value == $item->id ? 'selected' : '' }}>
+                                {{ Auth::check() && $item->id && Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value == $item->id ? 'selected' : '' }}>
                                 {{ $item->answer }}
                             </option>
                         @endforeach
@@ -255,7 +355,7 @@
                 @break
                 @case('Pilihan (Multiple Dropdown)')
                     @php
-                        $selectedValue = Auth::check() ? explode(',', Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value) : [];
+                        $selectedValue = Auth::check() ? explode(',', Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value) : [];
                     @endphp
                     <select name="{{ $data->id }}[]" id="{{ $data->id }}" class="form-select mt-3 tomselect--"
                         {{ $data->required ? 'required' : '' }} multiple>
@@ -282,7 +382,7 @@
                     <select name="{{ $data->id }}" id="{{ $data->id }}" class="form-select tomselect--" {{ $data->required ? 'required' : '' }}>
                         <option value="">Pilih</option>
                         @foreach ($sourceData as $month)
-                            <option value="{{ $month }}" {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value == $month ? 'selected' : '' }}>
+                            <option value="{{ $month }}" {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value == $month ? 'selected' : '' }}>
                                 {{ $month }}
                             </option>
                         @endforeach
@@ -305,7 +405,7 @@
                     <select name="{{ $data->id }}" id="{{ $data->id }}" class="form-select tomselect--" {{ $data->required ? 'required' : '' }}>
                         <option value="">Pilih</option>
                         @foreach ($sourceData as $month)
-                            <option value="{{ $month }}" {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value == $month ? 'selected' : '' }}>
+                            <option value="{{ $month }}" {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value == $month ? 'selected' : '' }}>
                                 {{ $month }}
                             </option>
                         @endforeach
@@ -325,7 +425,7 @@
                     <select name="{{ $data->id }}" id="{{ $data->id }}" class="form-select tomselect--" {{ $data->required ? 'required' : '' }}>
                         <option value="">Pilih</option>
                         @for ($date = 1; $date <= 31; $date++)
-                            <option value="{{ $date }}" {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value == $date ? 'selected' : '' }}>
+                            <option value="{{ $date }}" {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value == $date ? 'selected' : '' }}>
                                 {{ $date }}
                             </option>
                         @endfor
@@ -345,7 +445,7 @@
                     <select name="{{ $data->id }}" id="{{ $data->id }}" class="form-select tomselect--" {{ $data->required ? 'required' : '' }}>
                         <option value="">Pilih</option>
                         @for ($sourceData = 1; $sourceData <= 12; $sourceData++)
-                            <option value="{{ $sourceData }}" {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value == $sourceData ? 'selected' : '' }}>
+                            <option value="{{ $sourceData }}" {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value == $sourceData ? 'selected' : '' }}>
                                 {{ $sourceData }}
                             </option>
                         @endfor
@@ -365,7 +465,7 @@
                     <select name="{{ $data->id }}" id="{{ $data->id }}" class="form-select tomselect--" {{ $data->required ? 'required' : '' }}>
                         <option value="">Pilih</option>
                         @for ($sourceData = 1945; $sourceData <= (date('Y') + 100); $sourceData++)
-                            <option value="{{ $sourceData }}" {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->first()?->value == $sourceData ? 'selected' : '' }}>
+                            <option value="{{ $sourceData }}" {{ Auth::check() && Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->value == $sourceData ? 'selected' : '' }}>
                                 {{ $sourceData }}
                             </option>
                         @endfor
@@ -399,7 +499,7 @@
                     @endphp
                     <script>
                         defaultFiles = [];
-                        "{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->first()?->filename : '' }}".split(',').forEach(file => {
+                        "{{ Auth::check() ? Auth::user()->user_details->where('criteria_id', $data->id)->where('index', ($data->index ? $data->index : null))->first()?->filename : '' }}".split(',').forEach(file => {
                             if (file) {
                                 defaultFiles.push({
                                     source: '{{ url("assets/upload/$data->id") }}' + '/' + file,

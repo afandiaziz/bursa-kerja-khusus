@@ -43,11 +43,11 @@
                 <div class="col-3">
                     <div class="card">
                         <div class="card-body color-blue">
-                            <label for="cv" class="form-label">
-                                CV <span class="text-danger">*</span>
-                            </label>
-                            <div class="form-floating form-group my-2">
+                            <div class="form-floating form-group mt-3">
                                 <input type="file" class="filepond" id="cv" name="cv" data-max-file-size="2MB" accept="application/pdf">
+                                <label for="cv" class="form-label">
+                                    CV <span class="text-danger">*</span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -62,6 +62,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     <link href="https://unpkg.com/filepond/dist/filepond.min.css" rel="stylesheet">
     <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
     <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
@@ -243,6 +244,7 @@
         }
     </script>
     <script>
+        $('#cv.filepond').filepond();
         initPicker();
     </script>
 @endsection

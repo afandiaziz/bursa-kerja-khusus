@@ -33,6 +33,6 @@ class UserDetail extends Model
 
     public function criteria(): BelongsTo
     {
-        return $this->belongsTo(Criteria::class, 'criteria_id', 'id');
+        return $this->belongsTo(Criteria::class, 'criteria_id', 'id')->where('active', true);
     }
 }

@@ -48,6 +48,84 @@ class ProfilController extends Controller
         }
     }
 
+    public function loadModalCustom(Request $request)
+    {
+        $request->validate([
+            'criteria' => 'required',
+        ]);
+        $data = Criteria::findOrFail($request->criteria);
+        $isUpdate = false;
+        $index = null;
+        if ($request->has('index')) {
+            $isUpdate = true;
+            $index = $request->index;
+        }
+        return response()->json([
+            'message' => 'success',
+            'view' => view('components.forms.form-modal-custom', ['data' => $data, 'isUpdate' => $isUpdate, 'index' => $index])->render(),
+        ], 200);
+    }
+
+    public function deleteValueCustom(Request $request)
+    {
+        $request->validate([
+            'index' => 'required',
+            'parent' => 'required',
+        ]);
+        $criteria = Criteria::findOrFail($request->parent);
+        foreach ($criteria->children as $child) {
+            UserDetail::where('user_id', Auth::user()->id)->where('criteria_id', $child->id)->where('index', $request->index)->forceDelete();
+        }
+
+        return response()->json([
+            'message' => 'success',
+        ], 200);
+    }
+
+    public function storeValueCustom(Request $request)
+    {
+        $request->validate([
+            'parent' => 'required',
+        ]);
+
+        $criteria = Criteria::findOrFail($request->parent);
+        $latestIndex = UserDetail::where('user_id', Auth::user()->id)->whereHas('criteria', function ($query) use ($criteria) {
+            $query->where('parent_id', $criteria->id);
+        })->max('index');
+        foreach ($request->except('_token', 'parent') as $key => $value) {
+            if ($request->has('index')) {
+                UserDetail::where('user_id', Auth::user()->id)->where('criteria_id', $key)->where('index', $request->index)->update([
+                    'value' => $value,
+                ]);
+            } else {
+                UserDetail::create([
+                    'user_id' => Auth::user()->id,
+                    'criteria_id' => $key,
+                    'index' => ($latestIndex + 1),
+                    'value' => $value,
+                ]);
+            }
+        }
+        if ($request->has('index')) {
+            return redirect()->route('profil.edit')->with('alert-success', 'Berhasil mengubah ' . strtolower($criteria->name));
+        } else {
+            return redirect()->route('profil.edit')->with('alert-success', 'Berhasil menambahkan ' . strtolower($criteria->name));
+        }
+
+        // for ($index = 0; $index < count($request->data); $index++) {
+        //     UserDetail::create([
+        //         'user_id' => Auth::user()->id,
+        //         'criteria_id' => $request->data[$index]['name'],
+        //         'value' => $request->data[$index]['value'],
+        //         'filename' => null,
+        //         'path' => null,
+        //     ]);
+        // }
+        // return response()->json([
+        //     'message' => 'success',
+        // ], 201);
+    }
+
     public function update(Request $request)
     {
         // dd($request->all());
@@ -55,7 +133,6 @@ class ProfilController extends Controller
             'name' => $request->name,
         ]);
         $userDetail = $request->except('_token', 'name', 'cv');
-        // dd($userDetail);
         $fileName = null;
         $path = null;
 
@@ -65,7 +142,6 @@ class ProfilController extends Controller
             $fileNameFromDB = $user_detail && $user_detail->filename ? explode(',', $user_detail->filename) : null;
             $explodedPath = $user_detail && $user_detail->path ? explode(',', $user_detail->path) : null;
             if ($request->hasFile($key)) {
-
                 if (is_array($value)) {
                     $fileName = [];
                     $path = [];
