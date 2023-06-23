@@ -44,9 +44,9 @@
                     <div class="card">
                         <div class="card-body color-blue">
                             <div class="form-floating form-group mt-3">
-                                <input type="file" class="filepond" id="cv" name="cv" data-max-file-size="2MB" accept="application/pdf">
+                                <input type="file" class="filepond" id="cv" name="cv" data-max-file-size="2MB" required accept="application/pdf">
                                 <label for="cv" class="form-label">
-                                    CV
+                                    CV (pdf) <span class="text-danger">*</span>
                                 </label>
                             </div>
                         </div>
@@ -82,12 +82,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/jQuery-provider.js"></script>
 
     <style>
-        .dropzone {
-            border: var(--tblr-border-width) dashed var(--tblr-border-color);
-        }
-        span.select2-container {
-            padding-top: 20px
-        }
         .form-floating .ts-wrapper.form-control, .form-floating .ts-wrapper.form-select {
             padding-top: 22px !important;
             padding-left: 4px !important;

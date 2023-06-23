@@ -132,7 +132,9 @@ class Vacancy extends Model
 
     public function vacancyCriteria(): HasMany
     {
-        return $this->hasMany(VacancyCriteria::class, 'vacancy_id', 'id');
+        return $this->hasMany(VacancyCriteria::class, 'vacancy_id', 'id')->whereHas('criteria', function ($criteria) {
+            $criteria->where('active', 1);
+        });
     }
 
     public function vacancyCriteriaOrdered()

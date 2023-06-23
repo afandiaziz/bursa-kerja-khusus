@@ -126,33 +126,40 @@ class ProfilController extends Controller
         // ], 201);
     }
 
-    public function update(Request $request)
+    public static function update(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-        ]);
-        Auth::user()->update([
-            'name' => $request->name,
-        ]);
-
-        if ($request->hasFile('cv')) {
-            $file = $request->file('cv');
-            $fileName = time() . '-' . Auth::user()->id . '.' . $file->getClientOriginalExtension();
-            if (Auth::user()->cv && file_exists(public_path('assets/upload/cv/' . Auth::user()->cv))) {
-                unlink(public_path('assets/upload/cv/' . Auth::user()->cv));
-            }
-
-            if ($file->move(public_path('assets/upload/cv/'), $fileName)) {
-                Auth::user()->update([
-                    'cv' => $fileName,
-                ]);
-            }
+        // dd($request->all());
+        if ($request->has('name')) {
+            $request->validate([
+                'name' => 'required',
+            ]);
+            Auth::user()->update([
+                'name' => $request->name,
+            ]);
         }
 
-        $userDetail = $request->except('_token', 'name', 'cv');
+        // if ($request->hasFile('cv')) {
+        //     $request->validate([
+        //         'cv' => 'required|mimes:pdf|max:2048',
+        //     ]);
+        //     $file = $request->file('cv');
+        //     $fileName = time() . '-' . Auth::user()->id . '.' . $file->getClientOriginalExtension();
+        //     if (Auth::user()->cv && file_exists(public_path('assets/upload/cv/' . Auth::user()->cv))) {
+        //         unlink(public_path('assets/upload/cv/' . Auth::user()->cv));
+        //     }
+
+        //     if ($file->move(public_path('assets/upload/cv/'), $fileName)) {
+        //         Auth::user()->update([
+        //             'cv' => $fileName,
+        //         ]);
+        //     }
+        // }
+
+        $userDetail = $request->except('_token', 'name', 'cv', 'return_json');
         $fileName = null;
         $path = null;
 
+        // dd($userDetail);
         foreach ($userDetail as $key => $value) {
             $criteria = Criteria::findOrFail($key);
             $user_detail = Auth::user()->user_details->where('criteria_id', $criteria->id)->first();
@@ -247,6 +254,14 @@ class ProfilController extends Controller
                     'path' => $path,
                 ]);
             }
+        }
+
+        if ($request->has('return_json') && $request->return_json) {
+            return response()->json([
+                'message' => 'success',
+            ], 200);
+        } else {
+            return redirect()->route('profil.index')->with('alert-success', 'Berhasil mengubah profil');
         }
     }
 }

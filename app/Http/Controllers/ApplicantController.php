@@ -54,10 +54,6 @@ class ApplicantController extends Controller
         return view('dashboard.' . $this->prefix . '.create', compact('prefix'));
     }
 
-    public function apply(Request $request, $id)
-    {
-    }
-
     public function show(Request $request, $id)
     {
         $data = Applicant::findOrFail($id);

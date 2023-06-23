@@ -89,11 +89,11 @@ class VacancyController extends Controller
     {
         $prefix = $this->prefix;
         $selectedCriteria = [];
-        Criteria::where('required', 1)->where('active', 1)->orderBy('parent_order', 'ASC')->get()->each(function ($item) use (&$selectedCriteria) {
+        Criteria::where('required', 1)->where('active', 1)->where('parent_id', null)->orderBy('parent_order', 'ASC')->get()->each(function ($item) use (&$selectedCriteria) {
             $selectedCriteria[] = $item->id;
         });
         $companies = Company::where('status', 1)->orderBy('name', 'ASC')->get();
-        $criteria = Criteria::where('active', 1)->orderBy('parent_order', 'ASC')->get();
+        $criteria = Criteria::where('active', 1)->where('parent_id', null)->orderBy('parent_order', 'ASC')->get();
         return view('dashboard.' . $this->prefix . '.create', compact('prefix', 'companies', 'criteria', 'selectedCriteria'));
     }
 
@@ -214,7 +214,7 @@ class VacancyController extends Controller
             $selectedCriteria[] = $item->criteria_id;
         });
         $companies = Company::where('status', 1)->orderBy('name', 'ASC')->get();
-        $criteria = Criteria::where('active', 1)->orderBy('parent_order', 'ASC')->get();
+        $criteria = Criteria::where('active', 1)->where('parent_id', null)->orderBy('parent_order', 'ASC')->get();
         $prefix = $this->prefix;
         return view('dashboard.' . $this->prefix . '.edit', compact('data', 'prefix', 'companies', 'criteria', 'selectedCriteria'));
     }

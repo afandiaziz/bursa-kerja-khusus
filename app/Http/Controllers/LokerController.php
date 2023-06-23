@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Applicant;
 use Carbon\Carbon;
 use App\Models\Vacancy;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LokerController extends Controller
 {
@@ -65,8 +67,21 @@ class LokerController extends Controller
         }
     }
 
-    public function apply($id)
+    public function apply(Request $request, $id)
     {
-        $vacany = Vacancy::findOrFail($id);
+        $request->request->add(['return_json' => true]);
+        if (ProfilController::update($request)->status() == 200) {
+            $vacancy = Vacancy::findOrFail($id);
+            $applied = Applicant::create([
+                'user_id' => Auth::user()->id,
+                'vacancy_id' => $id,
+                'verified' => false,
+            ]);
+            if ($applied) {
+                return redirect()->back()->with('alert-success', 'Berhasil melamar ke ' . $vacancy->company->name . ' sebagai ' . $vacancy->position);
+            } else {
+                return redirect()->back()->with('alert-danger', 'Gagal melamar ke ' . $vacancy->company->name . ' sebagai ' . $vacancy->position);
+            }
+        }
     }
 }

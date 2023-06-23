@@ -39,7 +39,7 @@ Route::prefix('/loker')->name('loker.')->group(function () {
     Route::get('/detail/{id}', [LokerController::class, 'show'])->name('show');
 
     Route::middleware(['auth'])->group(function () {
-        Route::get('/daftar/{id}', [LokerController::class, 'apply'])->name('daftar');
+        Route::post('/daftar/{id}', [LokerController::class, 'apply'])->name('daftar');
     });
 });
 
