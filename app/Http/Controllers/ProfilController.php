@@ -138,7 +138,7 @@ class ProfilController extends Controller
         if ($request->hasFile('cv')) {
             $file = $request->file('cv');
             $fileName = time() . '-' . Auth::user()->id . '.' . $file->getClientOriginalExtension();
-            if (file_exists(public_path('assets/upload/cv/' . Auth::user()->cv)) && Auth::user()->cv) {
+            if (Auth::user()->cv && file_exists(public_path('assets/upload/cv/' . Auth::user()->cv))) {
                 unlink(public_path('assets/upload/cv/' . Auth::user()->cv));
             }
 

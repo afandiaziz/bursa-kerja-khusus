@@ -266,23 +266,21 @@
 @section('script')
     @if (Auth::user()->cv && file_exists(public_path('assets/upload/cv/' . Auth::user()->cv)))
         <script>
-            const cv = [{
-                source: '{{ url("assets/upload/cv/".Auth::user()->cv) }}',
-                options: {
-                    type: 'input',
-                },
-            }]
+            $('#cv.filepond').filepond({
+                storeAsFile: true,
+                files: [{
+                    source: '{{ url("assets/upload/cv/".Auth::user()->cv) }}',
+                    options: {
+                        type: 'input',
+                    },
+                }],
+            });
         </script>
     @else
         <script>
-            const cv = []
+            $('#cv.filepond').filepond({
+                storeAsFile: true,
+            });
         </script>
     @endif
-    <script>
-        $('#cv.filepond').filepond({
-            storeAsFile: true,
-            files: cv,
-
-        });
-    </script>
 @endsection
