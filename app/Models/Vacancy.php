@@ -43,19 +43,17 @@ class Vacancy extends Model
                     $criteria->where('active', 1);
                 }]);
             }])
-            ->where('id', $id)
-            ->whereNull('max_applicants')
             ->where('deadline', '>=', date('Y-m-d'))
             ->whereHas('company', function ($company) {
                 $company->where('status', 1);
             })
-            ->orWhere('id', $id)
-            ->whereNotNull('max_applicants')
-            ->where('deadline', '>=', date('Y-m-d'))
-            ->whereHas('company', function ($company) {
-                $company->where('status', 1);
+            ->where(function ($query) use ($id) {
+                $query->where('id', $id)
+                    ->whereNull('max_applicants')
+                    ->orWhere('id', $id)
+                    ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) < max_applicants')
+                    ->whereNotNull('max_applicants');
             })
-            ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) < max_applicants')
             ->orderBy('deadline', 'DESC')
             ->orderBy('updated_at', 'DESC')
             ->first();
@@ -70,28 +68,18 @@ class Vacancy extends Model
             ->orderBy('deadline', 'DESC')
             ->orderBy('updated_at', 'DESC');
         if ($id) {
-            $vacany = $vacany
-                ->whereNull('max_applicants')
-                ->where('deadline', '>=', date('Y-m-d'))
-                ->where('id', $id)
-                ->whereHas('company', function ($company) {
-                    $company->where('status', 1);
-                })
-                ->orWhereNotNull('max_applicants')
-                ->where('deadline', '>=', date('Y-m-d'))
-                ->where('id', $id)
-                ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) < max_applicants');
-        } else {
-            $vacany = $vacany
-                ->whereNull('max_applicants')
-                ->where('deadline', '>=', date('Y-m-d'))
-                ->whereHas('company', function ($company) {
-                    $company->where('status', 1);
-                })
-                ->orWhereNotNull('max_applicants')
-                ->where('deadline', '>=', date('Y-m-d'))
-                ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) < max_applicants');
+            $vacany = $vacany->where('id', $id);
         }
+        $vacany = $vacany
+            ->where('deadline', '>=', date('Y-m-d'))
+            ->where(function ($query) {
+                $query->whereNull('max_applicants')
+                    ->whereHas('company', function ($company) {
+                        $company->where('status', 1);
+                    })
+                    ->orWhereNotNull('max_applicants')
+                    ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) < max_applicants');
+            });
         return $vacany;
     }
 
@@ -103,20 +91,15 @@ class Vacancy extends Model
             ->orderBy('deadline', 'DESC')
             ->orderBy('updated_at', 'DESC');
         if ($id) {
-            $vacany = $vacany
-                ->where('id', $id)
-                ->where('deadline', '<', date('Y-m-d'))
-                ->orWhere('deadline', '>=', date('Y-m-d'))
-                ->where('id', $id)
-                ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) >= max_applicants');
-        } else {
-            $vacany = $vacany
-                ->where('id', $id)
-                ->where('deadline', '<', date('Y-m-d'))
-                ->orWhere('deadline', '>=', date('Y-m-d'))
-                ->where('id', $id)
-                ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) >= max_applicants');
+            $vacany = $vacany->where('id', $id);
         }
+        $vacany = $vacany
+            ->where(function ($query) {
+                $query->where('deadline', '<', date('Y-m-d'))
+                    ->orWhere('deadline', '>=', date('Y-m-d'))
+                    ->orWhereNotNull('max_applicants')
+                    ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) >= max_applicants');
+            });
         return $vacany;
     }
 

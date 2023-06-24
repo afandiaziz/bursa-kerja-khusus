@@ -23,24 +23,31 @@ class LokerController extends Controller
 
     public function index(Request $request)
     {
-        $loker = Vacancy::active()->paginate(7);
+        $loker = Vacancy::active();
+
+        if ($request->has('job_type') && $request->job_type) {
+            $loker = $loker->whereIn('job_type', explode(',', $request->job_type));
+        }
+
+        if ($request->has('search') && $request->search) {
+            $loker = $loker->where(function ($query) use ($request) {
+                $query->where('position', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('company', function ($company) use ($request) {
+                        $company->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhere('description', 'like', '%' . $request->search . '%')
+                    ->orWhere('information', 'like', '%' . $request->search . '%');
+            });
+            // $loker = $loker->orWhereHas('vacancyCriteria', function ($vacancyCriteria) use ($request) {
+            //     $vacancyCriteria->whereHas('criteria', function ($criteria) use ($request) {
+            //         $criteria->where('name', 'like', '%' . $request->search . '%');
+            //     });
+            // });
+        }
+        // dd($loker->toSql());
+        $loker = $loker->paginate(70);
         return view('loker/index', compact('loker'));
     }
-    // public function index(Request $request)
-    // {
-    //     $detailLoker = null;
-    //     $loker = Vacancy::active()->paginate(7);
-    //     if ($request->has('detail')) {
-    //         $detailLoker = Vacancy::activeById($request->detail);
-    //     } else {
-    //         return redirect('/loker?page=' . ($request->has('page') ? $request->page : 1) . '&detail=' . $loker->first()->id);
-    //     }
-
-    //     if ($loker->lastPage() < $request->page) {
-    //         return redirect()->route('loker.index');
-    //     }
-    //     return view('loker', compact('loker', 'detailLoker'));
-    // }
 
     public function show($id)
     {

@@ -49,7 +49,7 @@
 
 <body>
     <div class="page mb-5">
-        <header class="navbar navbar-expand-md d-print-none bg-light border-bottom">
+        <header class="navbar navbar-expand-md d-print-none bg-light @hasSection('header--') @else border-bottom @endif">
             <div class="container-xl">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -71,65 +71,96 @@
                 </div>
             </div>
         </header>
-        <header class="navbar-expand-md bg-light shadow-sm border-bottom">
-            <div class="navbar-collapse collapse" id="navbar-menu" style="">
-                <div class="navbar">
-                    <div class="container-xl">
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('about') }}">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                                            <path d="M12 9h.01"></path>
-                                            <path d="M11 12h1v4h1"></path>
-                                        </svg>
-                                    </span>
-                                    <span class="nav-link-title">
-                                        Tentang BKK
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('loker.index') }}">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-briefcase" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
-                                            <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2"></path>
-                                            <path d="M12 12l0 .01"></path>
-                                            <path d="M3 13a20 20 0 0 0 18 0"></path>
-                                        </svg>
-                                    </span>
-                                    <span class="nav-link-title">
-                                        Info Lowongan Kerja
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('informasi.index') }}">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-news" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11"></path>
-                                            <path d="M8 8l4 0"></path>
-                                            <path d="M8 12l4 0"></path>
-                                            <path d="M8 16l4 0"></path>
-                                        </svg>
-                                    </span>
-                                    <span class="nav-link-title">
-                                        Informasi
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-last ps-2 ps-md-0 me-4">
-                            {{-- if not logged in --}}
-                            @if (Auth::check())
-                                <div class="nav-item dropdown">
-                                    <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-                                        <span class="avatar bg-transparent border-0 shadow-none">
+        <div class="sticky-top">
+            <header class="navbar-expand-md bg-light shadow-sm border-bottom">
+                <div class="navbar-collapse collapse" id="navbar-menu" style="">
+                    <div class="navbar">
+                        <div class="container-xl">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('about') }}">
+                                        <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                                                <path d="M12 9h.01"></path>
+                                                <path d="M11 12h1v4h1"></path>
+                                            </svg>
+                                        </span>
+                                        <span class="nav-link-title">
+                                            Tentang BKK
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('loker.index') }}">
+                                        <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-briefcase" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
+                                                <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2"></path>
+                                                <path d="M12 12l0 .01"></path>
+                                                <path d="M3 13a20 20 0 0 0 18 0"></path>
+                                            </svg>
+                                        </span>
+                                        <span class="nav-link-title">
+                                            Info Lowongan Kerja
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('informasi.index') }}">
+                                        <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-news" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11"></path>
+                                                <path d="M8 8l4 0"></path>
+                                                <path d="M8 12l4 0"></path>
+                                                <path d="M8 16l4 0"></path>
+                                            </svg>
+                                        </span>
+                                        <span class="nav-link-title">
+                                            Informasi
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-last ps-2 ps-md-0 me-4">
+                                {{-- if not logged in --}}
+                                @if (Auth::check())
+                                    <div class="nav-item dropdown">
+                                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                                            <span class="avatar bg-transparent border-0 shadow-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+                                                    <path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                                    <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855"></path>
+                                                </svg>
+                                            </span>
+                                            <div class="d-none d-xl-block ps-2">
+                                                <div>{{ Auth::user()->name }}</div>
+                                                <div class="mt-1 small text-muted">{{ Auth::user()->email }}</div>
+                                            </div>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                            @if (Auth::user()->role == 'admin')
+                                                <a href="{{ route('dashboard') }}" class="dropdown-item">Dashboard</a>
+                                            @else
+                                                <a href="{{ route('profil.index') }}" class="dropdown-item">Profil</a>
+                                            @endif
+                                            <div class="dropdown-divider"></div>
+                                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item" role="button">
+                                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                                    @csrf
+                                                </form>
+                                                Keluar
+                                            </a>
+                                        </div>
+                                    </div>
+                                @else
+                                    <a class="nav-link" href="{{ route('login') }}">
+                                        <span class="nav-link-icon d-md-none d-lg-inline-block">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                                 <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
@@ -137,46 +168,18 @@
                                                 <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855"></path>
                                             </svg>
                                         </span>
-                                        <div class="d-none d-xl-block ps-2">
-                                            <div>{{ Auth::user()->name }}</div>
-                                            <div class="mt-1 small text-muted">{{ Auth::user()->email }}</div>
-                                        </div>
+                                        <span class="nav-link-title">
+                                            Masuk
+                                        </span>
                                     </a>
-                                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        @if (Auth::user()->role == 'admin')
-                                            <a href="{{ route('dashboard') }}" class="dropdown-item">Dashboard</a>
-                                        @else
-                                            <a href="{{ route('profil.index') }}" class="dropdown-item">Profil</a>
-                                        @endif
-                                        <div class="dropdown-divider"></div>
-                                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item" role="button">
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                                @csrf
-                                            </form>
-                                            Keluar
-                                        </a>
-                                    </div>
-                                </div>
-                            @else
-                                <a class="nav-link" href="{{ route('login') }}">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-                                            <path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-                                            <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855"></path>
-                                        </svg>
-                                    </span>
-                                    <span class="nav-link-title">
-                                        Masuk
-                                    </span>
-                                </a>
-                            @endif
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </header>
+            </header>
+            @yield('header--')
+        </div>
         <div class="page-wrapper">
             {{-- <div class="page-header d-print-none">
                 <div class="container-fluid">

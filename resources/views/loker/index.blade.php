@@ -1,19 +1,41 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="container mb-4 py-4">
-        <div class="row">
-            <div class="col-lg-3 col-12">
-                <div class="card">
-                    <div class="card-body">
-
+@section('header--')
+    <header class="navbar-expand-md bg-light shadow-sm border-bottom">
+        <form method="get" action="">
+            <div class="navbar-collapse collapse" id="navbar-menu" style="">
+                <div class="navbar">
+                    <div class="container-xl">
+                        <ul class="navbar-nav gap-3">
+                            <li class="nav-item">
+                                <input type="text" class="form-control border-blue rounded-pill" name="job_type" id="filter-job-type" value="{{ request()->query('job_type') }}">
+                            </li>
+                            <li class="nav-item">
+                                <input type="text" class="form-control border-blue rounded-pill" name="search" id="filter-search" placeholder="Cari Lowongan Pekerjaan" value="{{ request()->query('search') }}">
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav ms-auto gap-2">
+                            <li class="nav-item">
+                                <button type="submit" class="btn btn-outline-blue rounded-pill">Terapkan Filter</button>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('loker.index') }}" class="btn rounded-pill">Reset Filter</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-9 col-12" id="loker-container">
+        </form>
+    </header>
+@endsection
+
+@section('content')
+    <div class="container mb-4 py-4">
+        <div class="row">
+            <div class="col-12" id="loker-container">
                 <div class="row">
                     @foreach ($loker as $item)
-                        <div class="col-6 mb-3">
+                        <div class="col-xl-4 col-6 mb-3">
                             <a href="{{ route('loker.show', ['id' => $item->id]) }}" class="text-decoration-none" target="_blank">
                                 <div class="card card-loker cursor-pointer">
                                     <div class="card-body" style="height: 180px;">
@@ -62,6 +84,8 @@
 @endsection
 
 @section('css')
+    <link href="{{ asset('assets/plugins/tom-select/tom-select.css') }}" rel="stylesheet">
+
     <style>
         .card-loker:hover {
             background-color: #f5f5f5;
@@ -69,10 +93,16 @@
         .card-loker:hover h3 {
             text-decoration: underline;
         }
+        .ts-wrapper.multi .ts-control > div {
+            background: #206bc4;
+            color: #ffffff;
+        }
     </style>
 @endsection
 
 @section('script')
+    <script src="{{ asset('assets/plugins/tom-select/tom-select.complete.min.js') }}"></script>
+
     <script>
         let latestLoker = null;
         $('.card-loker').click(function() {
@@ -96,6 +126,25 @@
                     }
                 });
             }
+        });
+
+        new TomSelect(document.getElementById('filter-job-type'), {
+            maxItems: null,
+            valueField: 'id',
+            create: false,
+            labelField: 'title',
+            searchField: 'title',
+            plugins: ['checkbox_options'],
+            placeholder: 'Tipe Pekerjaan',
+            options: [
+                {id: 'Full-time', title: 'Full-time', url: 'http://google.com'},
+                {id: 'Part-time', title: 'Part-time', url: 'http://google.com'},
+                {id: 'Contract', title: 'Contract', url: 'http://google.com'},
+                {id: 'Internship', title: 'Internship', url: 'http://google.com'},
+                {id: 'Temporary', title: 'Temporary', url: 'http://google.com'},
+                {id: 'Volunteer', title: 'Volunteer', url: 'http://google.com'},
+            ],
+            createOnBlur: true,
         });
     </script>
 @endsection
