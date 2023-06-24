@@ -22,7 +22,6 @@
                     </div>
                     <div>{{ $detailLoker->created_at->diffForHumans() }}</div>
 
-
                     <div class="d-flex">
                         @if (Auth::check() && Auth::user()->role == 'applicant')
                             <div role="button" data-bs-toggle="modal" data-bs-target="#modal-apply-{{ $detailLoker->id }}" class="btn btn-primary mt-3 shadow rounded-pill">

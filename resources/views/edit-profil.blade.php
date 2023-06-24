@@ -58,28 +58,28 @@
 @endsection
 
 @section('css')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/css/tempus-dominus.css" />
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-    <link href="https://unpkg.com/filepond/dist/filepond.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link href="{{ asset('assets/plugins/tempus-dominus/tempus-dominus.css') }}" rel="stylesheet"  />
+    <link href="{{ asset('assets/plugins/tom-select/tom-select.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/plugins/filepond/filepond.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/plugins/filepond/filepond-plugin-image-preview.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/plugins/daterangepicker/daterangepicker.css') }}" rel="stylesheet"  />
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
-    <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/solid.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/fontawesome.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/tempus-dominus.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.1/dist/js/jQuery-provider.js"></script>
+    <script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.js') }}"></script>
+    <script src="{{ asset('assets/plugins/filepond/filepond.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/filepond/filepond.jquery.js') }}"></script>
+    <script src="{{ asset('assets/plugins/filepond/filepond-plugin-file-encode.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/filepond/filepond-plugin-file-validate-size.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/filepond/filepond-plugin-file-validate-type.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/filepond/filepond-plugin-image-exif-orientation.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/filepond/filepond-plugin-image-preview.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/tom-select/tom-select.complete.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/momentjs/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/daterangepicker/daterangepicker.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/popper/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/font-awesome/solid.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/font-awesome/fontawesome.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/tempus-dominus/tempus-dominus.js') }}"></script>
+    <script src="{{ asset('assets/plugins/tempus-dominus/jQuery-provider.js') }}"></script>
 
     <style>
         .form-floating .ts-wrapper.form-control, .form-floating .ts-wrapper.form-select {
