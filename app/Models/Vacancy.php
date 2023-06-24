@@ -97,7 +97,6 @@ class Vacancy extends Model
             ->where(function ($query) {
                 $query->where('deadline', '<', date('Y-m-d'))
                     ->orWhere('deadline', '>=', date('Y-m-d'))
-                    ->orWhereNotNull('max_applicants')
                     ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) >= max_applicants');
             });
         return $vacany;
