@@ -31,55 +31,64 @@
 
 @section('content')
     <div class="container mb-4 py-4">
-        <div class="row">
-            <div class="col-12" id="loker-container">
-                <div class="row">
-                    @foreach ($loker as $item)
-                        <div class="col-xl-4 col-6 mb-3">
-                            <a href="{{ route('loker.show', ['id' => $item->id]) }}" class="text-decoration-none" target="_blank">
-                                <div class="card card-loker cursor-pointer">
-                                    <div class="card-body" style="height: 180px;">
-                                        <div class="row">
-                                            <div class="col-auto">
-                                                <span class="bg-transparent border-0 shadow-none avatar avatar-lg">
-                                                    <img src="{{ filter_var($item->company->logo, FILTER_VALIDATE_URL) ? $item->company->logo : asset('assets/upload/companies/' . $item->company->logo) }}" alt="{{ $item->company->name }}" width="">
-                                                </span>
+        <div class="row @if (!$loker->count()) justify-content-center @endif">
+            @if ($loker->count())
+                @foreach ($loker as $item)
+                    <div class="col-xl-4 col-6 mb-3">
+                        <a href="{{ route('loker.show', ['id' => $item->id]) }}" class="text-decoration-none" target="_blank">
+                            <div class="card card-loker cursor-pointer">
+                                <div class="card-body" style="height: 180px;">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <span class="bg-transparent border-0 shadow-none avatar avatar-lg">
+                                                <img src="{{ filter_var($item->company->logo, FILTER_VALIDATE_URL) ? $item->company->logo : asset('assets/upload/companies/' . $item->company->logo) }}" alt="{{ $item->company->name }}" width="">
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <div class="font-weight-bold">
+                                                <h3 class="link-blue mb-1">{{ $item->position }}</h3>
                                             </div>
-                                            <div class="col">
-                                                <div class="font-weight-bold">
-                                                    <h3 class="link-blue mb-1">{{ $item->position }}</h3>
-                                                </div>
-                                                <div class="text-dark">
-                                                    {{ $item->job_type }}
-                                                    <div class="mt-1">{{ $item->company->name }}</div>
-                                                </div>
-                                                <div class="text-muted">
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            <div style="text-overflow: ellipsis; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
-                                                                {{ $item->company->address }}
-                                                            </div>
+                                            <div class="text-dark">
+                                                {{ $item->job_type }}
+                                                <div class="mt-1">{{ $item->company->name }}</div>
+                                            </div>
+                                            <div class="text-muted">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div style="text-overflow: ellipsis; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                                            {{ $item->company->address }}
                                                         </div>
-                                                        <div class="col-12 mt-2 position-absolute bottom-0 pb-3">
-                                                            <span class="small">{{ $item->created_at->diffForHumans() }}</span>
-                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 mt-2 position-absolute bottom-0 pb-3">
+                                                        <span class="small">{{ $item->created_at->diffForHumans() }}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </a>
-                        </div>
-                    @endforeach
-                </div>
-                @if ($loker->lastPage() > 1)
-                    <div class="d-flex mt-4 bg-white pt-3 border justify-content-center">
-                        {!! $loker->links() !!}
+                            </div>
+                        </a>
                     </div>
-                @endif
-            </div>
+                @endforeach
+            @else
+                <div class="col-6">
+                    <div class="card card-body border-warning text-center fs-2 py-4">
+                        <div class="fw-bold">
+                            Lowongan pekerjaan tidak ditemukan.
+                        </div>
+                        <div>
+                            <a href="{{ route('loker.index') }}" class="btn btn-blue mt-3">Jelajahi Lowongan Pekerjaan</a>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
+        @if ($loker->lastPage() > 1)
+            <div class="d-flex mt-4 bg-white pt-3 border justify-content-center">
+                {!! $loker->withQueryString()->links() !!}
+            </div>
+        @endif
     </div>
 @endsection
 

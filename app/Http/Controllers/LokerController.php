@@ -48,7 +48,7 @@ class LokerController extends Controller
             // });
         }
         // dd($loker->toSql());
-        $loker = $loker->paginate(70);
+        $loker = $loker->paginate(7);
         return view('loker/index', compact('loker'));
     }
 

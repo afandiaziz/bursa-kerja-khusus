@@ -71,10 +71,7 @@
                 dom: '<"row"<"col-12"f>>' +
                     '<"row"<"col-12"t>>' +
                     '<"row"<"col-12"p>>',
-                length:[
-                    [-1],
-                    ["All"]
-                ],
+                lengthMenu:[20],
                 language: {
                     search: '',
                     searchPlaceholder: 'Cari',
@@ -89,7 +86,7 @@
             });
             dt.on('draw', function(data){
                 $('#datatable-ajax tbody tr').each(function(){
-                    $(this).replaceWith('<div class="col-md-6 col-12">' + $(this).html() +'</div>')
+                    $(this).replaceWith('<div class="col-md-6 col-12 mb-3">' + $(this).html() +'</div>')
                 })
                 $('#datatable-ajax tbody').addClass('row');
                 $("#datatable-ajax_filter input").removeClass('form-control-sm').addClass('ms-0');

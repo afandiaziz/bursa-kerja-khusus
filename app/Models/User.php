@@ -50,7 +50,7 @@ class User extends Authenticatable
      */
     public function applicant_details(): HasMany
     {
-        return $this->hasMany(ApplicantDetail::class, 'user_id', 'id')->orderBy('created_at', 'desc');
+        return $this->hasMany(ApplicantDetail::class, 'user_id', 'id');
     }
 
     public function user_details(): HasMany
@@ -86,6 +86,6 @@ class User extends Authenticatable
 
     public function applications(): HasMany
     {
-        return $this->hasMany(Applicant::class);
+        return $this->hasMany(Applicant::class)->orderBy('created_at', 'desc');
     }
 }
