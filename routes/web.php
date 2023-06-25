@@ -42,8 +42,15 @@ Route::prefix('/loker')->name('loker.')->group(function () {
         Route::post('/daftar/{id}', [LokerController::class, 'apply'])->name('daftar');
     });
 });
+Route::middleware(['auth'])->prefix('/lamaran')->name('lamaran.')->group(function () {
+    Route::get('/', [LokerController::class, 'index'])->name('index');
+    Route::get('/detail', [LokerController::class, 'detail'])->name('detail');
+    Route::get('/detail/{id}', [LokerController::class, 'show'])->name('show');
+    Route::get('/bukti-pendaftaran/{registrationNumber}', [ProfilController::class, 'evidence'])->name('evidence');
+});
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/bukti-pendaftaran/{registrationNumber}', [ProfilController::class, 'evidence'])->name('bukti.show');
     Route::prefix('/profil')->name('profil.')->group(function () {
         Route::get('/', [ProfilController::class, 'index'])->name('index');
         Route::get('/edit', [ProfilController::class, 'edit'])->name('edit');

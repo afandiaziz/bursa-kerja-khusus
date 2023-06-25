@@ -148,6 +148,7 @@
                                                 <a href="{{ route('dashboard') }}" class="dropdown-item">Dashboard</a>
                                             @else
                                                 <a href="{{ route('profil.index') }}" class="dropdown-item">Profil</a>
+                                                <a href="{{ route('lamaran.index') }}" class="dropdown-item">Lamaran Saya</a>
                                             @endif
                                             <div class="dropdown-divider"></div>
                                             <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item" role="button">

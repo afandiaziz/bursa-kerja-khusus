@@ -79,7 +79,7 @@ class User extends Authenticatable
         return count($array) > 0 ? max($array) : 0;
     }
 
-    public function list_vacancies(): HasMany
+    public function applications(): HasMany
     {
         return $this->hasMany(Applicant::class);
     }

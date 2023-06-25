@@ -22,6 +22,14 @@
         </div>
     </div>
 @endif
+@if (session('alert-yellow'))
+    <div class="col-12">
+        <div class="alert alert-yellow alert-dismissible mb-0" role="alert">
+            <div>{{ session('alert-yellow') }}</div>
+            <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
+        </div>
+    </div>
+@endif
 @if (session('alert-info'))
     <div class="col-12">
         <div class="alert alert-info alert-dismissible mb-0" role="alert">

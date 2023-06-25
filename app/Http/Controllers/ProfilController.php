@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Applicant;
+use PDF;
 use App\Models\Criteria;
 use App\Models\User;
 use App\Models\UserDetail;
@@ -263,5 +265,12 @@ class ProfilController extends Controller
         } else {
             return redirect()->route('profil.index')->with('alert-success', 'Berhasil mengubah profil');
         }
+    }
+
+    public static function evidence($registrationNumber)
+    {
+        $data = Applicant::where('registration_number', $registrationNumber)->where('user_id', Auth::id())->firstOrFail();
+        $pdf = PDF::loadView('registration-evidence', compact('data'));
+        return $pdf->save('Bukti Pendaftaran.pdf');
     }
 }

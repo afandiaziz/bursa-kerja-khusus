@@ -3,6 +3,13 @@
 @section('content')
     <div class="container mb-4 py-4">
         <div class="row">
+            @if ($statusApplied)
+                <div class="col-lg-9 col-12">
+                    <div class="alert alert-yellow" role="alert">
+                        Kamu sudah melamar pekerjaan ini. Cek pada menu <a href="{{ route('lamaran.index') }}">Lamaran Saya</a>.
+                    </div>
+                </div>
+            @endif
             <div class="col-lg-9 col-12">
                 @include('loker/detail')
             </div>
