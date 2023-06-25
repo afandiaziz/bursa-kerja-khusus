@@ -77,10 +77,14 @@
         {{ $data->user->email }}
     </h3>
     <table class="mt-3 table-sm">
+        <tr>
+            <th>CV</th>
+            <td>: <a href="{{ asset('assets/upload/cv/' . $data->cv) }}" target="_blank">{{ $data->cv }}</a></td>
+        </tr>
         @foreach ($data->vacancy->vacancyCriteriaOrdered() as $item)
             <tr>
                 <th>{{ $item->name }}</th>
-                <td>: {{ $data->user->user_details->where('criteria_id', $item->id)->first()?->value ?? '-' }}</td>
+                <td>: @include('components.criteria', ['criteria' => $item, 'data' => $data->applicant_details]) </td>
             </tr>
         @endforeach
     </table>

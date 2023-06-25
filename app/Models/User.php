@@ -48,6 +48,11 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    public function applicant_details(): HasMany
+    {
+        return $this->hasMany(ApplicantDetail::class, 'user_id', 'id')->orderBy('created_at', 'desc');
+    }
+
     public function user_details(): HasMany
     {
         // return $this->hasMany(UserDetail::class)->whereHas('criteria', function ($query) {

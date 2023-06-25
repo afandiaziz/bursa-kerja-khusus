@@ -11,14 +11,10 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\DataTables;
 
 class ProfilController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         Carbon::setLocale('id');
@@ -140,22 +136,22 @@ class ProfilController extends Controller
             ]);
         }
 
-        // if ($request->hasFile('cv')) {
-        //     $request->validate([
-        //         'cv' => 'required|mimes:pdf|max:2048',
-        //     ]);
-        //     $file = $request->file('cv');
-        //     $fileName = time() . '-' . Auth::user()->id . '.' . $file->getClientOriginalExtension();
-        //     if (Auth::user()->cv && file_exists(public_path('assets/upload/cv/' . Auth::user()->cv))) {
-        //         unlink(public_path('assets/upload/cv/' . Auth::user()->cv));
-        //     }
+        if ($request->hasFile('cv')) {
+            $request->validate([
+                'cv' => 'required|mimes:pdf|max:2048',
+            ]);
+            $file = $request->file('cv');
+            $fileName = time() . '-' . Auth::user()->id . '.' . $file->getClientOriginalExtension();
+            // if (Auth::user()->cv && file_exists(public_path('assets/upload/cv/' . Auth::user()->cv))) {
+            //     unlink(public_path('assets/upload/cv/' . Auth::user()->cv));
+            // }
 
-        //     if ($file->move(public_path('assets/upload/cv/'), $fileName)) {
-        //         Auth::user()->update([
-        //             'cv' => $fileName,
-        //         ]);
-        //     }
-        // }
+            if ($file->move(public_path('assets/upload/cv/'), $fileName)) {
+                Auth::user()->update([
+                    'cv' => $fileName,
+                ]);
+            }
+        }
 
         $userDetail = $request->except('_token', 'name', 'cv', 'return_json');
         $fileName = null;
@@ -193,13 +189,13 @@ class ProfilController extends Controller
                         'filename' => $fileName,
                         'path' => $path,
                     ]);
-                    if ($execute) {
-                        foreach ($fileNameFromDB as $index => $currentFile) {
-                            if (file_exists(public_path($explodedPath[$index] . '/' . $currentFile))) {
-                                unlink(public_path($explodedPath[$index] . '/' . $currentFile));
-                            }
-                        }
-                    }
+                    // if ($execute) {
+                    //     foreach ($fileNameFromDB as $index => $currentFile) {
+                    //         if (file_exists(public_path($explodedPath[$index] . '/' . $currentFile))) {
+                    //             unlink(public_path($explodedPath[$index] . '/' . $currentFile));
+                    //         }
+                    //     }
+                    // }
                     continue;
                 } else {
                     $file = $request->file($key);
@@ -220,13 +216,13 @@ class ProfilController extends Controller
                             'filename' => $fileName,
                             'path' => $path,
                         ]);
-                        if ($execute) {
-                            foreach ($fileNameFromDB as $index => $currentFile) {
-                                if (file_exists(public_path($explodedPath[$index] . '/' . $currentFile))) {
-                                    unlink(public_path($explodedPath[$index] . '/' . $currentFile));
-                                }
-                            }
-                        }
+                        // if ($execute) {
+                        //     foreach ($fileNameFromDB as $index => $currentFile) {
+                        //         if (file_exists(public_path($explodedPath[$index] . '/' . $currentFile))) {
+                        //             unlink(public_path($explodedPath[$index] . '/' . $currentFile));
+                        //         }
+                        //     }
+                        // }
 
                         continue;
                     }
@@ -261,6 +257,7 @@ class ProfilController extends Controller
         if ($request->has('return_json') && $request->return_json) {
             return response()->json([
                 'message' => 'success',
+                'cv' => Auth::user()->cv,
             ], 200);
         } else {
             return redirect()->route('profil.index')->with('alert-success', 'Berhasil mengubah profil');
@@ -271,6 +268,46 @@ class ProfilController extends Controller
     {
         $data = Applicant::where('registration_number', $registrationNumber)->where('user_id', Auth::id())->firstOrFail();
         $pdf = PDF::loadView('registration-evidence', compact('data'));
-        return $pdf->save('Bukti Pendaftaran.pdf');
+        return $pdf->download('Bukti Pendaftaran.pdf');
+    }
+
+    public function applications(Request $request)
+    {
+        if ($request->ajax()) {
+            $json = DataTables::collection(Auth::user()->applications)
+                ->addColumn('card', function ($item) {
+                    $logo = filter_var($item->vacancy->company->logo, FILTER_VALIDATE_URL) ? $item->vacancy->company->logo : asset('assets/upload/companies/' . $item->vacancy->company->logo);
+                    return '
+                        <a href="' . route('lamaran.show', ['id' => $item->id]) . '" class="text-decoration-none">
+                            <div class="card card-loker cursor-pointer">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <span class="bg-transparent border-0 shadow-none avatar avatar-lg">
+                                                <img src="' . $logo . '" alt="' . $item->vacancy->company->name . '">
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <div class="font-weight-bold">
+                                                <h3 class="link-blue mb-1">' . $item->vacancy->position . '</h3>
+                                            </div>
+                                            <div class="text-dark">
+                                                ' . $item->vacancy->job_type . '
+                                                <div class="mt-1">' . $item->vacancy->company->name . '</div>
+                                            </div>
+                                            <div class="text-muted mt-4">
+                                                <span class="small">Melamar pada ' . Carbon::parse($item->created_at)->translatedFormat('d F Y, H:i') . ' (' . $item->created_at->diffForHumans() . ')</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>';
+                })
+                ->rawColumns(['card'])
+                ->toJson();
+            return $json;
+        }
+        return view('applications');
     }
 }

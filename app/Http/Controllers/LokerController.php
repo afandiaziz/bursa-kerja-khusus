@@ -6,6 +6,7 @@ use PDF;
 use Carbon\Carbon;
 use App\Models\Vacancy;
 use App\Models\Applicant;
+use App\Models\ApplicantDetail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,7 +81,8 @@ class LokerController extends Controller
     public function apply(Request $request, $id)
     {
         $request->request->add(['return_json' => true]);
-        if (ProfilController::update($request)->status() == 200) {
+        $profilUpdated = ProfilController::update($request);
+        if ($profilUpdated->status() == 200) {
             $check = Applicant::where('user_id', Auth::user()->id)->where('vacancy_id', $id)->first();
             if (!$check) {
                 $vacancy = Vacancy::findOrFail($id);
@@ -88,8 +90,14 @@ class LokerController extends Controller
                     'user_id' => Auth::user()->id,
                     'vacancy_id' => $id,
                     'verified' => false,
+                    'cv' => $profilUpdated->getData()->cv,
                 ]);
                 if ($applied) {
+                    foreach (Auth::user()->user_details as $item) {
+                        $array = array_slice(array_slice($item->toArray(), 1), 0, -3);
+                        $array['applicant_id'] = $applied->id;
+                        ApplicantDetail::create($array);
+                    }
                     return redirect()->to(route('loker.show', ['id' => $vacancy->id]))->with('alert-success', 'Berhasil melamar ke ' . $vacancy->company->name . ' sebagai ' . $vacancy->position);
                 } else {
                     return redirect()->back()->with('alert-danger', 'Gagal melamar ke ' . $vacancy->company->name . ' sebagai ' . $vacancy->position);
