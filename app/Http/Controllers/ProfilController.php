@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Applicant;
 use PDF;
 use App\Models\Criteria;
-use App\Models\User;
 use App\Models\UserDetail;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -334,7 +333,7 @@ class ProfilController extends Controller
 
     public function applicationDetail(Request $request)
     {
-        $data = Applicant::findOrFail($request->id);
+        $data = Applicant::where('id', $request->id)->where('user_id', Auth::id())->firstOrFail();
         return view('application.show', compact('data'));
     }
 }

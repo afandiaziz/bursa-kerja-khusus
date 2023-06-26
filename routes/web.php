@@ -10,6 +10,7 @@ use App\Http\Controllers\VacancyController;
 use App\Http\Controllers\CriteriaController;
 use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\InformationController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -105,9 +106,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/update/{id}', [VacancyController::class, 'update'])->name('update');
             Route::get('/delete/{id}', [VacancyController::class, 'destroy'])->name('delete');
         });
+        Route::prefix('/user')->name('user.')->group(function () {
+            Route::get('', [UserController::class, 'index'])->name('index');
+            Route::get('/{id}', [UserController::class, 'show'])->name('show');
+        });
         Route::prefix('/applicant')->name('applicant.')->group(function () {
-            Route::get('', [ApplicantController::class, 'index'])->name('index');
-
             Route::get('/verify/{id}', [ApplicantController::class, 'verify'])->name('verifying');
             Route::prefix('/verify')->name('verify.')->group(function () {
                 Route::get('', [ApplicantController::class, 'verifyIndex'])->name('index');

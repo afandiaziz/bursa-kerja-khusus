@@ -69,6 +69,12 @@
             <span class="badge bg-pink">Belum Terverifikasi</span>
         @endif
     </p>
+    @if ($data->status)
+        <p><b>Status:</b> {{ $data->status }} </p>
+    @endif
+    @if ($data->info)
+        <p><b>Informasi Lanjutan:</b> {{ $data->info }} </p>
+    @endif
     <hr class="my-3">
     <h2>
         <a href="{{ route('applicant.detail', $data->id) }}" class="text-primary">{{ $data->user->name }}</a>
