@@ -107,14 +107,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
         Route::prefix('/applicant')->name('applicant.')->group(function () {
             Route::get('', [ApplicantController::class, 'index'])->name('index');
-            Route::get('/verify/{id}', [ApplicantController::class, 'verify'])->name('verify');
+
+            Route::get('/verify/{id}', [ApplicantController::class, 'verify'])->name('verifying');
+            Route::prefix('/verify')->name('verify.')->group(function () {
+                Route::get('', [ApplicantController::class, 'verifyIndex'])->name('index');
+                Route::post('/check', [ApplicantController::class, 'verifyCheck'])->name('check');
+            });
+            Route::prefix('/selection')->name('selection.')->group(function () {
+                Route::get('', [ApplicantController::class, 'selectionIndex'])->name('index');
+                Route::post('/upload', [ApplicantController::class, 'selectionUpload'])->name('upload');
+            });
             Route::get('/detail/{id}', [ApplicantController::class, 'show'])->name('detail');
             Route::post('/detail/info', [ApplicantController::class, 'info'])->name('detail.info');
             Route::get('/delete/{id}', [VacancyController::class, 'destroy'])->name('delete');
-        });
-        Route::prefix('/verify')->name('verify.')->group(function () {
-            Route::get('', [VerifyController::class, 'index'])->name('index');
-            Route::post('/check', [VerifyController::class, 'check'])->name('check');
         });
         Route::prefix('/information')->name('information.')->group(function () {
             Route::get('', [InformationController::class, 'index'])->name('index');

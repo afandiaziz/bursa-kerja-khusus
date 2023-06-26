@@ -6,9 +6,9 @@
         <div class="card">
             <div class="card-body">
                 <div class="mb-3">
-                    <label class="form-label h3 mb-2">Nomor Registrasi</label>
+                    <label class="form-label text-dark h3 mb-2">Nomor Registrasi</label>
                     <div class="input-icon mb-3">
-                        <input type="text" id="registration_number" class="form-control form-control-lg" placeholder="Nomor Registrasi..." autocomplete="off" autofocus required>
+                        <input type="text" id="registration_number" class="form-control form-control-lg" autocomplete="off" autofocus required>
                         <span class="input-icon-addon">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path></svg>
                         </span>
@@ -25,13 +25,10 @@
 
 @section('script')
     <script>
-        function loadPage(applicant) {
-
-        }
         $('input#registration_number').change(function() {
             if ($(this).val().trim()) {
                 $.ajax({
-                    url: "{{ route('verify.check') }}",
+                    url: "{{ route('applicant.verify.check') }}",
                     type: 'POST',
                     dataType: 'JSON',
                     data: {

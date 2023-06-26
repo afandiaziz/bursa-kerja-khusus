@@ -17,7 +17,7 @@
     @endif
     <div class="ms-auto">
         @if (!$data->verified)
-            <a class="mx-1 btn btn-green" href="{{ route($prefix . '.verify', ['id' => $data->id]) }}">
+            <a class="mx-1 btn btn-green" href="{{ route($prefix . '.verifying', ['id' => $data->id]) }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
@@ -27,7 +27,7 @@
                 Verifikasi Pelamar
             </a>
         @else
-            <a class="mx-1 btn btn-pink" href="{{ route($prefix . '.verify', ['id' => $data->id]) }}">
+            <a class="mx-1 btn btn-pink" href="{{ route($prefix . '.verifying', ['id' => $data->id]) }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M8.18 8.189a4.01 4.01 0 0 0 2.616 2.627m3.507 -.545a4 4 0 1 0 -5.59 -5.552"></path>

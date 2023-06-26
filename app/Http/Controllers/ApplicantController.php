@@ -8,6 +8,8 @@ use App\Models\Vacancy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Yajra\DataTables\Facades\DataTables;
+use App\Imports\ApplicantImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ApplicantController extends Controller
 {
@@ -16,6 +18,49 @@ class ApplicantController extends Controller
     {
         Carbon::setLocale('id');
     }
+
+    public function selectionIndex()
+    {
+        return view('dashboard.' . $this->prefix . '.selection');
+    }
+
+    public function selectionUpload(Request $request)
+    {
+        $request->validate([
+            'file' => 'required'
+        ]);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            Excel::import(new ApplicantImport, $file);
+            return redirect()->back()->with('alert-success', 'Berhasil mengunggah data seleksi pelamar');
+        }
+    }
+
+    public function verifyIndex()
+    {
+        return view('dashboard.' . $this->prefix . '.verify');
+    }
+
+    public function verifyCheck(Request $request)
+    {
+        $request->validate([
+            'registration_number' => 'required'
+        ]);
+
+        $applicant = Applicant::where('registration_number', $request->registration_number)
+            ->firstOrFail()?->id;
+        if ($applicant) {
+            return response()->json([
+                'message' => 'success',
+                'data' => $applicant
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'failed',
+            ], 404);
+        }
+    }
+
     public function index(Request $request)
     {
         $prefix = $this->prefix;
