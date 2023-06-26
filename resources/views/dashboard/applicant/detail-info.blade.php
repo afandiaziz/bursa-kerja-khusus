@@ -96,8 +96,15 @@
         </tr>
         @foreach ($data->vacancy->vacancyCriteriaOrdered() as $item)
             <tr>
-                <th>{{ $item->name }}</th>
-                <td>: @include('components.criteria', ['criteria' => $item, 'data' => $data->applicant_details, 'child' => $data]) </td>
+                <th class="align-top">{{ $item->name }}</th>
+                <td>
+                    <div class="d-flex">
+                        <div>:</div>
+                        <div>
+                            @include('components.criteria', ['criteria' => $item, 'data' => $data->applicant_details, 'child' => $data])
+                        </div>
+                    </div>
+                </td>
             </tr>
         @endforeach
     </table>
@@ -120,8 +127,15 @@
                     <table class="mt-3 table-sm">
                         @foreach ($data->vacancy->vacancyCriteriaNotSelected() as $item)
                             <tr>
-                                <th>{{ $item->name }}</th>
-                                <td>: @include('components.criteria', ['criteria' => $item, 'data' => $data->applicant_details, 'child' => $data]) </td>
+                                <th class="align-top">{{ $item->name }}</th>
+                                <td>
+                                    <div class="d-flex">
+                                        <div>:</div>
+                                        <div>
+                                            @include('components.criteria', ['criteria' => $item, 'data' => $data->applicant_details, 'child' => $data])
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         @endforeach
                     </table>

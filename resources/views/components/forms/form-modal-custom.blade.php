@@ -1,6 +1,6 @@
 <div class="modal modal-blur fade" id="modal-{{ $data->id }}" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
+        <div class="modal-content border-blue shadow-lg">
             <form method="post" enctype="multipart/form-data" action="{{ route('profil.store.custom') }}">
                 @csrf
                 <input type="hidden" name="parent" value="{{ $data->id }}" required autocomplete="off" readonly>

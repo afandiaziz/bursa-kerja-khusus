@@ -118,14 +118,32 @@
                     </h3>
                 </div>
                 <div class="ms-auto">
-                    <a class="mx-1 btn btn-purple" href="{{ route($prefix . '.edit', ['id' => $data->id]) }}">
+                    <a class="mx-1 btn btn-outline-purple" href="{{ route($prefix . '.applicants.download', ['id' => $data->id]) }}?q=all">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                             <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
                             <path d="M7 11l5 5l5 -5"></path>
                             <path d="M12 4l0 12"></path>
                         </svg>
-                        Download Data Pelamar
+                        Download Semua Pelamar
+                    </a>
+                    <a class="mx-1 btn btn-outline-purple" href="{{ route($prefix . '.applicants.download', ['id' => $data->id]) }}?q=verified">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                            <path d="M7 11l5 5l5 -5"></path>
+                            <path d="M12 4l0 12"></path>
+                        </svg>
+                        Download Pelamar Terverifikasi
+                    </a>
+                    <a class="mx-1 btn btn-outline-purple" href="{{ route($prefix . '.applicants.download', ['id' => $data->id]) }}?q=unverified">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                            <path d="M7 11l5 5l5 -5"></path>
+                            <path d="M12 4l0 12"></path>
+                        </svg>
+                        Download Pelamar Belum Terverifikasi
                     </a>
                 </div>
             </div>

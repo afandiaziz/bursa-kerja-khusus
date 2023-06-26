@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ApplicantsExport;
 use App\Http\Requests\VacancyRequest;
 use App\Models\Applicant;
 use App\Models\Company;
 use App\Models\Criteria;
 use App\Models\Vacancy;
+use Illuminate\Support\Str;
 use App\Models\VacancyCriteria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class VacancyController extends Controller
@@ -255,5 +258,28 @@ class VacancyController extends Controller
         } else {
             return redirect()->route($this->prefix . '.index', ['id' => $id])->with('alert-danger', 'Lowongan pekerjaan gagal dihapus');
         }
+    }
+
+    public function download($id, Request $request)
+    {
+        $vacany = Vacancy::findOrFail($id);
+        $fileName = Str::slug('Pelamar ' . $vacany->company->name . ' sebagai ' . $vacany->position) . '.xlsx';
+
+        // switch ($request->q) {
+        //     case 'verified':
+        //         $applicants = Vacancy::findOrFail($request->id)->applicants->where('verified', 1);
+        //         break;
+        //     case 'unverified':
+        //         $applicants = Vacancy::findOrFail($request->id)->applicants->where('verified', 0);
+        //         break;
+
+        //     default:
+        //         $applicants = Vacancy::findOrFail($request->id)->applicants;
+        //         break;
+        // }
+        // return view('exports.vacancy', [
+        //     'applicants' => $applicants
+        // ]);
+        return Excel::download(new ApplicantsExport($id, $request->q), $fileName);
     }
 }

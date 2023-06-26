@@ -40,14 +40,6 @@
 
                                         <div class="fw-normal fs-3 mt-3">
                                             Melamar pada {{ \Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y, H:i') }}
-                                            <div class="mt-1">
-                                                <b>Status Verifikasi Pelamar:</b>
-                                                @if ($data->verified)
-                                                    <span style="color: green">Terverifikasi</span>
-                                                @else
-                                                    <span style="color: red">Belum Terverifikasi</span>
-                                                @endif
-                                            </div>
                                         </div>
                                         <div class="mt-3">
                                             <a href="{{ route('lamaran.evidence', ['registrationNumber' => $data->registration_number]) }}" class="btn btn-blue">
@@ -78,6 +70,21 @@
                             </div>
                         </div>
                         <hr class="mt-4">
+                        <div class="mt-1">
+                            <b>Status Verifikasi Pelamar:</b>
+                            @if ($data->verified)
+                                <span class="fw-bold" style="color: green">Terverifikasi</span>
+                            @else
+                                <span class="fw-bold" style="color: red">Belum Terverifikasi</span>
+                            @endif
+                        </div>
+                        @if ($data->status)
+                            <div><b>Keterangan/Status:</b> {{ $data->status }}</div>
+                        @endif
+                        @if ($data->info)
+                            <div><b>Informasi Tambahan:</b> {{ $data->info }}</div>
+                        @endif
+                        <hr class="mt-4">
                         <table class="mt-3 table-sm">
                             <tr>
                                 <th>CV</th>
@@ -98,8 +105,15 @@
                             </tr>
                             @foreach ($data->vacancy->vacancyCriteriaOrdered() as $item)
                                 <tr>
-                                    <th>{{ $item->name }}</th>
-                                    <td>: @include('components.criteria', ['criteria' => $item, 'data' => $data->applicant_details]) </td>
+                                    <th class="align-top">{{ $item->name }}</th>
+                                    <td>
+                                        <div class="d-flex">
+                                            <div>:</div>
+                                            <div>
+                                                @include('components.criteria', ['criteria' => $item, 'data' => $data->applicant_details, 'child' => $data])
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </table>

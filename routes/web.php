@@ -100,8 +100,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/create', [VacancyController::class, 'create'])->name('create');
             Route::post('/create', [VacancyController::class, 'store'])->name('store');
             Route::get('/detail/{id}', [VacancyController::class, 'show'])->name('detail');
-            // Route::get('/activate/{id}', [VacancyController::class, 'activate'])->name('activate');
             Route::get('/update/{id}', [VacancyController::class, 'edit'])->name('edit');
+            Route::get('/download/{id}', [VacancyController::class, 'download'])->name('applicants.download');
             Route::post('/update/{id}', [VacancyController::class, 'update'])->name('update');
             Route::get('/delete/{id}', [VacancyController::class, 'destroy'])->name('delete');
         });

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Applicant;
 use App\Models\User;
-use App\Models\Vacancy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Yajra\DataTables\Facades\DataTables;
