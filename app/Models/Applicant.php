@@ -41,6 +41,17 @@ class Applicant extends Model
         return $this->hasMany(ApplicantDetail::class)->orderBy('created_at', 'desc');
     }
 
+    public function user_details_child($parentId)
+    {
+        return $this->hasMany(ApplicantDetail::class)
+            ->select('applicant_details.*')
+            ->whereHas('criteria', function ($query) use ($parentId) {
+                $query->where('parent_id', $parentId);
+            })
+            ->join('criteria', 'criteria.id', '=', 'applicant_details.criteria_id')
+            ->orderBy('criteria.child_order', 'asc');
+    }
+
     /**
      * Boot function from Laravel.
      */

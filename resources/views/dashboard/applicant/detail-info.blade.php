@@ -79,24 +79,54 @@
     <table class="mt-3 table-sm">
         <tr>
             <th>CV</th>
-            <td>: <a href="{{ asset('assets/upload/cv/' . $data->cv) }}" target="_blank">{{ $data->cv }}</a></td>
+            <td>
+                :
+                <a href="{{ asset('assets/upload/cv/' . $data->cv) }}" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                        <path d="M9 9l1 0"></path>
+                        <path d="M9 13l6 0"></path>
+                        <path d="M9 17l6 0"></path>
+                    </svg>
+                    {{ $data->cv }}
+                </a>
+            </td>
         </tr>
         @foreach ($data->vacancy->vacancyCriteriaOrdered() as $item)
             <tr>
                 <th>{{ $item->name }}</th>
-                <td>: @include('components.criteria', ['criteria' => $item, 'data' => $data->applicant_details]) </td>
+                <td>: @include('components.criteria', ['criteria' => $item, 'data' => $data->applicant_details, 'child' => $data]) </td>
             </tr>
         @endforeach
     </table>
-
-    <a href="" class="btn btn-info mt-3">
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
-            <path d="M6 21v-2a4 4 0 0 1 4 -4h1.5"></path>
-            <path d="M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-            <path d="M20.2 20.2l1.8 1.8"></path>
-        </svg>
-        Lihat Lengkap Detail Pelamar
-    </a>
+    <div class="accordion mt-4" id="accordion-example">
+        <div class="accordion-item shadow-sm border-blue">
+            <h2 class="accordion-header">
+                <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#full-detail">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
+                        <path d="M6 21v-2a4 4 0 0 1 4 -4h1.5"></path>
+                        <path d="M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                        <path d="M20.2 20.2l1.8 1.8"></path>
+                    </svg>&nbsp;
+                    Lihat Lengkap Detail Pelamar
+                </button>
+            </h2>
+            <div id="full-detail" class="accordion-collapse collapse" data-bs-parent="#accordion-example">
+                <div class="accordion-body pt-0">
+                    <table class="mt-3 table-sm">
+                        @foreach ($data->vacancy->vacancyCriteriaNotSelected() as $item)
+                            <tr>
+                                <th>{{ $item->name }}</th>
+                                <td>: @include('components.criteria', ['criteria' => $item, 'data' => $data->applicant_details, 'child' => $data]) </td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

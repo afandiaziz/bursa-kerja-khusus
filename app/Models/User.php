@@ -72,17 +72,17 @@ class User extends Authenticatable
             ->orderBy('criteria.child_order', 'asc');
     }
 
-    public function user_details_total_child($parentId)
-    {
-        $array = $this->hasMany(UserDetail::class)
-            ->selectRaw('count(criteria_id) as count')
-            ->whereHas('criteria', function ($query) use ($parentId) {
-                $query->where('parent_id', $parentId);
-            })
-            ->groupBy('criteria_id')
-            ->pluck('count')->toArray();
-        return count($array) > 0 ? max($array) : 0;
-    }
+    // public function user_details_total_child($parentId)
+    // {
+    //     $array = $this->hasMany(UserDetail::class)
+    //         ->selectRaw('count(criteria_id) as count')
+    //         ->whereHas('criteria', function ($query) use ($parentId) {
+    //             $query->where('parent_id', $parentId);
+    //         })
+    //         ->groupBy('criteria_id')
+    //         ->pluck('count')->toArray();
+    //     return count($array) > 0 ? max($array) : 0;
+    // }
 
     public function applications(): HasMany
     {

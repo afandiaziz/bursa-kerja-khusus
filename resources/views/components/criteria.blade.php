@@ -59,5 +59,36 @@
         @break
     @endswitch
 @else
-    <span class="text-danger">BELUM DIISI</span>
+    @if ($criteria->criteriaType->type == 'Custom')
+        @if ($criteria->is_multiple)
+            @php
+                $criteria->children = is_array($criteria->children) ? collect($criteria->children) : $criteria->children;
+            @endphp
+            @if ($child->user_details_child($criteria->id)->where('criteria_id', $criteria->children->first()->id)->count() > 0)
+                <div class="row">
+                    @foreach ($child->user_details_child($criteria->id)->where('criteria_id', $criteria->children->firstOrFail()->id)->select('index')->orderBy('index', 'desc')->get() as $item)
+                        <div class="col-md-12 my-1" data-index="{{ $item->index }}">
+                            <div class="d-flex align-items-baseline">
+                                <div class="me-2">
+                                    <div style="font-size: 36px" class="text-blue">&bullet;</div>
+                                </div>
+                                <div>
+                                    @foreach ($criteria->children as $index => $children)
+                                        <div class="{{ $index == 0 ? 'fs-3 fw-medium' : 'mt-1' }}">
+                                            @php
+                                                $valueChildByIndex = $child->user_details_child($criteria->id)->where('criteria_id', $children->id)->where('index', $item->index)->first();
+                                            @endphp
+                                            {{ $valueChildByIndex ? $valueChildByIndex?->value : '-' }}
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        @endif
+    @else
+        <span class="text-danger">BELUM DIISI</span>
+    @endif
 @endif

@@ -114,7 +114,7 @@ class Vacancy extends Model
 
     public function vacancyCriteria(): HasMany
     {
-        return $this->hasMany(VacancyCriteria::class, 'vacancy_id', 'id')->whereHas('criteria', function ($criteria) {
+        return $this->hasMany(VacancyCriteria::class, 'vacancy_id', 'id')->select('criteria_id')->whereHas('criteria', function ($criteria) {
             $criteria->where('active', 1);
         });
     }
@@ -126,7 +126,18 @@ class Vacancy extends Model
         $data->each(function ($item) use (&$selectedCriteria) {
             $selectedCriteria[] = $item->criteria_id;
         });
-        $criteria = Criteria::whereIn('id', $selectedCriteria)->where('active', 1)->orderBy('parent_order', 'ASC')->get();
+        $criteria = Criteria::whereIn('id', $selectedCriteria)->where('active', 1)->where('parent_id', null)->orderBy('parent_order', 'ASC')->get();
+        return $criteria;
+    }
+
+    public function vacancyCriteriaNotSelected()
+    {
+        $data = $this->vacancyCriteriaOrdered();
+        $selectedCriteria = [];
+        $data->each(function ($item) use (&$selectedCriteria) {
+            $selectedCriteria[] = $item->id;
+        });
+        $criteria = Criteria::whereNotIn('id', $selectedCriteria)->where('active', 1)->where('parent_id', null)->orderBy('parent_order', 'ASC')->get();
         return $criteria;
     }
 }

@@ -277,45 +277,53 @@ class ProfilController extends Controller
             $json = DataTables::collection(Auth::user()->applications)
                 ->addColumn('card', function ($item) {
                     $logo = filter_var($item->vacancy->company->logo, FILTER_VALIDATE_URL) ? $item->vacancy->company->logo : asset('assets/upload/companies/' . $item->vacancy->company->logo);
-                    return '
+                    $html = '
                         <a href="' . route('lamaran.show', ['id' => $item->id]) . '" class="text-decoration-none p-0">
                             <div class="card card-loker cursor-pointer">
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-auto">
-                                            <span class="bg-transparent border-0 shadow-none avatar avatar-lg">
-                                                <img src="' . $logo . '" alt="' . $item->vacancy->company->name . '">
-                                            </span>
+                                    <div class="d-flex">
+                                        <div>
+                                            <div class="row">
+                                                <div class="col-auto">
+                                                    <span class="bg-transparent border-0 shadow-none avatar avatar-lg">
+                                                        <img src="' . $logo . '" alt="' . $item->vacancy->company->name . '">
+                                                    </span>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="fw-bold">
+                                                        <h3 class="link-blue mb-1">' . $item->vacancy->position . '</h3>
+                                                    </div>
+                                                    <div class="text-dark">
+                                                        ' . $item->vacancy->job_type . '
+                                                        <div class="mt-1">' . $item->vacancy->company->name . '</div>
+                                                    </div>
+                                                    <div class="text-muted mt-3">
+                                                        <span class="small">
+                                                            Melamar pada ' . Carbon::parse($item->created_at)->translatedFormat('d F Y, H:i') . ' (' . $item->created_at->diffForHumans() . ')
+                                                        </span>
+                                                    </div>
+                                                    <div class="btn btn-outline-blue mt-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                                                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                                                            <path d="M9 9l1 0"></path>
+                                                            <path d="M9 13l6 0"></path>
+                                                            <path d="M9 17l6 0"></path>
+                                                        </svg>
+                                                        Unduh Bukti Pendaftaran
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col">
-                                            <div class="fw-bold">
-                                                <h3 class="link-blue mb-1">' . $item->vacancy->position . '</h3>
-                                            </div>
-                                            <div class="text-dark">
-                                                ' . $item->vacancy->job_type . '
-                                                <div class="mt-1">' . $item->vacancy->company->name . '</div>
-                                            </div>
-                                            <div class="text-muted mt-3">
-                                                <span class="small">
-                                                    Melamar pada ' . Carbon::parse($item->created_at)->translatedFormat('d F Y, H:i') . ' (' . $item->created_at->diffForHumans() . ')
-                                                </span>
-                                            </div>
-                                            <div class="btn btn-blue mt-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                    <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                                                    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                                                    <path d="M9 9l1 0"></path>
-                                                    <path d="M9 13l6 0"></path>
-                                                    <path d="M9 17l6 0"></path>
-                                                </svg>
-                                                Unduh Bukti Pendaftaran
-                                            </div>
+                                        <div class="ms-auto">
+                                            <div class="badge ' . ($item->verified ? 'bg-success' : 'bg-danger') . '">' . ($item->verified ? 'Terverifikasi' : 'Belum Terverifikasi') . '</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </a>';
+                    return $html;
                 })
                 ->rawColumns(['card'])
                 ->toJson();

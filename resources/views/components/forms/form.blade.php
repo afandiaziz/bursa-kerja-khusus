@@ -52,7 +52,7 @@
                                                 @foreach ($data->children as $index => $child)
                                                     <div class="{{ $index == 0 ? 'fs-3 fw-medium' : 'mt-1' }}">
                                                         @php
-                                                            $valueChildByIndex = Auth::user()->user_details_child($data->id)->where('criteria_id', $child->id)->where('index', $item->index)->first();
+                                                            $valueChildByIndex = Auth::user()->user_details_child($data->id)->where('criteria_id', $child->id)->where('index', $item->index)->select('user_details.*')->first();
                                                         @endphp
                                                         {{ $valueChildByIndex ? $valueChildByIndex?->value : '-' }}
                                                     </div>

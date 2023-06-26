@@ -25,10 +25,10 @@
                         </div>
                         <div class="row gap-4 mt-4 mb-3">
                             @foreach ($criteria as $item)
-                                <div class="col-auto">
+                                <div class="{{ $item->criteriaType->type == 'Custom' ? 'col-12' : 'col-auto' }}">
                                     <div class="text-secondary text-uppercase fs-4 fw-bold">{{ $item->name }}</div>
                                     <div class="fs-3">
-                                        @include('components.criteria', ['criteria' => $item, 'data' => Auth::user()->user_details])
+                                        @include('components.criteria', ['criteria' => $item, 'data' => Auth::user()->user_details, 'child' => Auth::user()])
                                     </div>
                                 </div>
                             @endforeach
