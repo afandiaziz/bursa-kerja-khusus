@@ -38,7 +38,7 @@
                 @php
                     $data->children = is_array($data->children) ? collect($data->children) : $data->children
                 @endphp
-                @if (Auth::user()->user_details_child($data->id)->where('criteria_id', $data->children->first()->id)->count() > 0)
+                @if ($data->children && Auth::user()->user_details_child($data->id)->where('criteria_id', $data->children->first()->id)->count() > 0)
                     <div class="row">
                         @foreach (Auth::user()->user_details_child($data->id)->where('criteria_id', $data->children->firstOrFail()->id)->select('index')->orderBy('index', 'desc')->get() as $item)
                             <div class="col-md-12 my-1" data-index="{{ $item->index }}">

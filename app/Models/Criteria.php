@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Uuids;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Criteria extends Model
 {
-    use HasFactory, Uuids, SoftDeletes;
+    use HasFactory, SoftDeletes;
     protected $table = 'criteria';
     protected $orderBy = 'parent_order';
     protected $orderDirection = 'asc';
@@ -43,10 +43,10 @@ class Criteria extends Model
         return $this->hasMany(CriteriaAnswer::class, 'criteria_id')->orderBy('index', 'asc');
     }
 
-    public function criteriaDocuments()
-    {
-        return $this->hasMany(CriteriaDocuments::class, 'criteria_id');
-    }
+    // public function criteriaDocuments()
+    // {
+    //     return $this->hasMany(CriteriaDocuments::class, 'criteria_id');
+    // }
 
     public static function criteriaCreate($criteriaValues, $criteriaAnswerValues = [])
     {
@@ -71,5 +71,42 @@ class Criteria extends Model
         }
 
         return $query->orderBy($this->orderBy, $this->orderDirection);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = Str::uuid()->toString();
+            }
+        });
+
+        static::deleted(function ($item) {
+            $item->criteriaAnswer()->each(function ($sub) {
+                $sub->delete();
+            });
+            $item->children()->each(function ($sub) {
+                $sub->delete();
+            });
+        });
+    }
+    /**
+     * Get the value indicating whether the IDs are incrementing.
+     *
+     * @return bool
+     */
+    public function getIncrementing()
+    {
+        return false;
+    }
+    /**
+     * Get the auto-incrementing key type.
+     *
+     * @return string
+     */
+    public function getKeyType()
+    {
+        return 'string';
     }
 }

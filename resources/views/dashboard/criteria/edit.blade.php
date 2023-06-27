@@ -9,7 +9,7 @@
             @include("dashboard.$prefix.form")
         </form>
     </div>
-    <div class="col-lg-8" id="preview-form">
+    <div class="col-lg-4" id="preview-form">
         <div class="card">
             <div class="card-header">
                 <div class="card-title">Tampilan Input dari Kriteria {{ $data->name }}</div>
@@ -136,31 +136,26 @@
                 }
             });
             $('body').on('click', 'button#remove-answer', function() {
-                if ($('#additional-content #answer-content .form-group').length <= 2) {
-                    $('#additional-content #answer-content button#remove-answer').addClass('disabled')
+                const parent = $(this).parent().parent().parent();
+                if ($(this).parent().parent().parent().find('.form-group').length <= 2) {
+                    $(this).parent().parent().parent().find('button#remove-answer').addClass('disabled')
                     return;
                 }
                 $(this).parent().parent().remove();
-                $('#additional-content #answer-content').each(function() {
-                    $(this).find('label').each(function(index) {
-                        $(this).text(`Jawaban ${index + 1}`);
-                    });
+                parent.find('label').each(function(index) {
+                    $(this).text(`Jawaban ${index + 1}`);
                 });
                 previewForm();
             });
             $('body').on('click', 'button#add-answer', function() {
-                const answerContent = $('#additional-content #answer-content .form-group').last();
+                const answerContent = $(this).parent().parent().find('#answer-content').find('.form-group').last();
                 const answerContentClone = answerContent.clone();
                 answerContentClone.find('input').val('');
-                answerContentClone.find('label').each(function() {
-                    $(this).text(
-                        `Jawaban ${$('#additional-content #answer-content .form-group').length + 1}`
-                    );
-                });
                 answerContent.after(answerContentClone);
-                if ($('#additional-content #answer-content .form-group').length > 2) {
-                    $('#additional-content #answer-content button#remove-answer').removeClass('disabled')
+                if ($(this).parent().parent().find('#answer-content').find('.form-group').length > 2) {
+                    $(this).parent().parent().find('#answer-content').find('button#remove-answer').removeClass('disabled')
                 }
+                const label = answerContentClone.find('label').text(`Jawaban ${$(this).parent().parent().find('#answer-content').find('.form-group').length}`);
             });
             $('body').on('change', 'input[type="radio"][name="format"], input[type="radio"].form-check-input.input-format', function() {
                 const selector = $(this).parent().parent().find('select');
@@ -184,19 +179,38 @@
             });
 
             $('body').on('click', 'button#remove-sub', function() {
-                if ($('#additional-content #form-custom-container .form-group').length <= 2) {
-                    $('#additional-content #form-custom-container button#remove-sub').addClass('disabled')
+                const parent = $(this).parent().parent().parent().parent();
+                if (parent.find('.form-group').length <= 2) {
+                    parent.find('button#remove-sub').addClass('disabled')
                     return;
                 }
                 $(this).parent().parent().find('select')[0].tomselect.destroy()
                 $(this).parent().parent().parent().remove();
+                parent.find('> .form-group').each(function(index) {
+                    $(this).find('.row [data-index]').last().attr('data-index', index);
+                    $(this).find('.col select').parent().data('index', index);
+                    $(this).find('.col [name]').each(function() {
+                        const currentName = $(this).attr('name').replace('sub[', '').split('][');
+                        if (currentName[0] != 'answer') {
+                            $(this).attr('name', `sub[${currentName[0]}][${index}]`)
+                        }
+                    });
+                    $(this).find('.row [data-index] .custom-additional-form-container .form-group [name]').each(function(indexAdditional) {
+                        const currentName = $(this).attr('name').replace('sub[', '').split('][');
+                        if (currentName[0] != 'answer') {
+                            $(this).attr('name', `sub[${currentName[0]}][${index}]`)
+                        } else {
+                            $(this).attr('name', `sub[${currentName[0]}][${index}][]`)
+                        }
+                    });
+                });
                 previewForm();
             });
             $('body').on('click', 'button#add-sub', function() {
-                const template = $('#custom-template .form-group').last();
-                const subContainer = $('#additional-content #form-custom-container > .form-group').last();
+                const template = $(this).parent().parent().find('#custom-template .form-group').last();
+                const subContainer = $(this).parent().parent().find('#form-custom-container > .form-group').last();
                 const subContainerCloned = template.clone();
-                const index = $('#additional-content #form-custom-container > .form-group').length;
+                const index = $(this).parent().parent().find('#form-custom-container > .form-group').length;
                 subContainerCloned.find('input[type="text"]').val('');
                 subContainerCloned.find('select').val('');
                 $(subContainerCloned.find('input')[0]).attr('name', 'sub[name][' + (index) + ']').removeAttr('disabled').removeAttr('readonly').attr('required', 'required');
@@ -206,8 +220,8 @@
                 $(subContainerCloned.find('select')[0]).parent().data('index', (index));
                 new TomSelect(subContainerCloned.find('select')[0]);
                 subContainer.after(subContainerCloned);
-                if (index > 2) {
-                    $('#additional-content #form-custom-container button#remove-sub').removeClass('disabled');
+                if ((index + 1) > 2) {
+                    $(this).parent().parent().find('#form-custom-container button#remove-sub').removeClass('disabled');
                 }
             });
             $('#additional-content').on('change', '#additional-custom-container select', function() {

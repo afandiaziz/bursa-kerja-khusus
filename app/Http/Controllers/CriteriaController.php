@@ -267,6 +267,7 @@ class CriteriaController extends Controller
 
     public function update(CriteriaRequest $request, $id)
     {
+        // dd($request->all());
         $request->validated();
         if ($request->has('format')) {
             if ($request->format == 0 && $request->has('format_file')) {
@@ -323,47 +324,78 @@ class CriteriaController extends Controller
                         ]);
                     }
                 }
-                $dataAnswer = CriteriaAnswer::where('criteria_id', $id)->get();
-                foreach ($dataAnswer as $index => $answer) {
+                foreach (CriteriaAnswer::where('criteria_id', $id)->get() as $index => $answer) {
                     if (!in_array($answer->index, array_keys($request->answer))) {
                         $answer->delete();
                     }
                 }
             }
         } else if ($request->has('sub')) {
-            $currentChildren = Criteria::where('parent_id', $data->id)->orderBy('child_order', 'ASC')->count();
-            if (count($request->sub['name']) >= $currentChildren) {
-                for ($indexChildren = 0; $indexChildren < count($request->sub['name']); $indexChildren++) {
-                    $child = [];
-                    foreach ($request->sub as $key => $value) {
+            // $currentChildren = Criteria::where('parent_id', $data->id)->orderBy('child_order', 'ASC')->count();
+            // if (count($request->sub['name']) >= $currentChildren) {
+            $indexes = [];
+            for ($indexChildren = 0; $indexChildren < count($request->sub['name']); $indexChildren++) {
+                $child = [];
+                foreach ($request->sub as $key => $value) {
+                    if ($key != 'answer') {
                         $child[$key] = isset($value[$indexChildren]) ? $value[$indexChildren] : null;
                     }
-                    Criteria::updateOrCreate([
-                        'parent_id' => $data->id,
-                        'child_order' => ($indexChildren + 1),
-                    ], $child);
                 }
-            } else {
-                // dd($request->sub, $currentChildren, $request->sub['name']);
-                $indexes = [];
-                foreach ($request->sub['name'] as $indexChildren => $name) {
-                    $child = [];
-                    foreach ($request->sub as $key => $value) {
-                        $child[$key] = isset($value[$indexChildren]) ? $value[$indexChildren] : null;
+
+                $criteriaUpdatedOrCreated = Criteria::updateOrCreate([
+                    'parent_id' => $data->id,
+                    'child_order' => ($indexChildren + 1),
+                ], $child);
+
+                array_push($indexes, ($indexChildren + 1));
+
+                if (array_key_exists('answer', $request->sub) && array_key_exists(($indexChildren), $request->sub['answer'])) {
+                    $indexesAnswer = [];
+                    foreach ($request->sub['answer'][$indexChildren] as $indexAnswer => $answer) {
+                        $criteriaAnswer = CriteriaAnswer::updateOrCreate([
+                            'criteria_id' => $criteriaUpdatedOrCreated->id,
+                            'answer' => $answer,
+                        ], [
+                            'answer' => $answer,
+                            'index' => $indexAnswer,
+                        ]);
+                        array_push($indexesAnswer, $criteriaAnswer->id);
                     }
-                    Criteria::updateOrCreate([
-                        'parent_id' => $data->id,
-                        'child_order' => ($indexChildren + 1),
-                    ], $child);
-                    array_push($indexes, ($indexChildren + 1));
-                }
-                Criteria::whereNotIn('child_order', $indexes)->where('parent_id', $data->id)->delete();
-                foreach (Criteria::whereIn('child_order', $indexes)->where('parent_id', $data->id)->orderBy('child_order', 'ASC')->get() as $index => $item) {
-                    $item->update([
-                        'child_order' => ($index + 1),
-                    ]);
+                    if (count($indexesAnswer) > 0) {
+                        CriteriaAnswer::whereNotIn('id', $indexesAnswer)->where('criteria_id', $criteriaUpdatedOrCreated->id)->delete();
+                    }
                 }
             }
+            Criteria::whereNotIn('child_order', $indexes)->where('parent_id', $data->id)->each(function ($item) {
+                $item->delete();
+            });
+            Criteria::whereIn('child_order', $indexes)->where('parent_id', $data->id)->orderBy('child_order', 'ASC')->each(function ($item, $index) {
+                $item->update([
+                    'child_order' => ($index + 1),
+                ]);
+            });
+
+            // } else {
+            // dd($request->all(), $request->sub, $currentChildren);
+            // $indexes = [];
+            // foreach ($request->sub['name'] as $indexChildren => $name) {
+            //     $child = [];
+            //     foreach ($request->sub as $key => $value) {
+            //         $child[$key] = isset($value[$indexChildren]) ? $value[$indexChildren] : null;
+            //     }
+            //     // Criteria::updateOrCreate([
+            //     //     'parent_id' => $data->id,
+            //     //     'child_order' => ($indexChildren + 1),
+            //     // ], $child);
+            //     array_push($indexes, ($indexChildren + 1));
+            // }
+            // Criteria::whereNotIn('child_order', $indexes)->where('parent_id', $data->id)->delete();
+            // foreach (Criteria::whereIn('child_order', $indexes)->where('parent_id', $data->id)->orderBy('child_order', 'ASC')->get() as $index => $item) {
+            //     // $item->update([
+            //     //     'child_order' => ($index + 1),
+            //     // ]);
+            // }
+            // }
         } else {
             if (count($data->criteriaAnswer)) {
                 foreach ($data->criteriaAnswer as $item) {
