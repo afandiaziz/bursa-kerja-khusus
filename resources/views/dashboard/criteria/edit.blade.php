@@ -151,6 +151,12 @@
                 const answerContent = $(this).parent().parent().find('#answer-content').find('.form-group').last();
                 const answerContentClone = answerContent.clone();
                 answerContentClone.find('input').val('');
+                const answerContentCloneName = answerContentClone.find('input').attr('name').split('][');
+                if (answerContentCloneName.length > 2) {
+                    answerContentClone.find('input').attr('name', `${answerContentCloneName[0]}][${answerContentCloneName[1]}][]`);
+                } else {
+                    answerContentClone.find('input').attr('name', `${answerContentCloneName[0].split('[')[0]}[]`);
+                }
                 answerContent.after(answerContentClone);
                 if ($(this).parent().parent().find('#answer-content').find('.form-group').length > 2) {
                     $(this).parent().parent().find('#answer-content').find('button#remove-answer').removeClass('disabled')

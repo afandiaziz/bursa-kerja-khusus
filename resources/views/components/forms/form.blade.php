@@ -24,13 +24,15 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mt-2" id="form-custom-view-container">
-                            @foreach ($data->children as $index => $item)
-                                @if ($item->criteria_type_id)
-                                    <div class="my-3">
-                                        @include('components.forms.form', ['data' => $item, 'custom' => true])
-                                    </div>
-                                @endif
-                            @endforeach
+                            @if ($data->children)
+                                @foreach ($data->children as $index => $item)
+                                    @if ($item->criteria_type_id)
+                                        <div class="my-3">
+                                            @include('components.forms.form', ['data' => $item, 'custom' => false])
+                                        </div>
+                                    @endif
+                                @endforeach
+                            @endif
                         </div>
                     </div>
                 </div>

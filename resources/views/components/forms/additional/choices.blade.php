@@ -17,10 +17,20 @@
             </label>
             <div class="input-group">
                 <input type="text" class="form-control" autocomplete="off"
-                    name="{{ $subIndex != null ? "sub[answer][$subIndex][]" : 'answer[]' }}"
-                    value="{{ ($old && isset($old->answer) && $old->answer && count($old->answer) ? $old->answer[$i] : $old && isset($old->criteriaAnswer) && $old->criteriaAnswer && count($old->criteriaAnswer)) ? $old->criteriaAnswer[$i]->answer : '' }}"
+                    name="{{ $subIndex != null ?
+                                "sub[answer][$subIndex][" . (($old && isset($old->criteriaAnswer) && $old->criteriaAnswer && count($old->criteriaAnswer)) ? $old->criteriaAnswer[$i]->id : '') ."]"
+                                : 'answer[' . (($old && isset($old->criteriaAnswer) && $old->criteriaAnswer && count($old->criteriaAnswer)) ? $old->criteriaAnswer[$i]->id : '') . ']'
+                            }}"
+                    value="{{ (
+                            ($old && isset($old->answer) && $old->answer && count($old->answer)) ? $old->answer[$i] :
+                                (
+                                    ($old && isset($old->criteriaAnswer) && $old->criteriaAnswer && count($old->criteriaAnswer)) ?
+                                    $old->criteriaAnswer[$i]->answer : ''
+                                )
+                        )
+                    }}"
                 >
-                <button type="button" class="btn btn-danger" id="remove-answer">Hapus</button>
+                <button type="button" class="btn btn-danger" id="remove-answer" tabindex="-1">Hapus</button>
             </div>
         </div>
     @endfor

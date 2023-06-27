@@ -42,11 +42,16 @@
         }
         $('input.daterangepicker-dateonly').daterangepicker({
             showDropdowns: true,
+            alwaysShowCalendars: true,
             locale: {
                 format: 'DD/MM/YYYY',
+                applyLabel: "Terapkan",
+                customRangeLabel: "Pilih Tanggal Sendiri",
             },
+            cancelClass: "d-none",
+            buttonClasses: "btn",
             ranges: {
-                'Today': [ currentValue, moment() ],
+                'Hari Ini': [ currentValue, moment() ],
             }
         });
         $('.datetimepicker-dateonly').tempusDominus({
