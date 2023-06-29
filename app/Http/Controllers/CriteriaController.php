@@ -159,13 +159,19 @@ class CriteriaController extends Controller
             $indexAnswer = 0;
             $sub = [];
             $children = [];
+
             foreach ($request->data as $item) {
                 $name = $item['name'];
                 if (str_contains($name, 'sub')) {
                     $exploded = explode(',', str_replace(['sub', '[', ']'], '', str_replace('][', ',', $name)));
                     $subName = $exploded[0];
                     $subIndex = $exploded[1];
-                    $sub[$subIndex][$subName] = $item['value'];
+                    if (str_contains($name, 'sub[answer][')) {
+                        $sub[$subIndex]['answer'][] = $item['value'];
+                        $indexAnswer++;
+                    } else {
+                        $sub[$subIndex][$subName] = $item['value'];
+                    }
                 } else if ($name == 'answer[]') {
                     if ($indexAnswer < count($data->criteriaAnswer)) {
                         $collection[$indexAnswer]->answer = $item['value'];
@@ -200,23 +206,38 @@ class CriteriaController extends Controller
                 foreach ($sub as $index => $item) {
                     $children[$index] = new Criteria();
                     $children[$index]->id = Str::uuid()->toString();
+                    $collectionChildAnswer = collect([]);
                     foreach ($item as $key => $value) {
-                        $children[$index]->$key = $value;
+                        if ($key == 'answer') {
+                            foreach ($value as $indexChildAnswer => $answer) {
+                                $collectionChildAnswer->push(new CriteriaAnswer(
+                                    [
+                                        'id' => Str::uuid()->toString(),
+                                        'answer' => $answer,
+                                        'index' => $indexChildAnswer,
+                                        'criteria_id' => $children[$index]->id,
+                                    ]
+                                ));
+                            }
+                            $children[$index]->criteriaAnswer = $collectionChildAnswer;
+                        } else {
+                            $children[$index]->$key = $value;
+                        }
                     }
                 }
             }
+
             $data->children = count($children) > 0 ? $children : null;
-            // dd($children);
-            // dd($data);
             return response()->json([
                 'selector' => $data->id,
-                'html' => view('components.forms.form-container', ['data' => $data])->render(),
+                'html' => view('components.forms.form', ['data' => $data, 'custom' => false])->render(),
             ], 200);
         }
     }
 
     public function store(CriteriaRequest $request)
     {
+        // dd($request->all());
         $request->validated();
         if ($request->has('format_file')) {
             $request->merge(['format_file' => implode(',', $request->all()['format_file'])]);
@@ -329,7 +350,7 @@ class CriteriaController extends Controller
         $indexes = [];
         for ($indexChildren = 0; $indexChildren < count($requestChild['name']); $indexChildren++) {
             $child = [];
-            foreach ($child as $key => $value) {
+            foreach ($requestChild as $key => $value) {
                 if ($key != 'answer') {
                     $child[$key] = isset($value[$indexChildren]) ? $value[$indexChildren] : null;
                 }

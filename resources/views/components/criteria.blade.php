@@ -28,6 +28,16 @@
         @case('Tanggal')
             {{ \Carbon\Carbon::parse(str_replace('/', '-', $data->where('criteria_id', $criteria->id)->first()?->value))->translatedFormat('d F Y') }}
         @break
+        @case('Date Range')
+            @php
+                $exploded = $data->where('criteria_id', $criteria->id)->first() ? explode(' - ', $data->where('criteria_id', $criteria->id)->first()?->value) : null;
+            @endphp
+            {{
+                $exploded ?
+                \Carbon\Carbon::parse(str_replace('/', '-', $exploded[0]))->translatedFormat('d F Y') . ' - ' . \Carbon\Carbon::parse(str_replace('/', '-', $exploded[1]))->translatedFormat('d F Y')
+                : ''
+            }}
+        @break
         @case('Tanggal dan Waktu')
             {{ \Carbon\Carbon::parse(str_replace('/', '-', $data->where('criteria_id', $criteria->id)->first()?->value))->translatedFormat('d F Y H:i:s') }}
         @break
@@ -87,10 +97,9 @@
                                     <div>
                                         @foreach ($criteria->children as $index => $children)
                                             <div class="{{ $index == 0 ? 'fs-3 fw-medium' : 'mt-1' }}">
-                                                @php
-                                                    $valueChildByIndex = $child->user_details_child($criteria->id)->where('criteria_id', $children->id)->where('index', $item->index)->first();
-                                                @endphp
-                                                {{ $valueChildByIndex ? $valueChildByIndex?->value : '-' }}
+                                                @if ($data->where('index', $item->index)->where('criteria_id', $children->id)->count())
+                                                    @include('components.criteria', ['criteria' => $children, 'data' => $data->where('index', $item->index), 'child' => $child])
+                                                @endif
                                             </div>
                                         @endforeach
                                     </div>
@@ -99,9 +108,28 @@
                         @endif
                     @endforeach
                 </div>
+            @else
+                <div class="text-uppercase text-danger mt-2">belum diisi</div>
             @endif
+        @else
+            <div class="row mt-2">
+                @foreach ($criteria->children as $index => $children)
+                    <div class="col-md-6 my-2">
+                        <div class="text-secondary text-uppercase fs-4 fw-bold">
+                            {{ $children->name }}
+                        </div>
+                        <div class="fs-4">
+                            @if($data->where('criteria_id', $children->id)->count())
+                                @include('components.criteria', ['criteria' => $children, 'data' => $data, 'child' => $child])
+                            @else
+                                <span class="text-uppercase text-danger">belum diisi</span>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         @endif
     @else
-        <span class="text-danger">BELUM DIISI</span>
+        <span class="text-uppercase text-danger">belum diisi</span>
     @endif
 @endif

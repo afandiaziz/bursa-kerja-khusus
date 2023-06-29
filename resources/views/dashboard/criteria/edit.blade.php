@@ -14,7 +14,14 @@
             <div class="card-header">
                 <div class="card-title">Tampilan Input dari Kriteria {{ $data->name }}</div>
             </div>
-            <div class="card-body"></div>
+            <div class="card-body">
+                <div class="p-5">
+                    <div class="text-dark fs-4 text-center mb-3">Loading</div>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar progress-bar-indeterminate"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -96,6 +103,16 @@
                         id: "{{ $data->id }}",
                         data,
                     },
+                    beforeSend: function () {
+                        $('#preview-form .card-body').html(`
+                            <div class="p-5">
+                                <div class="text-dark fs-4 text-center mb-3">Loading</div>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar progress-bar-indeterminate"></div>
+                                </div>
+                            </div>
+                        `);
+                    },
                     success: function({html, selector}) {
                         $('#preview-form .card-body').html(html);
 
@@ -122,7 +139,9 @@
         }
 
         $(document).ready(function() {
-            previewForm();
+            setTimeout(() => {
+                previewForm();
+            }, 1000);
             new TomSelect('select#criteria_type_id.tomselect--');
             if ($('#criteria_type_id').val().trim()) {
                 getAdditional($('#criteria_type_id').val());

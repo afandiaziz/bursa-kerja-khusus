@@ -50,7 +50,7 @@
                     </ul>
                 </div>
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tabs-detail-applicant">
+                    <div class="tab-pane show active" id="tabs-detail-applicant">
                         <div class="card">
                             <div class="card-body">
                                 <h1 class="mb-0">{{ $data->name }}</h1>
@@ -70,7 +70,7 @@
                                     </a>
                                 </h3>
                                 <div class="row gap-4 mt-4 mb-3">
-                                    @foreach ($criteria as $item)
+                                    @foreach ($criteria->where('active', true) as $item)
                                         <div class="{{ $item->criteriaType->type == 'Custom' ? 'col-12 border-top border-bottom py-2' : 'col-auto' }}">
                                             <div class="text-secondary text-uppercase fs-4 fw-bold">{{ $item->name }}</div>
                                             <div class="fs-3">
@@ -82,7 +82,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade show active" id="tabs-applications">
+                    <div class="tab-pane" id="tabs-applications">
                         <div class="card">
                             <div class="card-body">
                                 @if ($data->applications->count())

@@ -162,6 +162,7 @@ class ProfilController extends Controller
             $user_detail = Auth::user()->user_details->where('criteria_id', $criteria->id)->first();
             $fileNameFromDB = $user_detail && $user_detail->filename ? explode(',', $user_detail->filename) : null;
             $explodedPath = $user_detail && $user_detail->path ? explode(',', $user_detail->path) : null;
+
             if ($request->hasFile($key)) {
                 if (is_array($value)) {
                     $fileName = [];
@@ -180,7 +181,7 @@ class ProfilController extends Controller
                     $path = implode(',', $path);
                     $value = null;
 
-                    $execute = UserDetail::updateOrCreate([
+                    UserDetail::updateOrCreate([
                         'user_id' => Auth::user()->id,
                         'criteria_id' => $key,
                     ], [
@@ -207,7 +208,7 @@ class ProfilController extends Controller
 
                         $value = null;
 
-                        $execute = UserDetail::updateOrCreate([
+                        UserDetail::updateOrCreate([
                             'user_id' => Auth::user()->id,
                             'criteria_id' => $key,
                         ], [
