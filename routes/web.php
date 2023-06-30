@@ -66,9 +66,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['IsAdmin'])->group(function () {
-        Route::get('/dashboard', function () {
-            return view('dashboard.index');
-        })->name('dashboard');
+        Route::get('/dashboard', [LandingController::class, 'dashboard'])->name('dashboard');
 
         Route::prefix('/criteria')->name('criteria.')->group(function () {
             Route::get('', [CriteriaController::class, 'index'])->name('index');

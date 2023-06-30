@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\Information;
+use App\Models\User;
+use App\Models\Vacancy;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -23,11 +25,16 @@ class LandingController extends Controller
         // $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
+
+    public function dashboard()
+    {
+        $totalActiveJobs = Vacancy::active()->count();
+        $totalNotActiveJobs = Vacancy::notActive()->count();
+        $totalApplicants = User::where('role', 'applicant')->count();
+        $totalCompanies = Company::where('status', true)->count();
+        $totalInformations = Information::where('is_active', true)->count();
+        return view('dashboard.index', compact('totalCompanies', 'totalApplicants', 'totalInformations', 'totalActiveJobs', 'totalNotActiveJobs'));
+    }
     public function raw()
     {
         $file = public_path('assets/upload/cv/resume-2.pdf');
