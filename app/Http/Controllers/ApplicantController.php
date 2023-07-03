@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Mail;
 use App\Models\Applicant;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Yajra\DataTables\Facades\DataTables;
 use App\Imports\ApplicantImport;
+use App\Mail\ApplyMail;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Auth;
 
 class ApplicantController extends Controller
 {
@@ -88,6 +89,19 @@ class ApplicantController extends Controller
             'verified' => $data->verified ? 0 : 1
         ]);
         if ($updated) {
+            $data = Applicant::findOrFail($id);
+            if ($data->verified) {
+                Mail::to(Auth::user()->email)->send(new ApplyMail([
+                    'subject' => 'Lamaran Kamu sudah diverifikasi (' . $data->registration_number . ') - Bursa Kerja Khusus',
+                    'id' => $data->id,
+                    'created_at' => Carbon::parse($data->created_at)->translatedFormat('d F Y, H:i'),
+                    'regist_number' => $data->registration_number,
+                    'verified' => $data->verified,
+                    'name' => $data->user->name,
+                    'position' => $data->vacancy->position,
+                    'company' => $data->vacancy->company->name,
+                ]));
+            }
             return redirect()->back()->with('alert-success', 'Berhasil ' . (!$data->verified ? 'membatalkan verifikasi' : 'memverifikasi') . ' pelamar');
         } else {
             return redirect()->back()->with('alert-danger', 'Gagal ' . (!$data->verified ? 'membatalkan verifikasi' : 'memverifikasi') . ' pelamar');

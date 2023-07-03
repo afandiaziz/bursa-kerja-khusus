@@ -85,39 +85,39 @@ class LokerController extends Controller
         $request->request->add(['return_json' => true]);
         $profilUpdated = ProfilController::update($request);
         if ($profilUpdated->status() == 200) {
-            // $check = Applicant::where('user_id', Auth::user()->id)->where('vacancy_id', $id)->first();
-            // if (!$check) {
-            $vacancy = Vacancy::findOrFail($id);
-            $applied = Applicant::create([
-                'user_id' => Auth::user()->id,
-                'vacancy_id' => $id,
-                'verified' => false,
-                'cv' => $profilUpdated->getData()->cv,
-            ]);
-            // if ($applied) {
-            Mail::to(Auth::user()->email)->send(new ApplyMail([
-                'subject' => 'Lamaran Kamu sudah terkirim - Bursa Kerja Khusus',
-                'id' => $applied->id,
-                'created_at' => Carbon::parse($applied->created_at)->translatedFormat('d F Y, H:i'),
-                'regist_number' => $applied->registration_number,
-                'verified' => $applied->verified,
-                'name' => Auth::user()->name,
-                'position' => $applied->vacancy->position,
-                'company' => $applied->vacancy->company->name,
-            ]));
+            $check = Applicant::where('user_id', Auth::user()->id)->where('vacancy_id', $id)->first();
+            if (!$check) {
+                $vacancy = Vacancy::findOrFail($id);
+                $applied = Applicant::create([
+                    'user_id' => Auth::user()->id,
+                    'vacancy_id' => $id,
+                    'verified' => false,
+                    'cv' => $profilUpdated->getData()->cv,
+                ]);
+                if ($applied) {
+                    Mail::to(Auth::user()->email)->send(new ApplyMail([
+                        'subject' => 'Lamaran Kamu sudah terkirim - Bursa Kerja Khusus',
+                        'id' => $applied->id,
+                        'created_at' => Carbon::parse($applied->created_at)->translatedFormat('d F Y, H:i'),
+                        'regist_number' => $applied->registration_number,
+                        'verified' => $applied->verified,
+                        'name' => Auth::user()->name,
+                        'position' => $applied->vacancy->position,
+                        'company' => $applied->vacancy->company->name,
+                    ]));
 
-            //         foreach (Auth::user()->user_details as $item) {
-            //             $array = array_slice(array_slice($item->toArray(), 1), 0, -3);
-            //             $array['applicant_id'] = $applied->id;
-            //             ApplicantDetail::create($array);
-            //         }
-            //         return redirect()->to(route('loker.show', ['id' => $vacancy->id]))->with('alert-success', 'Berhasil melamar ke ' . $vacancy->company->name . ' sebagai ' . $vacancy->position);
-            //     } else {
-            //         return redirect()->back()->with('alert-danger', 'Gagal melamar ke ' . $vacancy->company->name . ' sebagai ' . $vacancy->position);
-            //     }
-            // } else {
-            //     return redirect()->back()->with('alert-yellow', 'Kamu sudah melamar pekerjaan ini. Cek pada menu Lamaran Saya.');
-            // }
+                    foreach (Auth::user()->user_details as $item) {
+                        $array = array_slice(array_slice($item->toArray(), 1), 0, -3);
+                        $array['applicant_id'] = $applied->id;
+                        ApplicantDetail::create($array);
+                    }
+                    return redirect()->to(route('loker.show', ['id' => $vacancy->id]))->with('alert-success', 'Berhasil melamar ke ' . $vacancy->company->name . ' sebagai ' . $vacancy->position);
+                } else {
+                    return redirect()->back()->with('alert-danger', 'Gagal melamar ke ' . $vacancy->company->name . ' sebagai ' . $vacancy->position);
+                }
+            } else {
+                return redirect()->back()->with('alert-yellow', 'Kamu sudah melamar pekerjaan ini. Cek pada menu Lamaran Saya.');
+            }
         } else {
             return redirect()->back()->with('alert-danger', 'Gagal melakukan update profil.');
         }
