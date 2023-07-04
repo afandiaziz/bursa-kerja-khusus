@@ -26,6 +26,7 @@
 @section('script')
     <script>
         $('input#registration_number').change(function() {
+            $('#detail-applicant').addClass('d-none')
             if ($(this).val().trim()) {
                 $.ajax({
                     url: "{{ route('applicant.verify.check') }}",
@@ -36,11 +37,30 @@
                         registration_number: $(this).val().trim()
                     },
                     success: function ({data}) {
-                        $('#detail-applicant .card').load("{{ route('applicant.detail.info') }}", {applicant: data, _token: '{{ csrf_token() }}'})
-                        $('#detail-applicant').removeClass('d-none')
+                        if (data.message == 'failed`') {
+                            $('#detail-applicant').removeClass('d-none')
+                            $('#detail-applicant .card').html(`
+                                <div class="card-body">
+                                    <div class="alert alert-danger" role="alert">
+                                        <strong>Nomor Registrasi tidak ditemukan!</strong>
+                                    </div>
+                                </div>
+                            `)
+                        } else {
+                            $('#detail-applicant .card').load("{{ route('applicant.detail.info') }}", {applicant: data, _token: '{{ csrf_token() }}'})
+                            $('#detail-applicant').removeClass('d-none')
+                        }
                     },
                     error: function (response) {
                         $('#detail-applicant').addClass('d-none')
+                        $('#detail-applicant').removeClass('d-none')
+                        $('#detail-applicant .card').html(`
+                            <div class="card-body">
+                                <div class="alert alert-danger" role="alert">
+                                    <strong>Nomor Registrasi tidak ditemukan!</strong>
+                                </div>
+                            </div>
+                        `)
                     }
                 });
             } else {

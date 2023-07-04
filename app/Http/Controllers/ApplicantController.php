@@ -48,7 +48,7 @@ class ApplicantController extends Controller
         ]);
 
         $applicant = Applicant::where('registration_number', $request->registration_number)
-            ->firstOrFail()?->id;
+            ->first()?->id;
         if ($applicant) {
             return response()->json([
                 'message' => 'success',
@@ -102,9 +102,9 @@ class ApplicantController extends Controller
                     'company' => $data->vacancy->company->name,
                 ]));
             }
-            return redirect()->back()->with('alert-success', 'Berhasil ' . (!$data->verified ? 'membatalkan verifikasi' : 'memverifikasi') . ' pelamar');
+            return redirect()->back()->with('alert-success', 'Berhasil ' . (!$data->verified ? 'membatalkan verifikasi' : 'memverifikasi') . ' lamaran pelamar');
         } else {
-            return redirect()->back()->with('alert-danger', 'Gagal ' . (!$data->verified ? 'membatalkan verifikasi' : 'memverifikasi') . ' pelamar');
+            return redirect()->back()->with('alert-danger', 'Gagal ' . (!$data->verified ? 'membatalkan verifikasi' : 'memverifikasi') . ' lamaran pelamar');
         }
     }
 
