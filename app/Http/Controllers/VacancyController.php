@@ -22,6 +22,7 @@ class VacancyController extends Controller
     {
         Carbon::setLocale('id');
     }
+
     public function index(Request $request)
     {
         $prefix = $this->prefix;

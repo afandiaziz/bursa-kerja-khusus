@@ -35,17 +35,18 @@ class LandingController extends Controller
         $totalInformations = Information::where('is_active', true)->count();
         return view('dashboard.index', compact('totalCompanies', 'totalApplicants', 'totalInformations', 'totalActiveJobs', 'totalNotActiveJobs'));
     }
-    public function raw()
-    {
-        $file = public_path('assets/upload/cv/resume-2.pdf');
-        if (file_exists($file)) {
-            // Initialize and load PDF Parser library
-            $pdfParser = new Parser();
-            $pdf = $pdfParser->parseFile($file);
-            $textContent = $pdf->getText();
-            dd($textContent);
-        }
-    }
+
+    // public function raw()
+    // {
+    //     $file = public_path('assets/upload/cv/resume-2.pdf');
+    //     if (file_exists($file)) {
+    //         // Initialize and load PDF Parser library
+    //         $pdfParser = new Parser();
+    //         $pdf = $pdfParser->parseFile($file);
+    //         $textContent = $pdf->getText();
+    //         dd($textContent);
+    //     }
+    // }
 
     public function index()
     {
