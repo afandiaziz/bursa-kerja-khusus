@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LokerController;
 use App\Http\Controllers\ProfilController;
-use App\Http\Controllers\VerifyController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\VacancyController;
@@ -26,6 +25,8 @@ use App\Http\Controllers\UserController;
 Auth::routes();
 
 Route::get('/raw-cv', [LandingController::class, 'raw'])->name('raw-cv');
+Route::get('/scrapping', [LandingController::class, 'scrapping'])->name('scrapping');
+Route::get('/recommendation/search/{keyword}', [LandingController::class, 'recommendationSearch'])->name('recommendation');
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/tentang', function () {
     return view('about');
@@ -99,6 +100,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/create', [VacancyController::class, 'create'])->name('create');
             Route::post('/create', [VacancyController::class, 'store'])->name('store');
             Route::get('/detail/{id}', [VacancyController::class, 'show'])->name('detail');
+            Route::get('/activate/{id}', [VacancyController::class, 'activate'])->name('activate');
             Route::get('/update/{id}', [VacancyController::class, 'edit'])->name('edit');
             Route::get('/download/{id}', [VacancyController::class, 'download'])->name('applicants.download');
             Route::post('/update/{id}', [VacancyController::class, 'update'])->name('update');

@@ -22,7 +22,7 @@
             </div>
             <div class="card-body">
                 <div class="row row-cards mb-3">
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-xxl-3">
                         <a href="{{ route('vacancy.index') }}" class="text-decoration-none">
                             <div class="card card-sm shadow-sm border-info">
                                 <div class="card-body">
@@ -49,7 +49,7 @@
                             </div>
                         </a>
                     </div>
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-xxl-3">
                         <a href="?active=true" class="text-decoration-none">
                             <div class="card card-sm shadow-sm border-green text-green">
                                 <div class="card-body">
@@ -76,7 +76,7 @@
                             </div>
                         </a>
                     </div>
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-xxl-3">
                         <a href="?active=false" class="text-decoration-none">
                             <div class="card card-sm shadow-sm border-danger text-danger">
                                 <div class="card-body">

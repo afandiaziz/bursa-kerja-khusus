@@ -37,11 +37,22 @@
                     <div class="col-xl-4 col-6 mb-3">
                         <a href="{{ route('loker.show', ['id' => $item->id]) }}" class="text-decoration-none" target="_blank">
                             <div class="card card-loker cursor-pointer">
-                                <div class="card-body" style="height: 180px;">
+                                <div class="card-body" style="height: 200px;">
                                     <div class="row">
                                         <div class="col-auto">
                                             <span class="bg-transparent border-0 shadow-none avatar avatar-lg">
-                                                <img src="{{ filter_var($item->company->logo, FILTER_VALIDATE_URL) ? $item->company->logo : asset('assets/upload/companies/' . $item->company->logo) }}" alt="{{ $item->company->name }}" width="">
+                                                @if ($item->company->logo)
+                                                    <img src="{{ filter_var($item->company->logo, FILTER_VALIDATE_URL) ? $item->company->logo : asset('assets/upload/companies/' . $item->company->logo) }}" alt="{{ $item->company->name }}" width="">
+                                                @else
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-building-factory-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M3 21h18"></path>
+                                                        <path d="M5 21v-12l5 4v-4l5 4h4"></path>
+                                                        <path d="M19 21v-8l-1.436 -9.574a.5 .5 0 0 0 -.495 -.426h-1.145a.5 .5 0 0 0 -.494 .418l-1.43 8.582"></path>
+                                                        <path d="M9 17h1"></path>
+                                                        <path d="M14 17h1"></path>
+                                                    </svg>
+                                                @endif
                                             </span>
                                         </div>
                                         <div class="col">

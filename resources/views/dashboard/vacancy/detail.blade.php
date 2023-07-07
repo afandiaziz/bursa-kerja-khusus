@@ -3,6 +3,25 @@
 @section('title', $data->company->name . ' - '. $data->position)
 
 @section('content')
+    @if (!$data->status || ($data->deadline < date('Y-m-d')) || $data->max_applicants && $data->applicants->where('verified', 1)->count() >= $data->max_applicants)
+        <div class="col-12">
+            <div class="alert alert-danger mb-0">
+                <strong>Lowongan pekerjaan ini sudah ditutup</strong>
+                <br>
+                <ul>
+                    @if (!$data->status)
+                        <li>Karena status loker ditutup</li>
+                    @endif
+                    @if (($data->deadline < date('Y-m-d')))
+                        <li>Karena batas pendaftaran telah berakhir</li>
+                    @endif
+                    @if ($data->max_applicants && $data->applicants->where('verified', 1)->count() >= $data->max_applicants)
+                        <li>Karena total pelamar terverifikasi sudah melebihi batas total pelamar yang diizinkan</li>
+                    @endif
+                </ul>
+            </div>
+        </div>
+    @endif
     <div class="col-12">
         <div class="card">
             <div class="card-header d-flex">
@@ -20,6 +39,30 @@
                     </a>
                 </div>
                 <div class="ms-auto">
+                    @if (($data->deadline >= date('Y-m-d')) || $data->max_applicants && $data->applicants->where('verified', 1)->count() < $data->max_applicants)
+                        @if ($data->status)
+                            <a class="mx-1 btn btn-danger" href="{{ route($prefix . '.activate', ['id' => $data->id]) }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24"
+                                    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M18 6l-12 12"></path>
+                                    <path d="M6 6l12 12"></path>
+                                </svg>
+                                Nonaktifkan
+                            </a>
+                        @else
+                            <a class="mx-1 btn btn-success" href="{{ route($prefix . '.activate', ['id' => $data->id]) }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check"
+                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M5 12l5 5l10 -10"></path>
+                                </svg>
+                                Aktifkan
+                            </a>
+                        @endif
+                    @endif
                     <a class="mx-1 btn btn-warning" href="{{ route($prefix . '.edit', ['id' => $data->id]) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24"
                             height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -149,7 +192,7 @@
             </div>
             <div class="card-body">
                 <div class="row row-cards mb-3">
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-xxl-3">
                         <a href="{{ route('vacancy.detail', ['id' => $data->id]) }}" class="text-decoration-none">
                             <div class="card card-sm shadow-sm border-info">
                                 <div class="card-body">
@@ -180,7 +223,7 @@
                             </div>
                         </a>
                     </div>
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-xxl-3">
                         <a href="?verified=1" class="text-decoration-none">
                             <div class="card card-sm shadow-sm border-green">
                                 <div class="card-body">
@@ -208,7 +251,7 @@
                             </div>
                         </a>
                     </div>
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-xxl-3">
                         <a href="?verified=0" class="text-decoration-none">
                             <div class="card card-sm shadow-sm border-red">
                                 <div class="card-body">

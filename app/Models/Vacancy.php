@@ -43,6 +43,7 @@ class Vacancy extends Model
                     $criteria->where('active', 1);
                 }]);
             }])
+            ->where('status', 1)
             ->where('deadline', '>=', date('Y-m-d'))
             ->whereHas('company', function ($company) {
                 $company->where('status', 1);
@@ -72,6 +73,7 @@ class Vacancy extends Model
         }
         $vacany = $vacany
             ->where('deadline', '>=', date('Y-m-d'))
+            ->where('status', 1)
             ->where(function ($query) {
                 $query->whereNull('max_applicants')
                     ->whereHas('company', function ($company) {
@@ -95,8 +97,16 @@ class Vacancy extends Model
         }
         $vacany = $vacany
             ->where(function ($query) {
-                $query->where('deadline', '<', date('Y-m-d'))
+                $query
+                    // jika status false
+                    ->where('status', 0)
+                    // jika deadline sudah lewat, tetapi status true
+                    ->orWhere('deadline', '<', date('Y-m-d'))
+                    ->where('status', 1)
+                    // atau jika deadline belum lewat, tetapi max applicant sudah terpenuhi dan status true
                     ->orWhere('deadline', '>=', date('Y-m-d'))
+                    ->where('status', 1)
+                    ->whereNotNull('max_applicants')
                     ->whereRaw('(select count(*) from `applicants` where `vacancies`.`id` = `applicants`.`vacancy_id` and `verified` = 1 and `applicants`.`deleted_at` is null) >= max_applicants');
             });
         return $vacany;

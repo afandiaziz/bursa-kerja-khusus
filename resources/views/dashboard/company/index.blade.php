@@ -44,7 +44,7 @@
 @section('script')
     <script>
         $('#datatable-ajax').DataTable({
-            ajax: '',
+            ajax: '?company_datatable=true',
             serverSide: true,
             processing: true,
             columns: [{

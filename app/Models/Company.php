@@ -23,4 +23,12 @@ class Company extends Model
     {
         return $this->hasMany(Vacancy::class, 'company_id', 'id');
     }
+    public function vacanciesActive()
+    {
+        return Vacancy::active()->where('company_id', $this->id);
+    }
+    public function vacanciesNotActive()
+    {
+        return Vacancy::notActive()->where('company_id', $this->id);
+    }
 }

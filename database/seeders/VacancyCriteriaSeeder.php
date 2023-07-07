@@ -15,7 +15,7 @@ class VacancyCriteriaSeeder extends Seeder
         Vacancy::get()->each(function ($vacancy) {
             $random = fake()->numberBetween(4, 10);
             $selectedId = [];
-            $criteriaRequired = Criteria::select('id')->where('required', 1)->get();
+            $criteriaRequired = Criteria::select('id')->where('required', 1)->where('active', 1)->whereNull('parent_id')->get();
             foreach ($criteriaRequired as $item) {
                 array_push($selectedId, $item->id);
                 VacancyCriteria::create([
@@ -24,7 +24,7 @@ class VacancyCriteriaSeeder extends Seeder
                 ]);
             }
             for ($i = 0; $i < $random; $i++) {
-                $criteriaId = Criteria::where('required', 0)->whereNotIn('id', $selectedId)->inRandomOrder()->first()->id;
+                $criteriaId = Criteria::where('required', 0)->where('active', 1)->whereNull('parent_id')->whereNotIn('id', $selectedId)->inRandomOrder()->first()->id;
                 if (!in_array($criteriaId, $selectedId)) {
                     array_push($selectedId, $criteriaId);
                     VacancyCriteria::create([

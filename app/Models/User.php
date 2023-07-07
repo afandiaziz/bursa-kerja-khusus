@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasMany(UserDetail::class);
     }
 
+    public function keywords(): HasMany
+    {
+        return $this->hasMany(Keyword::class);
+    }
+
     public function user_details_child($parentId)
     {
         return $this->hasMany(UserDetail::class)

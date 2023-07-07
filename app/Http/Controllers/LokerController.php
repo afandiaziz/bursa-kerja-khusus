@@ -9,6 +9,7 @@ use App\Mail\ApplyMail;
 use App\Models\Vacancy;
 use App\Models\Applicant;
 use App\Models\ApplicantDetail;
+use App\Models\Keyword;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,12 +30,19 @@ class LokerController extends Controller
     public function index(Request $request)
     {
         $loker = Vacancy::active();
+        // dd($loker->toSql(), $loker->getBindings());
 
         if ($request->has('job_type') && $request->job_type) {
             $loker = $loker->whereIn('job_type', explode(',', $request->job_type));
         }
 
         if ($request->has('search') && $request->search) {
+            if (Auth::check() && Auth::user()->role == 'applicant') {
+                Keyword::create([
+                    'user_id' => Auth::user()->id,
+                    'keyword' => $request->search,
+                ]);
+            }
             $loker = $loker->where(function ($query) use ($request) {
                 $query->where('position', 'like', '%' . $request->search . '%')
                     ->orWhereHas('company', function ($company) use ($request) {
@@ -50,7 +58,7 @@ class LokerController extends Controller
             // });
         }
         // dd($loker->toSql());
-        $loker = $loker->paginate(7);
+        $loker = $loker->paginate(20);
         return view('loker/index', compact('loker'));
     }
 
@@ -83,6 +91,7 @@ class LokerController extends Controller
     public function apply(Request $request, $id)
     {
         $request->request->add(['return_json' => true]);
+        $request->merge(["return_json" => true]);
         $profilUpdated = ProfilController::update($request);
         if ($profilUpdated->status() == 200) {
             $check = Applicant::where('user_id', Auth::user()->id)->where('vacancy_id', $id)->first();

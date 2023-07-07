@@ -5,7 +5,18 @@
             <div class="row">
                 <div class="col-auto">
                     <span class="avatar avatar-lg shadow-none border-0 bg-transparent">
-                        <img src="{{ filter_var($detailLoker->company->logo, FILTER_VALIDATE_URL) ? $detailLoker->company->logo : asset('assets/upload/companies/' . $detailLoker->company->logo) }}" alt="{{ $detailLoker->company->name }}">
+                        @if ($detailLoker->company->logo)
+                            <img src="{{ filter_var($detailLoker->company->logo, FILTER_VALIDATE_URL) ? $detailLoker->company->logo : asset('assets/upload/companies/' . $detailLoker->company->logo) }}" alt="{{ $detailLoker->company->name }}">
+                        @else
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-building-factory-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M3 21h18"></path>
+                                <path d="M5 21v-12l5 4v-4l5 4h4"></path>
+                                <path d="M19 21v-8l-1.436 -9.574a.5 .5 0 0 0 -.495 -.426h-1.145a.5 .5 0 0 0 -.494 .418l-1.43 8.582"></path>
+                                <path d="M9 17h1"></path>
+                                <path d="M14 17h1"></path>
+                            </svg>
+                        @endif
                     </span>
                 </div>
                 <div class="col-auto">
