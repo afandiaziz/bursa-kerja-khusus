@@ -8,6 +8,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\VacancyController;
 use App\Http\Controllers\CriteriaController;
 use App\Http\Controllers\ApplicantController;
+use App\Http\Controllers\ContentBasedFilteringController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\UserController;
 
@@ -22,11 +23,17 @@ use App\Http\Controllers\UserController;
 |
 */
 
+
+Route::prefix('/recommendation')->name('recommendation.')->group(function () {
+    Route::get('/exec', [ContentBasedFilteringController::class, 'exec'])->name('exec');
+    Route::get('/search/{keyword}', [ContentBasedFilteringController::class, 'search'])->name('search');
+    Route::get('/search-lib/{keyword}', [ContentBasedFilteringController::class, 'searchByLibrary'])->name('searchByLibrary');
+});
+
 Auth::routes();
 
 Route::get('/raw-cv', [LandingController::class, 'raw'])->name('raw-cv');
-Route::get('/scrapping', [LandingController::class, 'scrapping'])->name('scrapping');
-Route::get('/recommendation/search/{keyword}', [LandingController::class, 'recommendationSearch'])->name('recommendation');
+Route::get('/scrapping', [App\Http\Controllers\ScrappingController::class, 'scrapping'])->name('scrapping');
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/tentang', function () {
     return view('about');

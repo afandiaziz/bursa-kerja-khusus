@@ -15,7 +15,7 @@
         "maatwebsite/excel": "^3.1",
         "milon/barcode": "^10.0",
         "php-ai/php-ml": "^0.10.0",
-        "sastrawi/sastrawi": "1",
+        "sastrawi/sastrawi": "1.2.0",
         "smalot/pdfparser": "^2.5",
         "yajra/laravel-datatables": "10.0"
     },
