@@ -64,7 +64,7 @@ class LokerController extends Controller
 
     public function show($id)
     {
-        $statusApplied = Auth::user()->applications->where('vacancy_id', $id)->count() ? true : false;
+        $statusApplied = Auth::check() && Auth::user()->applications->where('vacancy_id', $id)->count() ? true : false;
         $data = Vacancy::activeById($id);
         if ($data) {
             return view('loker/show', ['detailLoker' => $data, 'statusApplied' => $statusApplied]);

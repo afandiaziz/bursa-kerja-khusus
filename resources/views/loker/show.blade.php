@@ -22,7 +22,7 @@
 @endsection
 
 @section('script')
-    @if (Auth::user()->cv && file_exists(public_path('assets/upload/cv/' . Auth::user()->cv)))
+    @if (Auth::check() && Auth::user()->cv && file_exists(public_path('assets/upload/cv/' . Auth::user()->cv)))
         <script>
             $('#cv.filepond').filepond({
                 storeAsFile: true,
