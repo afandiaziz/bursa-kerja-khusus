@@ -7,6 +7,7 @@ use App\Models\Applicant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Imports\ApplicantImport;
+use App\Jobs\SendEmail;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\ApplicantionVerifiedMail;
@@ -91,7 +92,7 @@ class ApplicantController extends Controller
         if ($updated) {
             $data = Applicant::findOrFail($id);
             if ($data->verified) {
-                Mail::to($data->user->email)->send(new ApplicantionVerifiedMail([
+                SendEmail::dispatch(Auth::user()->email, new ApplicantionVerifiedMail([
                     'subject' => 'Lamaran Kamu sudah diverifikasi (' . $data->registration_number . ') - Bursa Kerja Khusus',
                     'id' => $data->id,
                     'created_at' => Carbon::parse($data->created_at)->translatedFormat('d F Y, H:i'),

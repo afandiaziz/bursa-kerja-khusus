@@ -93,4 +93,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Applicant::class)->orderBy('created_at', 'desc');
     }
+    public function notifiedVacancies(): HasMany
+    {
+        return $this->hasMany(NotifiedVacancy::class)->orderBy('created_at', 'desc');
+    }
 }

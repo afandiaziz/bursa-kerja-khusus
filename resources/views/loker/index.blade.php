@@ -32,7 +32,31 @@
 @section('content')
     <div class="container mb-4 py-4">
         <div class="row @if (!$loker->count()) justify-content-center @endif">
-            @if ($loker->count())
+            @if ($loker->total())
+                @if (request()->query('search'))
+                    <div class="col-12">
+                        <div class="alert alert-info text-dark">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    Menampilkan hasil pencarian untuk <strong>{{ request()->query('search') }}</strong>
+                                    <br>
+                                    {{ $loker->total() }} hasil ditemukan
+                                </div>
+                                <div class="ms-auto text-end">
+                                    <div class="d-flex text-end justify-content-end">
+                                        <label for="notification" class="form-check-label me-2">Aktifkan notifikasi</label>
+                                        <label class="form-check form-switch">
+                                            <input id="notification" class="form-check-input border border-dark" onchange="recommendationHandler()" {{ Auth::check() && Auth::user()->keywords->where('keyword', request()->query('search'))->count() ? 'checked' : null }} type="checkbox">
+                                        </label>
+                                    </div>
+                                    <div class="text-muted small">
+                                        * Rekomendasi pekerjaan akan diberikan sesuai dengan pencarian anda.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 @foreach ($loker as $item)
                     <div class="col-xl-4 col-6 mb-3">
                         <a href="{{ route('loker.show', ['id' => $item->id]) }}" class="text-decoration-none" target="_blank">
@@ -105,7 +129,7 @@
 
 @section('css')
     <link href="{{ asset('assets/plugins/tom-select/tom-select.css') }}" rel="stylesheet">
-
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
         .card-loker:hover {
             background-color: #f5f5f5;
@@ -122,6 +146,7 @@
 
 @section('script')
     <script src="{{ asset('assets/plugins/tom-select/tom-select.complete.min.js') }}"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script>
         let latestLoker = null;
@@ -147,7 +172,6 @@
                 });
             }
         });
-
         new TomSelect(document.getElementById('filter-job-type'), {
             maxItems: null,
             valueField: 'id',
@@ -167,4 +191,49 @@
             createOnBlur: true,
         });
     </script>
+    @if (request()->query('search'))
+        @if (Auth::check())
+        <script>
+            function recommendationHandler() {
+                const search = "{{ request()->query('search') }}";
+                const turn = $('#notification').is(':checked');
+                fetch(`{{ route('loker.notifikasi.store') }}`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': `{{ csrf_token() }}`
+                    },
+                    body: JSON.stringify({
+                        search: search,
+                        notification: turn,
+                    })
+                }).then(response => response.json()).then(({status}) => {
+                    if (status == 'success') {
+                        if (turn) {
+                            Toastify({
+                                text: `Rekomendasi pekerjaan untuk ${search} berhasil diaktifkan.`,
+                                style: {
+                                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                                }
+                            }).showToast();
+                        } else {
+                            Toastify({
+                                text: `Rekomendasi pekerjaan untuk ${search} dinonaktifkan.`,
+                                style: {
+                                    background: "linear-gradient(to right, #00b09b, red)",
+                                }
+                            }).showToast();
+                        }
+                    }
+                });
+            }
+        </script>
+        @else
+            <script>
+                function recommendationHandler() {
+                    window.location.href = "{{ route('login') }}";
+                }
+            </script>
+        @endif
+    @endif
 @endsection

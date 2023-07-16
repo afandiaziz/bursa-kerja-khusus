@@ -26,9 +26,6 @@
             <div class="row align-items-center g-4">
                 <div class="col-lg">
                     <div class="container-tight">
-                        <div class="text-center mb-4">
-                            <a href="." class="navbar-brand navbar-brand-autodark"><img src="./static/logo.svg" height="36" alt=""></a>
-                        </div>
                         <div class="card card-md">
                             <div class="card-body">
                                 <h2 class="h2 text-center mb-4">Masuk ke akun Anda</h2>
@@ -47,11 +44,6 @@
                                     <div class="mb-2">
                                         <label class="form-label">
                                             Password
-                                            {{-- @if (Route::has('password.request'))
-                                                <span class="form-label-description">
-                                                    <a href="./forgot-password.html">Saya lupa password</a>
-                                                </span>
-                                            @endif --}}
                                         </label>
                                         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" required autocomplete="current-password">
                                         @error('password')

@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('vacancies', function (Blueprint $table) {
             $table->boolean('status')->default(1)->after('max_applicants');
+            $table->index('position');
+            $table->index('job_type');
         });
     }
 
@@ -23,6 +25,9 @@ return new class extends Migration
     {
         Schema::table('vacancies', function (Blueprint $table) {
             $table->dropColumn('status');
+            $table->dropIndex('position');
+            $table->dropIndex('job_type');
+            $table->dropIndex('description');
         });
     }
 };

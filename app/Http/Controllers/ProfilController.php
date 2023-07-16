@@ -160,8 +160,8 @@ class ProfilController extends Controller
         foreach ($userDetail as $key => $value) {
             $criteria = Criteria::findOrFail($key);
             $user_detail = Auth::user()->user_details->where('criteria_id', $criteria->id)->first();
-            $fileNameFromDB = $user_detail && $user_detail->filename ? explode(',', $user_detail->filename) : null;
-            $explodedPath = $user_detail && $user_detail->path ? explode(',', $user_detail->path) : null;
+            // $fileNameFromDB = $user_detail && $user_detail->filename ? explode(',', $user_detail->filename) : null;
+            // $explodedPath = $user_detail && $user_detail->path ? explode(',', $user_detail->path) : null;
 
             if ($request->hasFile($key)) {
                 if (is_array($value)) {

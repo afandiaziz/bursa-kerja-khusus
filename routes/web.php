@@ -25,9 +25,11 @@ use App\Http\Controllers\UserController;
 
 
 Route::prefix('/recommendation')->name('recommendation.')->group(function () {
-    Route::get('/exec', [ContentBasedFilteringController::class, 'exec'])->name('exec');
-    Route::get('/search/{keyword}', [ContentBasedFilteringController::class, 'search'])->name('search');
-    Route::get('/search-lib/{keyword}', [ContentBasedFilteringController::class, 'searchByLibrary'])->name('searchByLibrary');
+    Route::get('/search', [LokerController::class, 'cbrsByKeyword'])->name('keyword');
+    Route::get('/vacancy/visit', [LokerController::class, 'cbrsByKeyword'])->name('vacancy.visit');
+    // Route::get('/exec', [ContentBasedFilteringController::class, 'exec'])->name('exec');
+    // Route::get('/search/{keyword}', [ContentBasedFilteringController::class, 'search'])->name('search');
+    // Route::get('/search-lib/{keyword}', [ContentBasedFilteringController::class, 'searchByLibrary'])->name('searchByLibrary');
 });
 
 Auth::routes();
@@ -48,6 +50,9 @@ Route::prefix('/loker')->name('loker.')->group(function () {
     Route::get('/detail/{id}', [LokerController::class, 'show'])->name('show');
 
     Route::middleware(['auth'])->group(function () {
+        Route::get('/notifikasi', [LokerController::class, 'notifikasiIndex'])->name('notifikasi.index');
+        Route::get('/notifikasi/delete', [LokerController::class, 'setKeyword'])->name('notifikasi.delete');
+        Route::post('/notifikasi/store', [LokerController::class, 'setKeyword'])->name('notifikasi.store');
         Route::post('/daftar/{id}', [LokerController::class, 'apply'])->name('daftar');
     });
 });

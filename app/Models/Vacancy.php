@@ -114,12 +114,16 @@ class Vacancy extends Model
 
     public function company(): BelongsTo
     {
-        return $this->belongsTo(Company::class, 'company_id', 'id')->select('name', 'logo', 'phone', 'email', 'address', 'website');
+        return $this->belongsTo(Company::class, 'company_id', 'id');
     }
 
     public function applicants(): HasMany
     {
         return $this->hasMany(Applicant::class, 'vacancy_id', 'id');
+    }
+    public function notifiedUsers(): HasMany
+    {
+        return $this->hasMany(NotifiedVacancy::class, 'vacancy_id', 'id');
     }
 
     public function vacancyCriteria(): HasMany
