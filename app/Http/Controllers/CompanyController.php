@@ -69,6 +69,9 @@ class CompanyController extends Controller
     public function store(CompanyRequest $request)
     {
         $request->validated();
+        $request->validate([
+            'logo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
         $logo_name = null;
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');

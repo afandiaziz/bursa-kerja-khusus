@@ -48,7 +48,7 @@ class LandingController extends Controller
 
     public function index()
     {
-        $companies = Company::orderBy('created_at', 'desc')->limit(20)->get();
+        $companies = Company::orderBy('created_at', 'desc')->whereNotNull('logo')->where('logo', '!=', '')->limit(20)->get();
         $information = Information::where('is_active', 1)->orderBy('created_at', 'desc')->limit(3)->get();
         return view('home', compact('companies', 'information'));
     }

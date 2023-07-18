@@ -16,7 +16,12 @@
             <label for="image" class="form-label text-capitalize">
                 Gambar Thumbnail <span class="text-danger">*</span>
             </label>
-            <input type="file" name="image" id="image" class="dropify" accept=".png,.jpg,.jpeg" data-allowed-file-extensions="jpg png jpeg" data-default-file="{{ old('image') ? old('image') : (isset($data) && $data->image ? (filter_var($data->image, FILTER_VALIDATE_URL) ? $data->image : asset('assets/upload/companies/' . $data->image)) : '') }}" data-max-file-size="2M">
+            <input type="file" name="image" id="image" class="dropify" accept=".png,.jpg,.jpeg" data-allowed-file-extensions="jpg png jpeg" data-default-file="
+            {{ old('image') ? old('image') :
+                (isset($data) && $data->image ?
+                    (filter_var($data->image, FILTER_VALIDATE_URL) ? $data->image :
+                    asset('assets/upload/information/' . $data->image)) : '')
+            }}" data-max-file-size="2M">
         </div>
     </div>
     <div class="card-footer">

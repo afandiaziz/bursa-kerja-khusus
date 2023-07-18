@@ -92,7 +92,7 @@ class ApplicantController extends Controller
         if ($updated) {
             $data = Applicant::findOrFail($id);
             if ($data->verified) {
-                SendEmail::dispatch(Auth::user()->email, new ApplicantionVerifiedMail([
+                SendEmail::dispatch($data->user->email, new ApplicantionVerifiedMail([
                     'subject' => 'Lamaran Kamu sudah diverifikasi (' . $data->registration_number . ') - Bursa Kerja Khusus',
                     'id' => $data->id,
                     'created_at' => Carbon::parse($data->created_at)->translatedFormat('d F Y, H:i'),

@@ -4,7 +4,7 @@
             <div class="col-lg-4 order-lg-1 order-0">
                 <div class="form-group my-2">
                     <label for="logo" class="form-label text-capitalize">
-                        Logo
+                        Logo <span class="text-danger">*</span>
                     </label>
                     <input type="file" name="logo" id="logo" class="dropify" accept=".png,.jpg,.jpeg" data-allowed-file-extensions="jpg png jpeg" data-default-file="{{ old('logo') ? old('logo') : (isset($data) && $data->logo ? (filter_var($data->logo, FILTER_VALIDATE_URL) ? $data->logo : asset('assets/upload/companies/' . $data->logo)) : '') }}" data-max-file-size="2M">
                 </div>
