@@ -27,8 +27,11 @@
                                 <div class="d-flex">
                                     <div>
                                         <h1 class="text-dark">
-                                            {{ $data->vacancy->position }}
+                                            {{ $data->registration_number }}
                                         </h1>
+                                        <h2 class="text-dark">
+                                            {{ $data->vacancy->position }}
+                                        </h2>
                                         <div class="text-muted fs-3 mb-2">
                                             {{ $data->vacancy->company->name }}
                                             <br>

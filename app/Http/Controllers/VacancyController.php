@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ApplicantsExport;
 use App\Http\Requests\VacancyRequest;
+use App\Jobs\Preprocessing;
 use App\Models\Applicant;
 use App\Models\Company;
 use App\Models\Criteria;
@@ -12,6 +13,7 @@ use Illuminate\Support\Str;
 use App\Models\VacancyCriteria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -141,6 +143,7 @@ class VacancyController extends Controller
             }
         }
         if ($data) {
+            Preprocessing::dispatch($data->id);
             return redirect()->route($this->prefix . '.detail', ['id' => $data->id])->with('alert-success', 'Lowongan pekerjaan berhasil ditambahkan');
         } else {
             return redirect()->route($this->prefix . '.detail', ['id' => $data->id])->with('alert-danger', 'Lowongan pekerjaan gagal ditambahkan');
@@ -261,6 +264,7 @@ class VacancyController extends Controller
             ]);
         }
         if ($updated) {
+            Preprocessing::dispatch($data->id);
             return redirect()->route($this->prefix . '.detail', ['id' => $id])->with('alert-success', 'Lowongan pekerjaan berhasil diubah');
         } else {
             return redirect()->route($this->prefix . '.detail', ['id' => $id])->with('alert-danger', 'Lowongan pekerjaan gagal diubah');

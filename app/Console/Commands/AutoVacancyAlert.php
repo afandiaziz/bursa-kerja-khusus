@@ -45,6 +45,7 @@ class AutoVacancyAlert extends Command
                 // $pages = 0;
                 $page = 1;
                 $loker = Vacancy::active()
+                    ->whereNotNull('preprocessed_text_id')
                     ->whereHas('company', function ($query) {
                         $query->whereNotNull('logo');
                     })
@@ -83,8 +84,8 @@ class AutoVacancyAlert extends Command
                         $latestDelay = 2;
                     }
                     $details = new RecommendationMail([
-                        'subject' => 'Pekerjaan yang mungkin cocok untuk kamu - Bursa Kerja Khusus',
-                        'title' => 'Pekerjaan yang mungkin cocok untuk kamu',
+                        'subject' => 'Pekerjaan yang mungkin cocok untuk kamu (' . $item->keyword . ') - Bursa Kerja Khusus',
+                        'title' => 'Pekerjaan yang mungkin cocok untuk kamu (' . $item->keyword . ')',
                         'vacancies' => $vacancies,
                     ]);
                     $emailJob = (new SendEmail($item->user->email, $details, $item->user->id, $vacancies))

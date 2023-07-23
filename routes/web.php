@@ -26,7 +26,7 @@ use App\Http\Controllers\UserController;
 
 Route::prefix('/recommendation')->name('recommendation.')->group(function () {
     Route::get('/search', [LokerController::class, 'cbrsByKeyword'])->name('keyword');
-    Route::get('/vacancy/visit', [LokerController::class, 'cbrsByKeyword'])->name('vacancy.visit');
+    // Route::get('/vacancy/visit', [LokerController::class, 'cbrsByKeyword'])->name('vacancy.visit');
     // Route::get('/exec', [ContentBasedFilteringController::class, 'exec'])->name('exec');
     // Route::get('/search/{keyword}', [ContentBasedFilteringController::class, 'search'])->name('search');
     // Route::get('/search-lib/{keyword}', [ContentBasedFilteringController::class, 'searchByLibrary'])->name('searchByLibrary');

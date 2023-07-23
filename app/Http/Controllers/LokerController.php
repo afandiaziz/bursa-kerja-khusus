@@ -12,6 +12,7 @@ use App\Models\Vacancy;
 use App\Models\Applicant;
 use App\Models\ApplicantDetail;
 use App\Models\Keyword;
+use App\Models\UserDetail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -87,10 +88,10 @@ class LokerController extends Controller
     {
         $request->request->add(['return_json' => true]);
         $request->merge(["return_json" => true]);
-        $profilUpdated = ProfilController::update($request);
-        if ($profilUpdated->status() == 200) {
-            $check = Applicant::where('user_id', Auth::user()->id)->where('vacancy_id', $id)->first();
-            if (!$check) {
+        $check = Applicant::where('user_id', Auth::user()->id)->where('vacancy_id', $id)->first();
+        if (!$check) {
+            $profilUpdated = ProfilController::update($request);
+            if ($profilUpdated->status() == 200) {
                 $vacancy = Vacancy::findOrFail($id);
                 $applied = Applicant::create([
                     'user_id' => Auth::user()->id,
@@ -109,9 +110,10 @@ class LokerController extends Controller
                         'position' => $applied->vacancy->position,
                         'company' => $applied->vacancy->company->name,
                     ]));
-                    foreach (Auth::user()->user_details as $item) {
+                    foreach (UserDetail::where('user_id', Auth::user()->id)->get() as $item) {
                         $array = array_slice(array_slice($item->toArray(), 1), 0, -3);
                         $array['applicant_id'] = $applied->id;
+                        // dd(ApplicantDetail::create($array));
                         ApplicantDetail::create($array);
                     }
                     return redirect()->to(route('loker.show', ['id' => $vacancy->id]))->with('alert-success', 'Berhasil melamar ke ' . $vacancy->company->name . ' sebagai ' . $vacancy->position);
@@ -119,10 +121,10 @@ class LokerController extends Controller
                     return redirect()->back()->with('alert-danger', 'Gagal melamar ke ' . $vacancy->company->name . ' sebagai ' . $vacancy->position);
                 }
             } else {
-                return redirect()->back()->with('alert-yellow', 'Kamu sudah melamar pekerjaan ini. Cek pada menu Lamaran Saya.');
+                return redirect()->back()->with('alert-danger', 'Gagal melakukan update profil.');
             }
         } else {
-            return redirect()->back()->with('alert-danger', 'Gagal melakukan update profil.');
+            return redirect()->back()->with('alert-yellow', 'Kamu sudah melamar pekerjaan ini. Cek pada menu Lamaran Saya.');
         }
     }
 
@@ -154,71 +156,71 @@ class LokerController extends Controller
         return view('loker/notifikasi');
     }
 
-    public function cbrsByKeyword()
-    {
-        // $users = User::where('role', 'applicant')
-        //     ->whereHas('keywords')
-        //     ->get();
-        // if (Auth::check() && Auth::user()->role == 'applicant' && Auth::user()->keywords->count() > 0) {
-        $latestDelay = 2;
-        $minWeight = 0.15;
-        $latestUserNotified = null;
-        $keywords = Keyword::orderBy('created_at', 'desc')->with('user')->get();
+    // public function cbrsByKeyword()
+    // {
+    //     // $users = User::where('role', 'applicant')
+    //     //     ->whereHas('keywords')
+    //     //     ->get();
+    //     // if (Auth::check() && Auth::user()->role == 'applicant' && Auth::user()->keywords->count() > 0) {
+    //     $latestDelay = 2;
+    //     $minWeight = 0.15;
+    //     $latestUserNotified = null;
+    //     $keywords = Keyword::orderBy('created_at', 'desc')->with('user')->get();
 
-        if ($keywords->count() > 0) {
-            foreach ($keywords as $item) {
-                // $pages = 0;
-                $page = 1;
-                $loker = Vacancy::active()
-                    ->whereHas('company', function ($query) {
-                        // eliminate vacancy company that has no logo
-                        $query->whereNotNull('logo');
-                    })
-                    ->whereDoesntHave('applicants', function ($query) use ($item) {
-                        // eliminate vacancy that has been applied by user
-                        $query->where('user_id', $item->user_id);
-                    })->whereDoesntHave('notifiedUsers', function ($query) use ($item) {
-                        // eliminate vacancy that has been notified to user
-                        $query->where('user_id', $item->user_id);
-                    });
+    //     if ($keywords->count() > 0) {
+    //         foreach ($keywords as $item) {
+    //             // $pages = 0;
+    //             $page = 1;
+    //             $loker = Vacancy::active()
+    //                 ->whereNotNull('preprocessed_text_id')
+    //                 ->whereHas('company', function ($query) {
+    //                     $query->whereNotNull('logo');
+    //                 })
+    //                 ->whereDoesntHave('applicants', function ($query) use ($item) {
+    //                     // eliminate vacancy that has been applied by user
+    //                     $query->where('user_id', $item->user_id);
+    //                 })->whereDoesntHave('notifiedUsers', function ($query) use ($item) {
+    //                     // eliminate vacancy that has been notified to user
+    //                     $query->where('user_id', $item->user_id);
+    //                 });
 
-                $lokerBindings = [];
-                foreach ($loker->getBindings() as $value) {
-                    $lokerBindings[] = "'$value'";
-                }
-                $lokerQuery = Str::replaceArray('?', $lokerBindings, $loker->toSql());
-                // while (true) {
-                $response = Http::get('http://' . env('CBRS_HOST') . ':' . env('CBRS_PORT') . '/search/' . $item->keyword, [
-                    'customquery' => $lokerQuery,
-                    'min' => $minWeight,
-                    'page' => $page
-                ])->object();
+    //             $lokerBindings = [];
+    //             foreach ($loker->getBindings() as $value) {
+    //                 $lokerBindings[] = "'$value'";
+    //             }
+    //             $lokerQuery = Str::replaceArray('?', $lokerBindings, $loker->toSql());
+    //             // dd($lokerQuery);
+    //             $response = Http::get('http://' . env('CBRS_HOST') . ':' . env('CBRS_PORT') . '/search/' . $item->keyword, [
+    //                 'customquery' => $lokerQuery,
+    //                 'min' => $minWeight,
+    //                 'page' => $page
+    //             ])->object();
+    //             if ($response && count($response->data) > 0 && $response->pages > 0) {
+    //                 $vacancies = collect();
+    //                 foreach ($response?->data as $vacancy) {
+    //                     $vacancy = Vacancy::where('id', $vacancy->id)->with('company')->first();
+    //                     $vacancies->push($vacancy);
+    //                 }
 
-                // if ($response && count($response->data) > 0 && $response->pages > 0) {
-                //     // $pages = $response->pages;
+    //                 if ($latestUserNotified == $item->user_id) {
+    //                     $latestDelay += 5;
+    //                 } else {
+    //                     $latestDelay = 2;
+    //                 }
+    //                 $details = new RecommendationMail([
+    //                     'subject' => 'Pekerjaan yang mungkin cocok untuk kamu (' . $item->keyword . ') - Bursa Kerja Khusus',
+    //                     'title' => 'Pekerjaan yang mungkin cocok untuk kamu (' . $item->keyword . ')',
+    //                     'vacancies' => $vacancies,
+    //                 ]);
+    //                 $emailJob = (new SendEmail($item->user->email, $details, $item->user->id, $vacancies))
+    //                     ->delay(Carbon::now()->addMinutes($latestDelay));
+    //                 dispatch($emailJob);
+    //                 $latestUserNotified = $item->user_id;
+    //             }
 
-                //     $vacancies = collect();
-                //     foreach ($response?->data as $vacancy) {
-                //         $vacancy = Vacancy::where('id', $vacancy->id)->with('company')->first();
-                //         $vacancies->push($vacancy);
-                //     }
-
-                //     if ($latestUserNotified == $item->user_id) {
-                //         $latestDelay += 5;
-                //     } else {
-                //         $latestDelay = 2;
-                //     }
-                //     // $details = new RecommendationMail([
-                //     //     'subject' => 'Pekerjaan yang mungkin cocok untuk kamu - Bursa Kerja Khusus',
-                //     //     'title' => 'Pekerjaan yang mungkin cocok untuk kamu',
-                //     //     'vacancies' => $vacancies,
-                //     // ]);
-                //     // $emailJob = (new SendEmail($item->user->email, $details, $item->user->id, $vacancies))
-                //     //     ->delay(Carbon::now()->addMinutes($latestDelay));
-                //     // dispatch($emailJob);
-                //     $latestUserNotified = $item->user_id;
-                // }
-            }
-        }
-    }
+    //             dd($response, $item->keyword);
+    //             break;
+    //         }
+    //     }
+    // }
 }
