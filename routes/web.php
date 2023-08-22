@@ -34,6 +34,7 @@ Route::prefix('/recommendation')->name('recommendation.')->group(function () {
 
 Auth::routes();
 
+Route::get('/translate', [LandingController::class, 'translate'])->name('translate');
 Route::get('/raw-cv', [LandingController::class, 'raw'])->name('raw-cv');
 Route::get('/scrapping', [App\Http\Controllers\ScrappingController::class, 'scrapping'])->name('scrapping');
 Route::get('/', [LandingController::class, 'index'])->name('landing');

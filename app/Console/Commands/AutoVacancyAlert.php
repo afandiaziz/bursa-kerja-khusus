@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Http;
 
 class AutoVacancyAlert extends Command
 {
+    public function __construct()
+    {
+        parent::__construct();
+        Carbon::setLocale('id');
+        date_default_timezone_set('Asia/Jakarta');
+    }
     /**
      * The name and signature of the console command.
      *
@@ -33,13 +39,13 @@ class AutoVacancyAlert extends Command
      */
     public function handle(): void
     {
-        $this->info('Start sending email to user based on their keyword');
+        // $this->info('Start sending email to user based on their keyword');
         $latestUserNotified = null;
-        $latestDelay = 2;
+        $latestDelay = 1;
         $minWeight = 0.15;
         $keywords = Keyword::orderBy('created_at', 'desc')->with('user')->get();
 
-        $this->info('Fetching data from database...');
+        // $this->info('Fetching data from database...');
         if ($keywords->count() > 0) {
             foreach ($keywords as $item) {
                 // $pages = 0;
@@ -79,9 +85,10 @@ class AutoVacancyAlert extends Command
 
                     $this->info('Sending email to user...');
                     if ($latestUserNotified == $item->user_id) {
-                        $latestDelay += 43;
+                        $latestDelay += 0;
+                        // $latestDelay += 43;
                     } else {
-                        $latestDelay = 2;
+                        $latestDelay = 1;
                     }
                     $details = new RecommendationMail([
                         'subject' => 'Pekerjaan yang mungkin cocok untuk kamu (' . $item->keyword . ') - Bursa Kerja Khusus',
@@ -100,6 +107,6 @@ class AutoVacancyAlert extends Command
                 }
             }
         }
-        $this->info('Email sent successfully');
+        // $this->info('Email sent successfully');
     }
 }

@@ -146,7 +146,7 @@
                         <tbody>
                             <tr>
                                 <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                                    <a href="{{ route('loker.show', ['id' => $item->id]) }}" target="_blank" style="text-decoration: none;">
+                                    <a href="{{ str_replace('', '', str_replace('localhost', 'localhost:8000', route('loker.show', ['id' => $item->id]))) }}" target="_blank" style="text-decoration: none;">
                                         <div style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.5;text-align:left;color:#8292b0;">
                                             <div style="display:flex;">
                                                 <img src="{{ $item->company->logo }}" width="48px" height="48px" />
@@ -174,7 +174,7 @@
                       <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                         <div style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.5;text-align:left;color:#8292b0;">
                           <div style="margin-top: 10px">
-                            <a href="{{ route('loker.index') }}" style="background-color: #2971C6; color: #f8fafc; border-radius: 5px; padding: 8px 15px; text-decoration:none" target="_blank">Lihat semua loker</a>
+                            <a href="{{ str_replace('', '', str_replace('localhost', 'localhost:8000', route('loker.index'))) }}" style="background-color: #2971C6; color: #f8fafc; border-radius: 5px; padding: 8px 15px; text-decoration:none" target="_blank">Lihat semua loker</a>
                           </div>
                         </div>
                       </td>

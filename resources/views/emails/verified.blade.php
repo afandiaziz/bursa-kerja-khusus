@@ -256,7 +256,8 @@
                           <p>
                             Berikut detil lamaran Kamu dan Bukti pendaftaran dapat dinduh pada tautan berikut:
                             <div style="margin-top: 10px">
-                                <a style="background-color: #2971C6; color: #f8fafc; border-radius: 5px; padding: 8px 15px; text-decoration:none" href="{{ route('lamaran.show', ['id' => $mailData['id']]) }}" target="_blank">Klik disini</a>
+                                <a style="background-color: #2971C6; color: #f8fafc; border-radius: 5px; padding: 8px 15px; text-decoration:none" href="{{ str_replace('', '', str_replace('localhost', 'localhost:8000', route('lamaran.show', ['id' => $mailData['id']]))) }}" target="_blank">Klik disini</a>
+                                {{-- <a style="background-color: #2971C6; color: #f8fafc; border-radius: 5px; padding: 8px 15px; text-decoration:none" href="{{ route('lamaran.show', ['id' => $mailData['id']]) }}" target="_blank">Klik disini</a> --}}
                             </div>
                           </p>
                         </div>

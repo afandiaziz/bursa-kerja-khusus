@@ -17,6 +17,7 @@
         "php-ai/php-ml": "^0.10.0",
         "sastrawi/sastrawi": "1.2.0",
         "smalot/pdfparser": "^2.5",
+        "stichoza/google-translate-php": "^5.1",
         "yajra/laravel-datatables": "10.0"
     },
     "require-dev": {

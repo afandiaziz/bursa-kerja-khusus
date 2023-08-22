@@ -9,6 +9,7 @@ use App\Models\Vacancy;
 use App\Models\Information;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class LandingController extends Controller
@@ -34,6 +35,24 @@ class LandingController extends Controller
         return view('dashboard.index', compact('totalCompanies', 'totalApplicants', 'totalInformations', 'totalActiveJobs', 'totalNotActiveJobs'));
     }
 
+
+
+    public function translate()
+    {
+        ini_set('max_execution_time', 3000);
+        // $vacancies = DB::table('vacancies_copy1')->whereRaw('id NOT IN (SELECT id FROM vacancies)')->where('added', 0);
+        // dd($vacancies->count());
+
+        // $vacancies = Vacancy::where('x', 0)->get()->each(function ($vacancy) {
+        //     $tr = new GoogleTranslate();
+        //     $tr->setSource();
+        //     $tr->setTarget('id');
+        //     $vacancy->description = $tr->translate($vacancy->description);
+        //     $vacancy->x = 1;
+        //     // dd($vacancy->description);
+        //     $vacancy->save();
+        // });
+    }
     // public function raw()
     // {
     //     $file = public_path('assets/upload/cv/resume-2.pdf');

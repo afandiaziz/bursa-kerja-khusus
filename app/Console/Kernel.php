@@ -14,7 +14,10 @@ class Kernel extends ConsoleKernel
     {
         // Run the command every two days at 8:00 AM
         // $schedule->command('app:auto-vacancy-alert')->cron('0 8 */2 * *');
-        $schedule->command('app:auto-vacancy-alert')->dailyAt('08:00');
+        // $schedule->command('app:auto-vacancy-alert')->dailyAt('08:00');
+        // $schedule->command('app:create-vacancy')->everyMinute();
+        $schedule->command('app:auto-vacancy-alert')->everyMinute();
+        // $schedule->command('app:auto-vacancy-alert')->dailyAt('08:00');
         // $schedule->command('app:auto-vacancy-preprocessing')->everyMinute();
     }
 

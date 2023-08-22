@@ -13,5 +13,6 @@ class Controller extends BaseController
     public function __construct()
     {
         Carbon::setLocale('id');
+        date_default_timezone_set('Asia/Jakarta');
     }
 }
